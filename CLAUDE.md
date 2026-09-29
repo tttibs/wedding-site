@@ -18,7 +18,8 @@ Guests are using the live site, so treat every change as a production change.
 
 ## Stack
 
-- **Webflow** (paid hosting) serves the page. The site's HTML/CSS/JS is maintained in this repo and pasted into Webflow's **Custom Code footer** (before `</body>`).
+- **Webflow** (paid hosting) serves the page. The page markup is pasted into a Webflow Embed element, and the Webflow custom code fields contain only tags that load the CSS and JS.
+- **GitHub Pages** serves `site/main.css` and `site/main.js`, deployed automatically on push to `main` by `.github/workflows/pages.yml`.
 - **Domain:** rebeccaandthomas.net, DNS on GoDaddy.
 - **Guest data:** Google Sheet, published as CSV, read client-side.
 - **RSVP backend:** Google Apps Script, writing to Google Sheets.
@@ -28,16 +29,22 @@ Guests are using the live site, so treat every change as a production change.
 
 ## Repo layout
 
-Each file maps 1:1 to a Webflow custom code field, so deploying is a straight copy-paste of the whole file.
-
-- `webflow/head.html`: Site settings → Custom code → **Head code**. Google Fonts plus all CSS.
-- `webflow/footer.html`: Site settings → Custom code → **Footer code** (before `</body>`). jQuery plus all JS.
+- `site/main.css`: all site CSS. Served by GitHub Pages.
+- `site/main.js`: all site JS, wrapped in the double-load guard. Served by GitHub Pages.
+- `.github/workflows/pages.yml`: on push to `main`, runs `node --check site/main.js`, then publishes **only** `site/` to Pages. Pages source must be set to "GitHub Actions".
+- `webflow/head.html`: Site settings → Custom code → **Head code**. Google Fonts tags plus a `<link>` to `main.css`.
+- `webflow/footer.html`: Site settings → Custom code → **Footer code** (before `</body>`). The jQuery tag plus a `<script src>` to `main.js`. It is synchronous on purpose (no `defer`/`async`) so that main.js runs after jQuery and before DOMContentLoaded/`load`.
 - `webflow/page-embed.html`: the Embed element on the home page. All page markup (`#mainContent`, card, RSVP form, comment form, footer, guest prompt).
 - `apps-script/Code.gs`: Google Apps Script backend (write-only: RSVPs and comments to the Sheet). Deployed as a Web App (Execute as Me, access: Anyone). After changing it, it must be pasted into the Apps Script editor and **redeployed as a new version**, or the live URL keeps running the old code.
 
-JS in `webflow/footer.html` and `apps-script/Code.gs` should both pass `node --check` (copy `.gs` to a `.js` file to check it).
+### Deploying
 
-Webflow limits each custom code field in length, so check file size before pasting.
+- **CSS/JS** (`site/`): merge to `main`. The workflow deploys to Pages, and Pages caches for about 10 minutes, so hard-refresh before judging a change. There is no Webflow republish.
+- **Webflow fields** (`webflow/*.html`): paste the whole file and republish. This is only needed when the tags or the page markup change.
+- **Rollback:** revert the commit on `main` (it redeploys). In an emergency, paste the pre-migration inline versions back into Webflow. Get them with `git show 0631d8f:webflow/head.html` and `git show 0631d8f:webflow/footer.html`; these have no double-load guard.
+- If GitHub Pages is down, the site renders unstyled and without JS.
+
+JS in `site/main.js` and `apps-script/Code.gs` should both pass `node --check` (copy `.gs` to a `.js` file to check it).
 
 ## Design system
 
@@ -62,10 +69,10 @@ Animated card reveal (slide-up and fade via `active`/`done` classes); parallax (
 ## Gotchas: do not repeat
 
 - Scripts go in Webflow's **Custom Code footer**, never the JSON Schema field. Misplacement fails completely and silently.
-- **Webflow can load footer embeds twice.** Scripts need a guard like `if (window.__rtInitDone) return; window.__rtInitDone = true;`. Note: the live `webflow/footer.html` does NOT currently contain this guard. Confirm with Tom whether it lives elsewhere before relying on or adding it.
+- **Webflow can load footer embeds twice.** `site/main.js` is wrapped in `if (!window.__rtInitDone) { window.__rtInitDone = true; ... }`. It is a plain block, not an IIFE, so the top-level `var`s and functions (e.g. `showCalendarOptions`) stay global. Keep the file in sloppy mode: `"use strict"`, an IIFE wrapper, or top-level `let`/`const` would change what's global. The body is intentionally not indented inside the block.
 - No regex with literal newlines baked in. It causes a SyntaxError. Use string splits or verified escape sequences.
 - **CSS cascade:** the reveal animation uses opacity 0 to 1 driven by `.active`. Any later rule setting `opacity: 0` on `.cardPreview .preview` overrides it and hides the card. Check cascade order before adding CSS.
-- Webflow console line numbers don't match this file (Webflow injects its own code first).
+- Console errors now point at `main.js` with its real line numbers. Webflow's own injected code no longer shifts them.
 - GoDaddy auto-appends the domain to DNS records. Enter only the subdomain part.
 - HubSpot SMS is US/Canada only, so it can't be used for this guest list.
 
