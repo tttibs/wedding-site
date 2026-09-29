@@ -26,6 +26,10 @@ Guests are using the live site, so treat every change as a production change.
 - **Email:** HubSpot Marketing Hub, sends personalised invites from hello@rebeccaandthomas.net.
 - **Frontend:** jQuery, vanilla JS, HTML/CSS. Images from the Webflow CDN.
 - **Design origin:** Bliss & Bone pre-designed HTML template.
+- **Design skills** (project skills in `.claude/skills/`, each folder has its pack's LICENSE):
+  - Impeccable, `impeccable` (pbakaus/impeccable@114ea1d, Apache 2.0). No hooks or agents.
+  - Emil Kowalski's `emil-design-eng`, `animate`, `review-animations`, `improve-animations`, `find-animation-opportunities`, `animation-vocabulary` and `mobile-native` (emilkowalski/skills@d16ebe6, MIT).
+  - Taste-Skill's `taste-skill` and `redesign-skill` (Leonxlnx/taste-skill@ce26fc2, MIT). They run as `/design-taste-frontend` and `/redesign-existing-projects`.
 
 ## Repo layout
 
