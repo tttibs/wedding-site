@@ -1,0 +1,12 @@
+# OS and editor clutter
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+
+# Local secrets, never commit
+.env
+*.key
+
+# Guest data exports, keep out of the repo
+*.csv
