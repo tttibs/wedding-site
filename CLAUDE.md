@@ -18,7 +18,7 @@ Guests are using the live site, so treat every change as a production change.
 
 ## Stack
 
-- **Webflow** (paid hosting) serves the page. The page markup is pasted into a Webflow Embed element, and the Webflow custom code fields contain only tags that load the CSS and JS.
+- **Webflow** (paid hosting) serves the page. The page markup is pasted into a Webflow Embed element, and the Webflow **Site settings** custom code fields (Head code, Footer code) contain only tags that load the CSS and JS. The home page's **page-level** custom code fields (Page settings → Custom code) are intentionally empty. Keep them empty so nothing is loaded twice or sets `__rtInitDone` ahead of `main.js`.
 - **GitHub Pages** serves `site/main.css` and `site/main.js`, deployed automatically on push to `main` by `.github/workflows/pages.yml`.
 - **Domain:** rebeccaandthomas.net, DNS on GoDaddy.
 - **Guest data:** Google Sheet, published as CSV, read client-side.
@@ -78,6 +78,5 @@ Animated card reveal (slide-up and fade via `active`/`done` classes); parallax (
 
 ## Outstanding from save-the-date
 
-- Remove the verbose `[GuestAllowance] row X` debug logs (they log every sheet row on each load).
 - Verify RSVP submission and the dropdown for guests with allowances of 2 and 3.
 - Confirm DKIM/SPF/DMARC records are correct in GoDaddy (manual, outside this repo).
