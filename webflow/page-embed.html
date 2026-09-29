@@ -1,0 +1,102 @@
+<div id="mainContent" style="padding-top: 900px;">
+
+  <div class="cardPreview" style="background-color: #761d1d" data-version="1" title="Custom Color">
+    <div class="backgroundCard" style="background-color: #761d1d;" id="colorButton"></div>
+    <div class="backgroundTexture" data-panel-target="texture" data-name="photo" title="Background" style="background-image: url(https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a31ae67aacd01f62852319_tx_bg_heavy-cotton.png); opacity: 0.1;"></div>
+    <div class="platterWrap">
+      <img src="https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a360708e5963b74ff3a328_Platter4_Black.png" alt="">
+    </div>
+    <div class="preview">
+      <div class="card" style="background-color: #761d1d" title="Custom Color">
+        <div class="textureCont" style="opacity: 0.3"></div>
+      </div>
+      <div class="content">
+        <div class="border" style="border-width: 0px;"></div>
+      </div>
+    </div>
+    <div class="shadowOverlay" style="background-image: url(https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a3630df5f90f2681150a99_shadow_arbor-06.png); opacity: 0.5"></div>
+  </div>
+
+  <!-- Scroll arrow sits outside cardPreview so .done rule cannot affect it -->
+  <div class="scrollArrow" id="scrollArrow">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="rgba(247,243,233,0.85)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+  </div>
+
+  <div class="greeting">
+    <div class="toGreet animate"><i>to</i></div>
+    <h3 id="guestNameDisplay" style="min-height:1.2em;"></h3>
+    <span class="line"></span>
+  </div>
+
+  <div class="eventTitle">
+    <h2>Save The Date</h2>
+    <form class="rsvpForm animate" method="post" action="preview">
+      <div class="formGuts">
+        <input type="hidden" name="id" id="guestId" value="">
+        <input type="hidden" name="project_token" value="PATZ57Y8">
+        <input type="radio" name="rsvp_status" id="attendYes" class="attend yes" value="1">
+        <label for="attendYes" class="button">Will Attend</label>
+        <input type="radio" name="rsvp_status" id="attendNo" class="attend no" value="0">
+        <label for="attendNo" class="button">Will Not Attend</label>
+        <div class="addTotal">
+          <div class="rsvpTotalBox">
+            <h4 class="errorMessage">total attending</h4>
+            <select name="rsvp_total" class="rsvpTotal">
+              <option value="1">1</option>
+              <option value="2" selected="">2</option>
+              <option value="3">3</option>
+            </select>
+          </div>
+          <textarea name="note_to_host" placeholder="Leave a private message..." rows="1"></textarea>
+        </div>
+      </div>
+      <button type="submit" class="button fill">Submit</button>
+    </form>
+  </div>
+
+  <div class="messageWrapper">
+    <div class="message">
+      <div>
+        <p>Please save the date, Saturday, 10th July 2027, to celebrate our wedding.</p>
+        <p>We cannot wait to gather our favourite people in beautiful Malta to mark the beginning of our next chapter together. A formal invitation with further details will follow.</p>
+        <p>As this will be a destination celebration, we appreciate that travel arrangements may require time and planning. If you have any questions at all, please don’t hesitate to reach out to us.</p>
+        <p>Kindly note that this will be an adults-only celebration.</p>
+        <p>Rebecca Bonavia &amp; Thomas Bowers</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="comment" style="background-color: #761d1d">
+    <div class="commentBG" style="background-color: #761d1d;"></div>
+    <div style="position:absolute;top:0;left:0;width:100%;height:100%;background-image:url(https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a31ae67aacd01f62852319_tx_bg_heavy-cotton.png);background-repeat:no-repeat;background-size:cover;background-position:center;opacity:0.1;pointer-events:none;"></div>
+    <form class="commentForm animate">
+      <h2>Leave us a note</h2>
+      <input type="hidden" name="id" value="">
+      <input type="hidden" name="project_token" value="PATZ57Y8">
+      <input type="hidden" id="commentGuestName" name="guest_name" value="">
+      <textarea rows="1" name="rsvp_comment" class="rsvpComment"></textarea>
+      <button class="button">POST</button>
+    </form>
+  </div>
+
+  <div class="commentsWrapper">
+    <div class="comments" style="display:none;">
+      <div class="list"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-names">Rebecca Bonavia &amp; Thomas Bowers</div>
+    <div class="footer-countdown">The countdown is on! <span id="weddingCountdown">...</span> seconds until our big day.</div>
+  </footer>
+
+  <!-- Guest name prompt — shown when no name is in URL -->
+  <div id="guestPrompt">
+    <p>Type your name here</p>
+    <input type="text" id="guestPromptInput" placeholder="Your name...">
+    <button id="guestPromptSubmit">Submit</button>
+  </div>
+
+</div>
