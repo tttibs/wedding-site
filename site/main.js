@@ -1,3 +1,9 @@
+// Double-load guard: Webflow can inject footer code twice.
+// Plain block (not an IIFE) so top-level functions and vars stay global.
+// Do not add "use strict": it would make the functions below block-scoped.
+if (!window.__rtInitDone) {
+window.__rtInitDone = true;
+
 // ─────────────────────────────────────────────────────────────────
 //  CONFIGURATION — paste your Apps Script Web App URL here after
 //  deploying the Google Apps Script (see setup guide below)
@@ -482,3 +488,4 @@ document.addEventListener('DOMContentLoaded', function() {
   setInterval(updateCountdown, 1000);
 });
 
+}
