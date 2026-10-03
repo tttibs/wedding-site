@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="70.3 1457.7 186 276.7" width="186" height="276.7" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Lemon with leaf</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="9" d="M151 1695 C146 1704,134 1704,132 1692 C98 1670,92 1590,126 1558 C124 1546,136 1540,144 1550 C186 1556,214 1610,202 1655 C194 1680,176 1692,151 1695"/>
+    <path stroke-width="8" d="M135.3 1547 C137.3 1531,141.3 1523,147.3 1516"/>
+    <path stroke-width="8" d="M145.3 1518 C165.3 1488,205.3 1485,223.3 1498 C207.3 1521,175.3 1529,145.3 1518"/>
+    <path stroke-width="7" d="M153.3 1516 C175.3 1506,195.3 1501,213.3 1499"/>
+  </g>
+</svg>

@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="422 1522 346 226" width="346" height="226" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
-  <title>Cheese wheel with a slice cut out</title>
-  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
-    <path stroke-width="9" d="M595 1600 L735 1600 C735 1570,670 1555,595 1555 C520 1555,455 1570,455 1600 C455 1625,520 1645,595 1645 C625 1645,648 1642,665 1639 L595 1600"/>
-    <path stroke-width="9" d="M455 1600 L455 1670 C455 1695,520 1715,595 1715 C625 1715,648 1712,665 1709 L665 1639"/>
-    <path stroke-width="8" d="M595 1600 L595 1670 L665 1709"/>
-    <path stroke-width="8" d="M595 1670 L735 1670 L735 1600"/>
-  </g>
-</svg>

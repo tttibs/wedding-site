@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="140.3 259.5 273.8 493.5" width="273.8" height="493.5" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
-  <title>Carafe</title>
-  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
-    <path stroke-width="9" d="M248 300 C246 340,250 390,240 430 C200 480,165 560,175 640 C185 700,235 720,275 720 C320 720,370 700,380 640 C388 560,350 480,312 430 C302 390,306 340,304 300"/>
-    <path stroke-width="8" d="M238 300 C255 290,295 290,314 300"/>
-    <path stroke-width="8" d="M185 590 C240 610,320 610,375 590"/>
-  </g>
-</svg>
