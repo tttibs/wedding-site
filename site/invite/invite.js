@@ -597,6 +597,11 @@ function render(mount) {
 
 var introDone = showIntro ? null : Promise.resolve();
 
+// Everything the opening needs before the paper lifts: page images and fonts,
+// every film frame, and scroll positions measured. Resolved in boot().
+var resolveSiteReady;
+var siteReady = new Promise(function (r) { resolveSiteReady = r; });
+
 function runIntro(chalkReady) {
   if (!showIntro) return;
   var el = document.querySelector('.rt-intro');
@@ -620,29 +625,40 @@ function runIntro(chalkReady) {
   }
   function skip() { finish(true); }
 
-  // Any deliberate input skips the intro; ignore the first moment so a
-  // stray touch from opening the email doesn't cut it short.
-  setTimeout(function () {
-    ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (t) {
-      window.addEventListener(t, skip, { passive: true });
-    });
-  }, 300);
+  // The paper lifts once the monogram has drawn AND the site has loaded, so
+  // the first scroll out of the film is smooth rather than catching up.
+  var drawn = false, ready = false;
+  function maybeFinish() { if (drawn && ready) finish(false); }
 
-  // Never hold the page hostage: fade out even if something stalls.
-  setTimeout(function () { finish(false); }, 7500);
+  // Input can only skip the wait for the drawing, never the loading. Ignore
+  // the first moment so a stray touch from opening the email doesn't count.
+  var armAt = performance.now() + 300;
+  siteReady.then(function () {
+    ready = true;
+    maybeFinish();
+    setTimeout(function () {
+      ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (t) {
+        window.addEventListener(t, skip, { passive: true });
+      });
+    }, Math.max(0, armAt - performance.now()));
+  });
+
+  // Never hold the page hostage: fade out after 15s even if loading stalls
+  // (anything still missing carries on loading behind it).
+  setTimeout(function () { finish(false); }, 15000);
 
   // The drawing is inline, so it only waits for chalk-draw.js. If that can't
-  // arrive promptly (very slow connection), go straight to the hero.
+  // arrive promptly (very slow connection), stop waiting on the drawing.
   var started = false;
-  setTimeout(function () { if (!started) finish(true); }, 3000);
+  setTimeout(function () { if (!started) { drawn = true; maybeFinish(); } }, 3000);
 
   chalkReady.then(function () {
     if (finished) return;
     started = true;
     return window.ChalkDraw.play(mark, 2800);
   }).then(function () {
-    setTimeout(function () { finish(false); }, 800);
-  }).catch(function () { finish(false); });
+    setTimeout(function () { drawn = true; maybeFinish(); }, 800);
+  }).catch(function () { drawn = true; maybeFinish(); });
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -690,30 +706,26 @@ function createHeroScrub(section) {
     if (!section.classList.contains('is-live')) section.classList.add('is-live');
   }
 
-  // Progressive preload: first and last frames, then every 16th and 8th straight
-  // away (enough to scrub coarsely); the rest (every 4th, 2nd, all) only once the
-  // guest starts scrolling, so a guest who just reads the top on roaming data
-  // doesn't download the whole film.
-  var queue = [0, n - 1], rest = [], seen = {};
+  // Every frame loads up front, while the intro is on screen (it waits for
+  // them). Coarse to fine: first and last, then every 16th, 8th, 4th, 2nd and
+  // the rest, so a guest who skips ahead still scrubs a rough film.
+  var queue = [0, n - 1], seen = {};
   seen[0] = seen[n - 1] = true;
   [16, 8, 4, 2, 1].forEach(function (step) {
-    for (var i = 0; i < n; i += step) if (!seen[i]) { seen[i] = true; (step >= 8 ? queue : rest).push(i); }
+    for (var i = 0; i < n; i += step) if (!seen[i]) { seen[i] = true; queue.push(i); }
   });
-  function more() {
-    window.removeEventListener('scroll', more);
-    queue = queue.concat(rest); rest = [];
-    pump();
-  }
-  window.addEventListener('scroll', more, { passive: true });
+  var settled = 0, resolveReady;
+  var ready = new Promise(function (r) { resolveReady = r; });
+  function done() { if (++settled === n) resolveReady(); }
   var active = 0;
   function pump() {
-    while (active < 4 && queue.length) {
+    while (active < 6 && queue.length) {
       (function (i) {
         active++;
         var img = new Image();
         img.decoding = 'async';
-        img.onload = function () { frames[i] = img; active--; if (Math.abs(i - cur) < 16 || !drawn) draw(); pump(); };
-        img.onerror = function () { active--; pump(); };
+        img.onload = function () { frames[i] = img; active--; done(); if (Math.abs(i - cur) < 16 || !drawn) draw(); pump(); };
+        img.onerror = function () { active--; done(); pump(); };
         img.src = v(BASE + set.dir + pad3(i + 1) + '.webp');
       })(queue.shift());
     }
@@ -722,6 +734,7 @@ function createHeroScrub(section) {
   pump();
 
   return {
+    ready: ready,
     set: function (p) {
       cur = Math.round(p * (n - 1));
       draw();
@@ -736,6 +749,7 @@ function createHeroScrub(section) {
 // ─────────────────────────────────────────────────────────────────
 
 var stageOpened = false, resolveStage, resolveCard;
+var heroReady = Promise.resolve();   // every film frame has arrived (initStage)
 var stageOpen = new Promise(function (r) { resolveStage = r; });   // the film has gone
 var cardShown = new Promise(function (r) { resolveCard = r; });    // the card is appearing
 
@@ -765,6 +779,7 @@ function initStage(gsap, ScrollTrigger) {
   gsap.set('.rt-card', { opacity: 0, y: 40 });
 
   var scrub = HERO.mode === 'frames' ? createHeroScrub(hero) : null;
+  if (scrub) heroReady = scrub.ready;
   var state = { p: 0 };
   var tl = gsap.timeline({
     scrollTrigger: {
@@ -1742,7 +1757,7 @@ function boot() {
   // Motion only switches on if GSAP arrives promptly. If it's late, the page
   // stays static rather than pinning and jumping under a guest mid-read.
   var gsapReady = window.gsap ? Promise.resolve() : loadScript(LIBS.gsap);
-  withTimeout(gsapReady.then(function () {
+  var motion = withTimeout(gsapReady.then(function () {
     return Promise.all([
       window.ScrollTrigger ? null : loadScript(LIBS.scrollTrigger),
       window.SplitText ? null : loadScript(LIBS.splitText)
@@ -1755,13 +1770,23 @@ function boot() {
     initStage(gsap, ScrollTrigger);
     initEvents(gsap, ScrollTrigger);
     initReveals(gsap, ScrollTrigger, window.SplitText);
-    // Webfonts and images change layout; recompute trigger positions once settled.
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
-    window.addEventListener('load', function () { ScrollTrigger.refresh(); });
+    return heroReady;
   }).catch(function (err) {
     console.error('[invite] Motion disabled:', err);
     openStage(false);
     watchDrawings(chalkReady, '.rt-chapter__art .chalk');
+  });
+
+  // The site is ready once images, fonts and the film have all arrived; then
+  // measure every scroll position once, against the final layout.
+  var pageLoaded = new Promise(function (r) {
+    if (document.readyState === 'complete') r();
+    else window.addEventListener('load', function () { r(); });
+  });
+  var fontsLoaded = document.fonts && document.fonts.ready ? document.fonts.ready.catch(function () {}) : null;
+  Promise.all([pageLoaded, fontsLoaded, motion]).then(function () {
+    if (window.ScrollTrigger && html.classList.contains('rt-motion')) window.ScrollTrigger.refresh();
+    resolveSiteReady();
   });
 }
 
