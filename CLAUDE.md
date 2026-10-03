@@ -18,7 +18,7 @@ Guests are using the live site, so treat every change as a production change.
 
 ## Stack
 
-- **Webflow** (paid hosting) serves the page. The page markup is pasted into a Webflow Embed element, and the Webflow custom code fields contain only tags that load the CSS and JS.
+- **Webflow** (paid hosting) serves the page. The page markup is pasted into a Webflow Embed element, and the Webflow **Site settings** custom code fields (Head code, Footer code) contain only tags that load the CSS and JS. The home page's **page-level** custom code fields (Page settings → Custom code) are intentionally empty. Keep them empty so nothing is loaded twice or sets `__rtInitDone` ahead of `main.js`.
 - **GitHub Pages** serves `site/main.css` and `site/main.js`, deployed automatically on push to `main` by `.github/workflows/pages.yml`.
 - **Domain:** rebeccaandthomas.net, DNS on GoDaddy.
 - **Guest data:** Google Sheet, published as CSV, read client-side.
@@ -26,6 +26,10 @@ Guests are using the live site, so treat every change as a production change.
 - **Email:** HubSpot Marketing Hub, sends personalised invites from hello@rebeccaandthomas.net.
 - **Frontend:** jQuery, vanilla JS, HTML/CSS. Images from the Webflow CDN.
 - **Design origin:** Bliss & Bone pre-designed HTML template.
+- **Design skills** (project skills in `.claude/skills/`, each folder has its pack's LICENSE):
+  - Impeccable, `impeccable` (pbakaus/impeccable@114ea1d, Apache 2.0). No hooks or agents.
+  - Emil Kowalski's `emil-design-eng`, `animate`, `review-animations`, `improve-animations`, `find-animation-opportunities`, `animation-vocabulary` and `mobile-native` (emilkowalski/skills@d16ebe6, MIT).
+  - Taste-Skill's `taste-skill` and `redesign-skill` (Leonxlnx/taste-skill@ce26fc2, MIT). They run as `/design-taste-frontend` and `/redesign-existing-projects`.
 
 ## Repo layout
 
@@ -78,6 +82,5 @@ Animated card reveal (slide-up and fade via `active`/`done` classes); parallax (
 
 ## Outstanding from save-the-date
 
-- Remove the verbose `[GuestAllowance] row X` debug logs (they log every sheet row on each load).
 - Verify RSVP submission and the dropdown for guests with allowances of 2 and 3.
 - Confirm DKIM/SPF/DMARC records are correct in GoDaddy (manual, outside this repo).
