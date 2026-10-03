@@ -23,7 +23,7 @@ var $ = window.jQuery;
 // ─────────────────────────────────────────────────────────────────
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261003d';
+var RT_VERSION = '20261003e';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -141,7 +141,9 @@ function invitationMarkup() {
         '<p class="rt-greet__name" id="guestNameDisplay"></p>' +
         '<span class="rt-greet__rule" aria-hidden="true"></span>' +
       '</div>' +
-      chalkDiv('church', '766/770', { cls: 'rt-church', extra: IS_PORTRAIT ? ' data-chalk-start="0.6"' : '' }) +
+      // Portrait: the church sits beneath the pinned film, so it is drawn as the
+      // film ends (see initHero) rather than by scroll position.
+      chalkDiv('church', '766/770', { cls: 'rt-church', extra: ' aria-hidden="true"' + (IS_PORTRAIT ? ' data-chalk-mode="manual"' : '') }) +
       '<p class="rt-inv__lead" data-reveal="lines">Together with their families</p>' +
       '<h2 class="rt-inv__names" id="rt-invitation-names" data-reveal="lines">' +
         '<span class="rt-inv__name">Rebecca Bonavia</span> ' +
@@ -150,7 +152,7 @@ function invitationMarkup() {
       '</h2>' +
       '<p class="rt-inv__ask" data-reveal="lines">Invite you to celebrate their marriage</p>' +
       '<dl class="rt-details">' +
-        '<div class="rt-detail"><dt>Date</dt><dd>Saturday, 10th July 2027</dd></div>' +
+        '<div class="rt-detail"><dt>Date</dt><dd>Saturday, <span class="rt-nowrap">10th July 2027</span></dd></div>' +
         '<div class="rt-detail"><dt>Time</dt><dd>From 4.00pm</dd></div>' +
         '<div class="rt-detail"><dt>Venue</dt><dd>St. Paul\u2019s Cathedral, Mdina, Malta</dd></div>' +
         '<div class="rt-detail"><dt>Attire</dt><dd>Black Tie</dd></div>' +
@@ -178,7 +180,7 @@ function frameMarkup() {
 
 // Shown when there is no ?name= (logic in initGuestName, from main.js).
 function promptMarkup() {
-  return '<div id="guestPrompt" role="dialog" aria-label="Your name">' +
+  return '<div id="guestPrompt" role="region" aria-label="Your name">' +
     '<p>Type your name here</p>' +
     '<input type="text" id="guestPromptInput" placeholder="Your name..." aria-label="Your name" autocomplete="name">' +
     '<button type="button" id="guestPromptSubmit">Submit</button>' +
@@ -334,6 +336,19 @@ function createHeroScrub(section) {
   };
 }
 
+// Any manual-mode church left undrawn (portrait without the film scrub) is
+// drawn as soon as it comes into view instead.
+function drawChurchOnView(chalkReady) {
+  var el = document.querySelector('.rt-church[data-chalk-mode="manual"]');
+  if (!el || !('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    if (!entries[0].isIntersecting) return;
+    io.disconnect();
+    chalkReady.then(function () { window.ChalkDraw.play(el, 2600); });
+  }, { rootMargin: '0px 0px -15% 0px' });
+  io.observe(el);
+}
+
 function initHero(gsap, ScrollTrigger) {
   var section = document.querySelector('.rt-hero');
   if (!section) return;
@@ -355,10 +370,18 @@ function initHero(gsap, ScrollTrigger) {
 
   var scrub = createHeroScrub(section);
   var state = { p: 0 };
+  var church = IS_PORTRAIT && document.querySelector('.rt-church');
   gsap.to(state, {
     p: 1,
     ease: 'none',
-    onUpdate: function () { scrub.set(state.p); },
+    onUpdate: function () {
+      scrub.set(state.p);
+      // Portrait: ink the church beneath the film as the glass is taken away
+      if (church && state.p > 0.7) {
+        var el = church; church = null;
+        if (window.ChalkDraw) window.ChalkDraw.play(el, 2600);
+      }
+    },
     scrollTrigger: {
       trigger: pinEl,
       start: 'top top',
@@ -591,7 +614,12 @@ function boot() {
   runIntro(chalkReady);
   initCue();
   initFrame(chalkReady);
-  if (window.jQuery) { $ = window.jQuery; initGuestName(); }
+  if (window.jQuery) {
+    $ = window.jQuery;
+    initGuestName();
+    // No name in the link: a neutral greeting rather than the guest-name style
+    if (guestName === 'Guest') $('#guestNameDisplay').addClass('rt-greet__name--anon');
+  }
   else console.error('[invite] jQuery missing: guest name and forms disabled');
 
   // Motion only switches on if GSAP arrives promptly. If it's late, the page
@@ -608,12 +636,14 @@ function boot() {
     ScrollTrigger.config({ ignoreMobileResize: true });
     html.classList.add('rt-motion');
     initHero(gsap, ScrollTrigger);
+    if (REDUCED || HERO.mode === 'still') drawChurchOnView(chalkReady);
     initReveals(gsap, ScrollTrigger, window.SplitText);
     // Webfonts and images change layout; recompute trigger positions once settled.
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
     window.addEventListener('load', function () { ScrollTrigger.refresh(); });
   }).catch(function (err) {
     console.error('[invite] Motion disabled:', err);
+    drawChurchOnView(chalkReady);
   });
 }
 

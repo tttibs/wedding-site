@@ -276,6 +276,11 @@ html.rt-lock body {
   color: var(--rt-red);
   text-wrap: balance;
 }
+.rt-greet__name--anon {
+  font-style: normal;
+  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 1.9rem);
+  color: var(--rt-ink-soft);
+}
 .rt-greet__rule {
   display: block;
   width: 56px;
@@ -291,7 +296,7 @@ html.rt-lock body {
 
 .rt-inv__lead {
   text-wrap: balance;
-  font-size: 0.7em;
+  font-size: max(0.72em, 12.5px);
   font-weight: 500;
   letter-spacing: 0.26em;
   text-transform: uppercase;
@@ -318,6 +323,7 @@ html.rt-lock body {
 }
 .rt-inv__ask {
   margin-top: 26px;
+  text-wrap: balance;
   font-family: var(--rt-serif);
   font-style: italic;
   font-size: 1.15em;
@@ -335,7 +341,7 @@ html.rt-lock body {
   border-bottom: 1px solid rgba(26, 10, 10, 0.14);
 }
 .rt-detail dt {
-  font-size: 0.62em;
+  font-size: max(0.68em, 12px);
   font-weight: 500;
   letter-spacing: 0.26em;
   text-transform: uppercase;
@@ -358,6 +364,10 @@ html.rt-lock body {
   .rt-detail:nth-child(odd) {
     border-right: 1px solid rgba(26, 10, 10, 0.14);
   }
+}
+
+.rt-nowrap {
+  white-space: nowrap;
 }
 
 /* SplitText line masks: keep descenders and italics from being clipped */
