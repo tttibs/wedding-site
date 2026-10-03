@@ -1081,9 +1081,6 @@ html.rt-stage .rt-hero {
   max-width: 980px;
   margin: 0 auto;
 }
-@media (max-width: 600px) {
-  .rt-guide__intro { text-align: left; }
-}
 .rt-guide__intro {
   max-width: 62ch;
   margin: 28px auto 0;
@@ -1091,6 +1088,7 @@ html.rt-stage .rt-hero {
   font-size: 1.08em;
   line-height: 1.75;
   color: var(--rt-ink);
+  text-align: center;
   text-wrap: pretty;
 }
 .rt-guide__art {
