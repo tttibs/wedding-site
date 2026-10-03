@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="406.1 304 165.4 397" width="165.4" height="397" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Wine glass</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="8" d="M440 345 C432 420,450 480,488 492 C528 480,545 420,538 345"/>
+    <path stroke-width="8" d="M440 345 C470 333,510 333,538 345 C510 357,470 357,440 345"/>
+    <path stroke-width="8" d="M446 420 C475 432,510 432,536 420"/>
+    <path stroke-width="8" d="M488 492 C487 545,486 600,486 652"/>
+    <path stroke-width="8" d="M440 660 C460 645,515 645,535 660 C515 672,460 672,440 660"/>
+  </g>
+</svg>

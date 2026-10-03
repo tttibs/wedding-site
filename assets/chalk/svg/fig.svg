@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="331.5 76.8 177 221.5" width="177" height="221.5" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Halved fig</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="8" d="M410 120 C380 140,350 200,370 240 C390 275,450 275,470 240 C490 200,460 140,430 120 C425 105,415 105,410 120"/>
+    <path stroke-width="8" d="M380 215 C400 180,440 180,460 215"/>
+    <path stroke-width="7" d="M400 225 L405 233"/>
+    <path stroke-width="7" d="M422 217 L425 226"/>
+    <path stroke-width="7" d="M442 226 L444 235"/>
+    <path stroke-width="7" d="M418 240 L423 248"/>
+  </g>
+</svg>

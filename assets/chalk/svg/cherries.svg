@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="56 45 204 257" width="204" height="257" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Cherries</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="8" d="M160 90 C140 140,120 190,115 220"/>
+    <path stroke-width="8" d="M160 90 C170 140,185 185,195 212"/>
+    <path stroke-width="8" d="M112 212 C142 212,145 268,112 270 C80 270,80 212,112 212"/>
+    <path stroke-width="8" d="M198 208 C228 208,232 264,198 266 C166 266,166 208,198 208"/>
+    <path stroke-width="8" d="M160 90 C185 70,215 75,228 92 C205 105,180 102,160 90"/>
+  </g>
+</svg>

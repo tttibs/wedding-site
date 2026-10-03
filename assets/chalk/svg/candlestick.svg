@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="537 1645 216 374.2" width="216" height="374.2" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Candlestick</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="9" d="M570 1975 C590 1958,700 1958,720 1975 C700 1990,590 1990,570 1975"/>
+    <path stroke-width="8" d="M632 1966 C638 1930,628 1905,636 1880 C644 1860,628 1845,634 1826"/>
+    <path stroke-width="8" d="M658 1966 C652 1930,662 1905,654 1880 C646 1860,662 1845,656 1826"/>
+    <path stroke-width="8" d="M620 1825 C630 1836,660 1836,670 1825"/>
+    <path stroke-width="8" d="M635 1823 L637 1735 L656 1733 L656 1823"/>
+    <path stroke-width="7" d="M637 1748 C641 1760,643 1766,641 1774"/>
+    <path stroke-width="7" d="M646 1725 C634 1708,640 1690,646 1678 C654 1692,658 1708,646 1725"/>
+  </g>
+</svg>

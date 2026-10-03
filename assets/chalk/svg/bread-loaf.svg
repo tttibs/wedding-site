@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="46.2 1757 456.8 206" width="456.8" height="206" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Bread loaf</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="9" d="M80 1880 C70 1830,150 1790,270 1790 C390 1790,470 1820,470 1860 C470 1900,400 1930,270 1930 C150 1930,85 1915,80 1880"/>
+    <path stroke-width="8" d="M150 1842 C170 1826,190 1819,215 1815"/>
+    <path stroke-width="8" d="M240 1840 C260 1824,282 1817,305 1813"/>
+    <path stroke-width="8" d="M330 1842 C350 1826,370 1819,395 1816"/>
+    <path stroke-width="8" d="M98 1900 C180 1916,370 1916,452 1888"/>
+  </g>
+</svg>

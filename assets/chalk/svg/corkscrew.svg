@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="561.8 402 236.5 298" width="236.5" height="298" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Corkscrew</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="8" d="M605 440 C650 432,715 432,755 440 C770 444,770 462,755 465 C715 472,650 472,605 465 C590 462,590 444,605 440"/>
+    <path stroke-width="8" d="M680 470 L680 520 C700 525,700 540,680 545 C660 550,660 565,680 570 C700 575,700 590,680 595 C660 600,660 615,680 620 C700 625,700 640,680 645 C668 648,668 660,680 668"/>
+  </g>
+</svg>

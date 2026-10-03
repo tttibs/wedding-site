@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="504.1 752 286.9 381" width="286.9" height="381" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Prickly pear cactus</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="9" d="M620 1100 C580 1060,580 960,625 940 C670 960,675 1060,630 1100"/>
+    <path stroke-width="8" d="M615 960 C570 950,525 900,540 860 C570 840,615 890,618 950"/>
+    <path stroke-width="8" d="M640 950 C650 890,700 860,730 880 C745 915,700 955,645 958"/>
+    <path stroke-width="8" d="M548 862 C535 830,545 790,570 785 C592 795,585 840,560 862"/>
+    <path stroke-width="8" d="M705 870 C700 850,712 840,722 848 C730 858,722 872,710 872"/>
+    <path stroke-width="8" d="M738 888 C745 868,758 870,758 882 C756 896,744 898,738 890"/>
+    <path stroke-width="7" d="M612 1001 L599 994"/>
+    <path stroke-width="7" d="M640 1031 L653 1023"/>
+    <path stroke-width="7" d="M621 1063 L608 1056"/>
+    <path stroke-width="7" d="M566 901 L556 891"/>
+    <path stroke-width="7" d="M689 906 L699 896"/>
+  </g>
+</svg>

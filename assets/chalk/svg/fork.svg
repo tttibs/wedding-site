@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="407.7 1130 214.2 351.7" width="214.2" height="351.7" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Fork</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="8" d="M440 1162 C438 1200,445 1225,462 1240 C476 1236,492 1218,494 1170"/>
+    <path stroke-width="7" d="M455 1164 L458 1205"/>
+    <path stroke-width="7" d="M468 1162 L470 1205"/>
+    <path stroke-width="7" d="M481 1164 L481 1205"/>
+    <path stroke-width="8" d="M470 1238 C500 1300,545 1370,588 1438 C594 1448,584 1454,578 1446 C535 1380,492 1312,458 1244"/>
+  </g>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="239 1489 204.1 258" width="204.1" height="258" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Garlic bulb</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="9" d="M340 1560 C330 1600,270 1610,272 1655 C274 1690,310 1700,340 1698 C372 1700,408 1690,410 1655 C412 1610,352 1600,342 1560"/>
+    <path stroke-width="8" d="M336 1562 C334 1545,338 1535,330 1522"/>
+    <path stroke-width="8" d="M346 1562 C348 1545,352 1535,358 1524"/>
+    <path stroke-width="8" d="M325 1615 C308 1640,308 1675,322 1696"/>
+    <path stroke-width="8" d="M358 1615 C375 1640,376 1675,362 1696"/>
+    <path stroke-width="7" d="M320 1700 L313 1711"/>
+    <path stroke-width="7" d="M341 1702 L341 1714"/>
+    <path stroke-width="7" d="M361 1700 L368 1711"/>
+  </g>
+</svg>

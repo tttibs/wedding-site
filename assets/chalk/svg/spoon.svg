@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="293.6 1136.4 245.6 332.4" width="245.6" height="332.4" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Spoon</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="8" d="M345 1170 C380 1160,405 1200,395 1235 C385 1265,345 1265,332 1235 C320 1205,325 1175,345 1170"/>
+    <path stroke-width="8" d="M385 1255 C420 1310,460 1370,505 1425 C512 1435,500 1442,492 1432 C450 1378,410 1318,375 1260"/>
+  </g>
+</svg>

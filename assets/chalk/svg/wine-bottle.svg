@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="312.9 731 166.1 408" width="166.1" height="408" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Wine bottle</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="9" d="M382 770 C383 810,382 840,384 870 C350 890,345 920,346 960 L348 1100 C370 1108,425 1108,445 1100 L446 960 C446 920,440 890,406 870 C404 840,404 810,405 770"/>
+    <path stroke-width="8" d="M378 770 C388 762,400 762,410 770"/>
+    <path stroke-width="7" d="M383 822 C392 828,398 828,404 822"/>
+    <path stroke-width="8" d="M350 985 C380 978,415 978,444 985"/>
+    <path stroke-width="8" d="M350 1050 C380 1043,415 1043,444 1050"/>
+  </g>
+</svg>

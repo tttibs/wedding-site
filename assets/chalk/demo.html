@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chalk illustrations — scroll test</title>
+<style>
+  :root { --paper:#f4f0ea; --muted:#8a8178; }
+  body { margin:0; background:var(--paper); font-family: Georgia, serif; color:#111; }
+  header, footer { min-height:70vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 16px; }
+  header p, footer p { color:var(--muted); font-size:15px; }
+  section { max-width:900px; margin:0 auto; padding:10vh 16px; }
+  .hero { width:min(520px, 90vw); margin:0 auto; }
+  .row { display:flex; align-items:center; gap:16px; margin:12vh 0; }
+  .label { color:var(--muted); font-size:13px; letter-spacing:.08em; text-transform:uppercase; }
+  .chalk { max-width:100%; }
+</style>
+</head>
+<body>
+<header><div><h1 style="font-weight:400">Scroll down</h1><p>Each illustration draws as it comes into view and stays drawn.</p></div></header>
+
+<section>
+  <div class="chalk hero" data-chalk-src="./svg/monogram.svg" style="aspect-ratio:1066/1061"></div>
+</section>
+
+<section>
+  <div class="chalk hero" data-chalk-src="./svg/church.svg" style="aspect-ratio:766/770"></div>
+</section>
+
+<section>
+  <div class="row" style="justify-content:flex-start">
+    <div class="chalk" data-chalk-src="./svg/bread-loaf.svg" style="--w:457;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:457/206"></div>
+    <span class="label">Bread loaf</span>
+  </div>
+  <div class="row" style="justify-content:center">
+    <div class="chalk" data-chalk-src="./svg/candelabra.svg" style="--w:306;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:306/432"></div>
+    <span class="label">Candelabra</span>
+  </div>
+  <div class="row" style="justify-content:flex-end">
+    <div class="chalk" data-chalk-src="./svg/candlestick.svg" style="--w:216;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:216/374"></div>
+    <span class="label">Candlestick</span>
+  </div>
+  <div class="row" style="justify-content:flex-start">
+    <div class="chalk" data-chalk-src="./svg/carafe.svg" style="--w:274;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:274/494"></div>
+    <span class="label">Carafe</span>
+  </div>
+  <div class="row" style="justify-content:center">
+    <div class="chalk" data-chalk-src="./svg/cheese-wheel.svg" style="--w:346;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:346/226"></div>
+    <span class="label">Cheese wheel with a slice cut out</span>
+  </div>
+  <div class="row" style="justify-content:flex-end">
+    <div class="chalk" data-chalk-src="./svg/cherries.svg" style="--w:204;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:204/257"></div>
+    <span class="label">Cherries</span>
+  </div>
+  <div class="row" style="justify-content:flex-start">
+    <div class="chalk" data-chalk-src="./svg/corkscrew.svg" style="--w:236;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:236/298"></div>
+    <span class="label">Corkscrew</span>
+  </div>
+  <div class="row" style="justify-content:center">
+    <div class="chalk" data-chalk-src="./svg/fig.svg" style="--w:177;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:177/222"></div>
+    <span class="label">Halved fig</span>
+  </div>
+  <div class="row" style="justify-content:flex-end">
+    <div class="chalk" data-chalk-src="./svg/fork.svg" style="--w:214;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:214/352"></div>
+    <span class="label">Fork</span>
+  </div>
+  <div class="row" style="justify-content:flex-start">
+    <div class="chalk" data-chalk-src="./svg/garlic.svg" style="--w:204;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:204/258"></div>
+    <span class="label">Garlic bulb</span>
+  </div>
+  <div class="row" style="justify-content:center">
+    <div class="chalk" data-chalk-src="./svg/lemon.svg" style="--w:235;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:235/227"></div>
+    <span class="label">Lemon with leaf</span>
+  </div>
+  <div class="row" style="justify-content:flex-end">
+    <div class="chalk" data-chalk-src="./svg/olive-sprig.svg" style="--w:234;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:234/236"></div>
+    <span class="label">Olive sprig</span>
+  </div>
+  <div class="row" style="justify-content:flex-start">
+    <div class="chalk" data-chalk-src="./svg/oyster.svg" style="--w:253;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:253/228"></div>
+    <span class="label">Oyster</span>
+  </div>
+  <div class="row" style="justify-content:center">
+    <div class="chalk" data-chalk-src="./svg/pear.svg" style="--w:187;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:187/287"></div>
+    <span class="label">Pear</span>
+  </div>
+  <div class="row" style="justify-content:flex-end">
+    <div class="chalk" data-chalk-src="./svg/prickly-pear.svg" style="--w:287;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:287/381"></div>
+    <span class="label">Prickly pear cactus</span>
+  </div>
+  <div class="row" style="justify-content:flex-start">
+    <div class="chalk" data-chalk-src="./svg/spoon.svg" style="--w:246;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:246/332"></div>
+    <span class="label">Spoon</span>
+  </div>
+  <div class="row" style="justify-content:center">
+    <div class="chalk" data-chalk-src="./svg/tomato.svg" style="--w:205;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:205/188"></div>
+    <span class="label">Tomato</span>
+  </div>
+  <div class="row" style="justify-content:flex-end">
+    <div class="chalk" data-chalk-src="./svg/wine-bottle.svg" style="--w:166;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:166/408"></div>
+    <span class="label">Wine bottle</span>
+  </div>
+  <div class="row" style="justify-content:flex-start">
+    <div class="chalk" data-chalk-src="./svg/wine-glass.svg" style="--w:165;width:calc(var(--w) * var(--chalk-scale, 0.7) * 1px);max-width:100%;aspect-ratio:165/397"></div>
+    <span class="label">Wine glass</span>
+  </div>
+</section>
+
+<footer><p>End of test page.</p></footer>
+<script src="chalk-draw.js" defer></script>
+</body>
+</html>

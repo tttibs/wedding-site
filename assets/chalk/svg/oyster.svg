@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="56.7 1130.3 253 228.3" width="253" height="228.3" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Oyster</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="9" d="M90 1240 C85 1190,140 1155,200 1165 C250 1172,285 1210,275 1255 C268 1300,215 1330,160 1325 C115 1320,92 1285,90 1240"/>
+    <path stroke-width="8" d="M125 1245 C125 1210,165 1192,200 1198 C235 1205,248 1235,238 1260 C225 1285,180 1292,152 1280 C135 1272,125 1260,125 1245"/>
+    <path stroke-width="7" d="M170 1240 C180 1225,205 1228,208 1245 C210 1260,190 1265,182 1252"/>
+  </g>
+</svg>

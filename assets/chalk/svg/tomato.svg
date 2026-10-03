@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="588.9 1315 205.4 188.2" width="205.4" height="188.2" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Tomato</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="9" d="M690 1372 C740 1370,768 1405,760 1430 C752 1460,715 1472,688 1470 C650 1468,620 1450,622 1420 C625 1390,650 1372,690 1372"/>
+    <path stroke-width="7" d="M668 1378 C678 1380,684 1376,690 1366 C694 1376,700 1380,712 1378 C704 1384,700 1390,704 1398 C696 1392,686 1392,678 1398 C680 1390,676 1384,668 1378"/>
+    <path stroke-width="7" d="M690 1368 C690 1360,694 1352,700 1348"/>
+  </g>
+</svg>

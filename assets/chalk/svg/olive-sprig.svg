@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="568 1128 234 236.3" width="234" height="236.3" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Olive sprig</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="8" d="M600 1190 C650 1230,700 1270,760 1330"/>
+    <path stroke-width="8" d="M630 1215 C625 1185,640 1165,655 1160 C658 1180,648 1200,630 1215"/>
+    <path stroke-width="8" d="M680 1255 C705 1235,730 1232,745 1238 C730 1255,705 1262,680 1255"/>
+    <path stroke-width="8" d="M730 1300 C740 1275,755 1265,770 1266 C765 1285,750 1298,730 1300"/>
+    <path stroke-width="8" d="M655 1248 C675 1250,680 1285,660 1292 C640 1295,635 1255,655 1248"/>
+    <path stroke-width="8" d="M700 1295 C720 1295,728 1325,710 1332 C690 1336,682 1300,700 1295"/>
+  </g>
+</svg>

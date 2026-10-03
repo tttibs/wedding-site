@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="42 703 306 431.8" width="306" height="431.8" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Candelabra</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="9" d="M125 1095 C140 1078,245 1078,265 1095 C245 1104,140 1104,125 1095"/>
+    <path stroke-width="9" d="M195 1082 C192 1040,199 1000,194 960 C190 930,198 900,195 878"/>
+    <path stroke-width="8" d="M195 962 C160 966,100 962,95 908"/>
+    <path stroke-width="8" d="M195 962 C230 966,290 962,295 908"/>
+    <path stroke-width="8" d="M75 905 C85 916,105 916,115 905"/>
+    <path stroke-width="8" d="M175 872 C185 883,205 883,215 872"/>
+    <path stroke-width="8" d="M275 905 C285 916,305 916,315 905"/>
+    <path stroke-width="8" d="M85 903 L87 822 L105 820 L104 903"/>
+    <path stroke-width="8" d="M185 870 L187 792 L205 790 L204 870"/>
+    <path stroke-width="8" d="M285 903 L287 822 L305 820 L304 903"/>
+    <path stroke-width="7" d="M96 812 C84 795,90 778,96 766 C104 780,108 796,96 812"/>
+    <path stroke-width="7" d="M196 782 C184 765,190 748,196 736 C204 750,208 766,196 782"/>
+    <path stroke-width="7" d="M296 812 C284 795,290 778,296 766 C304 780,308 796,296 812"/>
+  </g>
+</svg>
