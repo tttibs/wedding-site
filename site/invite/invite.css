@@ -10,6 +10,12 @@
   --rt-red: #761d1d;
   --rt-ink: #1a0a0a;
   --rt-ink-soft: rgba(26, 10, 10, 0.72);
+  /* Accent: luzzu blue, from Malta's painted fishing boats. Wayfinding and
+     secondary detail only; red stays for the guest's name and the RSVP. */
+  --rt-blue: #5b7d96;
+  --rt-blue-ink: #3f6079;   /* the text shade: 6:1 on the beige */
+  --rt-focus: var(--rt-blue-ink);
+  --rt-tex-cloth: url("https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a1c1eb3d0433641a8578c7_AdobeStock_284123015.jpeg");
   --rt-serif: "Playfair Display", Georgia, "Times New Roman", serif;
   --rt-sans: "Montserrat", Helvetica, Arial, sans-serif;
   --rt-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -453,7 +459,7 @@ html.rt-stage .rt-hero {
   font-weight: 500;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: var(--rt-red);
+  color: var(--rt-blue-ink);
 }
 .rt-chapter__title {
   display: block;
@@ -633,7 +639,7 @@ html.rt-stage .rt-hero {
   transition: color 200ms ease;
 }
 .rt-faq__btn:focus-visible {
-  outline: 2px solid var(--rt-red);
+  outline: 2px solid var(--rt-focus);
   outline-offset: 2px;
 }
 /* press feedback on the small icon, not the whole row */
@@ -642,10 +648,10 @@ html.rt-stage .rt-hero {
   transition-duration: 100ms;
 }
 @media (hover: hover) and (pointer: fine) {
-  .rt-faq__btn:hover { color: var(--rt-red); }
+  .rt-faq__btn:hover { color: var(--rt-blue-ink); }
 }
 .rt-faq__btn[aria-expanded="true"] {
-  color: var(--rt-red);
+  color: var(--rt-blue-ink);
 }
 /* A drawn plus that folds into a minus */
 .rt-faq__icon {
@@ -722,14 +728,14 @@ html.rt-stage .rt-hero {
   color: var(--rt-ink-soft);
 }
 .rt-faq__contact a {
-  color: var(--rt-red);
+  color: var(--rt-blue-ink);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
   overflow-wrap: anywhere;
 }
 .rt-faq__contact a:focus-visible {
-  outline: 2px solid var(--rt-red);
+  outline: 2px solid var(--rt-focus);
   outline-offset: 3px;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -775,7 +781,7 @@ html.rt-stage .rt-hero {
   transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease, transform 160ms var(--rt-ease-out);
 }
 #rt-invite .button:active { transform: scale(0.97); }
-#rt-invite .button:focus-visible { outline: 2px solid var(--rt-red); outline-offset: 3px; }
+#rt-invite .button:focus-visible { outline: 2px solid var(--rt-focus); outline-offset: 3px; }
 #rt-invite .button.fill { background: var(--rt-red); border-color: var(--rt-red); color: var(--rt-paper); }
 @media (hover: hover) and (pointer: fine) {
   #rt-invite .button:hover { background: var(--rt-ink); color: var(--rt-paper); }
@@ -844,7 +850,7 @@ html.rt-stage .rt-hero {
   color: var(--rt-paper);
 }
 .rsvpForm .attend:focus-visible + label {
-  outline: 2px solid var(--rt-red);
+  outline: 2px solid var(--rt-focus);
   outline-offset: 3px;
 }
 /* Revealed by the existing jQuery slideDown once an answer is chosen
@@ -882,7 +888,7 @@ html.rt-stage .rt-hero {
 .rsvpForm select:focus-visible,
 .rsvpForm textarea:focus-visible,
 .commentForm textarea:focus-visible {
-  outline: 2px solid var(--rt-red);
+  outline: 2px solid var(--rt-focus);
   outline-offset: 3px;
 }
 .rt-rsvp__note-label,
@@ -950,7 +956,7 @@ html.rt-stage .rt-hero {
   padding: 10px 4px;
   font-size: 14px;
   letter-spacing: 0.08em;
-  color: var(--rt-red);
+  color: var(--rt-blue-ink);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
@@ -966,7 +972,7 @@ html.rt-stage .rt-hero {
   text-transform: uppercase;
   color: var(--rt-ink-soft);
 }
-.calOption:focus-visible { outline: 2px solid var(--rt-red); outline-offset: 2px; }
+.calOption:focus-visible { outline: 2px solid var(--rt-focus); outline-offset: 2px; }
 
 /* The wax seal, pressed onto the card's corner on a successful reply */
 .rt-seal {
@@ -1108,7 +1114,7 @@ html.rt-stage .rt-hero {
   width: 44px;
   height: 1px;
   margin: 16px auto 0;
-  background: rgba(118, 29, 29, 0.45);
+  background: var(--rt-blue);
 }
 .rt-guide__art {
   display: flex;
@@ -1161,12 +1167,12 @@ html.rt-stage .rt-hero {
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--rt-red);
+  color: var(--rt-blue-ink);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
 }
-.rt-place__map:focus-visible { outline: 2px solid var(--rt-red); outline-offset: 3px; }
+.rt-place__map:focus-visible { outline: 2px solid var(--rt-focus); outline-offset: 3px; }
 /* Placeholders: visibly unfinished until real places are supplied */
 .rt-place--placeholder {
   background: rgba(251, 248, 240, 0.6);
@@ -1339,7 +1345,7 @@ html.rt-stage .rt-hero {
   transform: scale(0.97);
 }
 #guestPromptSubmit:focus-visible {
-  outline: 2px solid var(--rt-red);
+  outline: 2px solid var(--rt-focus);
   outline-offset: 3px;
 }
 @media (hover: hover) and (pointer: fine) {
@@ -1366,4 +1372,116 @@ html.rt-stage .rt-hero {
 @media (prefers-reduced-motion: reduce) {
   .rt-cue svg { animation: none; }
   .rt-intro { display: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   The table: one tablecloth, fixed behind every section after the film,
+   so it never tiles or breaks. Cards and chalk sit on top of it.
+   ───────────────────────────────────────────────────────────────── */
+.rt-cloth {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-color: #ece6da;
+  background-image: var(--rt-tex-cloth);
+  background-size: cover;
+  background-position: center;
+  pointer-events: none;
+}
+#rt-invite .rt-main,
+#rt-invite .rt-footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* The border drawings float just above the cloth */
+.rt-border__item .chalk svg {
+  filter: drop-shadow(0 9px 6px rgba(26, 10, 10, 0.26));
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Ox blood stationery: the invitation and the reply card, as on the
+   save-the-date (#761d1d with the fibre texture), in beige ink.
+   ───────────────────────────────────────────────────────────────── */
+.rt-invitation .rt-card,
+.rt-rsvp__card {
+  --ink: rgba(247, 243, 233, 0.96);
+  --ink-soft: rgba(247, 243, 233, 0.78);
+  --rule: rgba(247, 243, 233, 0.24);
+  background-color: var(--rt-red);
+  color: var(--ink);
+  box-shadow:
+    0 2px 4px rgba(26, 10, 10, 0.22),
+    0 14px 28px -10px rgba(26, 10, 10, 0.4),
+    0 40px 72px -24px rgba(26, 10, 10, 0.55);
+}
+.rt-invitation .rt-card::before,
+.rt-rsvp__card::before {
+  opacity: 0.3;
+  mix-blend-mode: multiply;
+}
+.rt-invitation .rt-card :focus-visible,
+.rt-rsvp__card :focus-visible {
+  outline-color: var(--ink) !important;
+}
+
+/* Invitation card */
+.rt-invitation .rt-greet__to,
+.rt-invitation .rt-inv__lead,
+.rt-invitation .rt-inv__ask { color: var(--ink-soft); }
+.rt-invitation .rt-greet__name,
+.rt-invitation .rt-inv__names,
+.rt-invitation .rt-detail dd { color: var(--ink); }
+.rt-invitation .rt-greet__name--anon { color: var(--ink-soft); }
+.rt-invitation .rt-greet__rule { background: var(--rule); }
+.rt-invitation .rt-inv__amp { color: var(--ink-soft); }
+.rt-invitation .rt-detail dt { color: var(--ink-soft); }
+.rt-invitation .rt-details,
+.rt-invitation .rt-detail,
+.rt-invitation .rt-detail:nth-child(odd) { border-color: var(--rule); }
+
+/* Reply card */
+.rt-rsvp__card .rt-heading { color: var(--ink); }
+.rt-rsvp__card .rt-rsvp__by,
+.rt-rsvp__card .rt-rsvp__note-label { color: var(--ink-soft); }
+.rt-rsvp__card .rsvpTotalBox h4 { color: var(--ink-soft); }
+#rt-invite .rt-rsvp__card .button {
+  border-color: var(--ink-soft);
+  color: var(--ink);
+}
+#rt-invite .rt-rsvp__card .rsvpForm .attend:checked + label,
+#rt-invite .rt-rsvp__card .button.fill {
+  background: var(--rt-paper);
+  border-color: var(--rt-paper);
+  color: var(--rt-red);
+}
+@media (hover: hover) and (pointer: fine) {
+  #rt-invite .rt-rsvp__card .button:hover { background: rgba(247, 243, 233, 0.14); color: var(--ink); }
+  #rt-invite .rt-rsvp__card .button.fill:hover { background: #fff; border-color: #fff; color: var(--rt-red); }
+}
+.rt-rsvp__card .rsvpForm select {
+  border-color: var(--ink-soft);
+  color: var(--ink);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23f7f3e9' stroke-width='1.3' d='M3 6l5 5 5-5'/%3E%3C/svg%3E");
+}
+.rt-rsvp__card .rsvpForm select option { color: var(--rt-ink); }
+.rt-rsvp__card .rsvpForm textarea {
+  background: rgba(247, 243, 233, 0.08);
+  border-bottom-color: var(--ink-soft);
+  color: var(--ink);
+}
+.rt-rsvp__card .rsvpForm textarea::placeholder { color: rgba(247, 243, 233, 0.6); }
+#rt-invite .rt-rsvp__card .rsvpForm .button.success {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ink);
+}
+.rt-rsvp__card .calGroup,
+.rt-rsvp__card .calOptions__or { border-color: var(--rule); color: var(--ink-soft); }
+.rt-rsvp__card .calGroup__title { color: var(--ink); }
+.rt-rsvp__card .calOption { color: var(--ink); }
+/* The seal is wax of the same red: a brighter rim and a deeper shadow
+   lift it off the card */
+.rt-rsvp__card .rt-seal {
+  filter: drop-shadow(0 6px 8px rgba(26, 10, 10, 0.55)) drop-shadow(0 0 1px rgba(247, 243, 233, 0.6));
 }

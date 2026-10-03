@@ -53,7 +53,7 @@ var GUIDE = {
 };
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261006b';
+var RT_VERSION = '20261007a';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -264,7 +264,7 @@ function invitationMarkup() {
         '<span class="rt-greet__rule" aria-hidden="true"></span>' +
       '</div>' +
       // Drawn once the card has appeared (see initStage)
-      chalkDiv('church', '766/770', { cls: 'rt-church', extra: ' aria-hidden="true" data-chalk-mode="manual"' }) +
+      chalkDiv('church', '766/770', { cls: 'rt-church', color: 'rgba(247,243,233,0.92)', extra: ' aria-hidden="true" data-chalk-mode="manual"' }) +
       '<p class="rt-inv__lead" data-reveal="lines">Together with their families</p>' +
       '<h2 class="rt-inv__names" id="rt-invitation-names" data-reveal="lines">' +
         '<span class="rt-inv__name">Rebecca Bonavia</span> ' +
@@ -497,6 +497,7 @@ function promptMarkup() {
 
 function render(mount) {
   mount.innerHTML = introMarkup() +
+    '<div class="rt-cloth" aria-hidden="true"></div>' +
     '<main class="rt-main">' +
       '<div class="rt-opening">' + heroMarkup() + invitationMarkup() + '</div>' +
       eventsMarkup() +
