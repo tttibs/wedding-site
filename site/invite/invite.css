@@ -47,7 +47,8 @@ html.rt-lock body {
   box-sizing: border-box;
 }
 
-#rt-invite :where(h1, h2, h3, h4, p, figure, ul, ol) {
+/* zero specificity, so every class rule below can set its own spacing */
+:where(#rt-invite) :where(h1, h2, h3, h4, p, figure, ul, ol) {
   margin: 0;
   padding: 0;
 }
@@ -435,7 +436,12 @@ html.rt-stage .rt-hero {
   height: 100%;
   width: auto;
 }
+.rt-chapter__heading {
+  margin: 0;
+  font-weight: 400;
+}
 .rt-chapter__part {
+  display: block;
   font-size: max(0.68em, 12px);
   font-weight: 500;
   letter-spacing: 0.26em;
@@ -443,6 +449,7 @@ html.rt-stage .rt-hero {
   color: var(--rt-red);
 }
 .rt-chapter__title {
+  display: block;
   margin: 10px 0 0;
   font-family: var(--rt-serif);
   font-style: italic;
@@ -455,7 +462,7 @@ html.rt-stage .rt-hero {
   flex-direction: column;
   gap: 2px;
   margin-top: 14px;
-  font-size: 0.82em;
+  font-size: 0.9em;
   font-weight: 500;
   letter-spacing: 0.06em;
   color: var(--rt-ink-soft);
@@ -491,14 +498,12 @@ html.rt-stage .rt-hero {
   max-width: none;
   width: max-content;
   margin: 5vh 0 0;
-  /* start with every card off to the right; end with the last card in view */
-  padding: 0 8vw 0 100vw;
+  /* start with the first card just showing at the right; end with the last in view */
+  padding: 0 8vw 0 88vw;
 }
 .rt-events--h .rt-chapter {
   flex: none;
   width: clamp(340px, 30vw, 420px);
-  max-height: 70vh;
-  overflow: hidden;
 }
 
 /* ── Chalk border: drawings and flourishes down the page edges ── */

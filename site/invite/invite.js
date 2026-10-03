@@ -23,7 +23,7 @@ var $ = window.jQuery;
 // ─────────────────────────────────────────────────────────────────
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261004c';
+var RT_VERSION = '20261004d';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -205,14 +205,16 @@ function eventsMarkup() {
     borderMarkup('#rt-events') +
     '<div class="rt-events__inner">' +
       '<h2 class="rt-heading" id="rt-events-title" data-reveal="lines">Order of events</h2>' +
-      '<div class="rt-events__track">' + EVENTS.map(function (e) {
-        return '<article class="rt-chapter">' +
+      '<div class="rt-events__track">' + EVENTS.map(function (e, i) {
+        return '<article class="rt-chapter" aria-labelledby="rt-chapter-' + i + '">' +
           '<div class="rt-chapter__art" aria-hidden="true">' +
             chalkDiv(e.art.name, e.art.w + '/' + e.art.h, { extra: ' data-chalk-mode="manual"' }) +
           '</div>' +
-          '<p class="rt-chapter__part">' + e.part + '</p>' +
-          '<h3 class="rt-chapter__title">' + e.title + '</h3>' +
-          '<p class="rt-chapter__when"><span>' + e.date + '</span><span>' + e.time + '</span></p>' +
+          '<h3 class="rt-chapter__heading" id="rt-chapter-' + i + '">' +
+            '<span class="rt-chapter__part">' + e.part + '<span class="rt-sr">: </span></span>' +
+            '<span class="rt-chapter__title">' + e.title + '</span>' +
+          '</h3>' +
+          '<p class="rt-chapter__when"><span>' + e.date + '<span class="rt-sr">, </span></span><span>' + e.time + '</span></p>' +
           '<p class="rt-chapter__text">' + e.text + '</p>' +
         '</article>';
       }).join('') + '</div>' +
@@ -418,11 +420,14 @@ function openStage(animateCard) {
   stageOpened = true;
   resolveStage();
   if (!animateCard) { resolveCard(); return; }
-  // Let the first drawings get going before the card arrives
+  // Let the first drawings get going before the card arrives, unless the guest
+  // is already scrolling past it: then it comes straight away, more quickly.
+  var card = document.querySelector('.rt-card');
+  var late = card && card.getBoundingClientRect().top < window.innerHeight * 0.3;
   setTimeout(function () {
-    window.gsap.to('.rt-card', { opacity: 1, y: 0, duration: 1.4, ease: 'power3.out' });
-    setTimeout(resolveCard, 350);
-  }, 1300);
+    window.gsap.to(card, { opacity: 1, y: 0, duration: late ? 0.6 : 1.4, ease: 'power3.out' });
+    setTimeout(resolveCard, late ? 100 : 350);
+  }, late ? 0 : 1300);
 }
 
 function initStage(gsap, ScrollTrigger) {
@@ -530,7 +535,7 @@ function drawArt(card, delay) {
 
 // Wide, tall-enough landscape screens get the horizontal chapters
 function eventsHorizontal() {
-  return !IS_PORTRAIT && window.innerWidth >= 1024 && window.innerHeight >= 660;
+  return !IS_PORTRAIT && window.innerWidth >= 1024 && window.innerHeight >= 720;
 }
 
 function initEvents(gsap, ScrollTrigger) {
