@@ -87,7 +87,7 @@ var GUIDE = {
 var MUSIC = { src: 'music/piano.mp3', volume: 0.3, autoplay: true };
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261009b';
+var RT_VERSION = '20261010a';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -918,33 +918,65 @@ function initEvents(gsap, ScrollTrigger) {
   section.classList.add('rt-events--h');
   var track = section.querySelector('.rt-events__track');
   function travel() { return Math.max(0, track.scrollWidth - window.innerWidth); }
-  // A short rest after the last card lands, so the section doesn't let go abruptly
-  function rest() { return window.innerHeight * 0.25; }
-  var heading = section.querySelector('.rt-heading');
-  var tl = gsap.timeline({
+  // Scroll spent easing the section to a stop on arrival, and back up to the
+  // guest's scrolling speed on departure, so it never stops or starts dead
+  function land() { return Math.round(window.innerHeight * 0.4); }
+  // A short rest on the last card before it lets go
+  function hold() { return window.innerHeight * 0.15; }
+
+  // The wrapper is pinned; the section moves inside it. It is pinned while
+  // still land/2 below the top and eases up the rest of the way (power1.out
+  // starts at exactly the scroll speed), then on departure accelerates back
+  // to the scroll speed (power1.in) before the pin lets go. It ends a full
+  // land() higher than it started, so the next section closes up by as much.
+  var wrap = document.createElement('div');
+  wrap.className = 'rt-events-pin';
+  section.parentNode.insertBefore(wrap, section);
+  wrap.appendChild(section);
+  var next = wrap.nextElementSibling;
+  function closeUp() { if (next) next.style.marginTop = -land() + 'px'; }
+  closeUp();
+  ScrollTrigger.addEventListener('refreshInit', closeUp);
+
+  var pin = ScrollTrigger.create({
+    trigger: wrap,
+    start: function () { return 'top ' + Math.round(land() / 2) + 'px'; },
+    end: function () { return '+=' + (land() + travel() + hold() + land()); },
+    pin: true,
+    invalidateOnRefresh: true
+  });
+  gsap.timeline({
     scrollTrigger: {
-      trigger: section,
-      start: 'top top',
-      end: function () { return '+=' + (travel() + rest()); },
-      pin: true,
-      anticipatePin: 1,   // engage the pin a frame early so it doesn't jolt
-      scrub: 1,
+      trigger: wrap,
+      start: function () { return pin.start; },
+      end: function () { return pin.end; },
+      scrub: true,
+      invalidateOnRefresh: true
+    }
+  })
+    .fromTo(section, { y: 0 }, { y: function () { return -land() / 2; }, ease: 'power1.out', duration: function () { return land(); } })
+    .to({}, { duration: function () { return travel() + hold(); } })
+    .to(section, { y: function () { return -land(); }, ease: 'power1.in', duration: function () { return land(); } });
+  // The cards begin sliding in while the section is still settling
+  var pan = gsap.to(track, {
+    x: function () { return -travel(); },
+    ease: 'none',
+    scrollTrigger: {
+      trigger: wrap,
+      start: function () { return pin.start + land() * 0.5; },
+      end: function () { return pin.start + land() + travel(); },
+      scrub: 0.8,
       invalidateOnRefresh: true
     }
   });
-  var pan = gsap.to(track, { x: function () { return -travel(); }, ease: 'none', duration: 1 });
-  tl.add(pan, 0)
-    .to({}, { duration: function () { return rest() / Math.max(1, travel()); } });
-  // The heading keeps drifting gently while pinned, so it never stops dead
-  if (heading) tl.fromTo(heading, { y: 0 }, { y: -28, ease: 'none', duration: tl.duration() }, 0);
   cards.forEach(function (card) {
     // Each card is slid across the table: a slight turn that settles as it lands
     gsap.fromTo(card, { rotation: 3.5, y: 18 }, {
       rotation: 0, y: 0, ease: 'none',
-      scrollTrigger: { trigger: card, containerAnimation: tl, start: 'left right', end: 'left 55%', scrub: true }
+      scrollTrigger: { trigger: card, containerAnimation: pan, start: 'left right', end: 'left 55%', scrub: true }
     });
     ScrollTrigger.create({
-      trigger: card, containerAnimation: tl, start: 'left 70%', once: true,
+      trigger: card, containerAnimation: pan, start: 'left 70%', once: true,
       onEnter: function () { cardShown.then(function () { drawArt(card, 150); }); }
     });
   });
