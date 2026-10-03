@@ -16,12 +16,14 @@ window.__rtInviteInit = true;
 
 (function () {
 
+var $ = window.jQuery;
+
 // ─────────────────────────────────────────────────────────────────
 //  CONFIGURATION
 // ─────────────────────────────────────────────────────────────────
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261003c';
+var RT_VERSION = '20261003e';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -47,6 +49,21 @@ var HERO = {
   scrub: 0.6      // seconds of catch-up: gives the scrub a little weight
 };
 var PORTRAIT_MQ = '(orientation: portrait)';   // keep in step with invite.css
+var IS_PORTRAIT = !!(window.matchMedia && window.matchMedia(PORTRAIT_MQ).matches);
+
+// Fixed chalk frame: one illustration draws into the frame as each section is
+// reached, then stays. Desktop only (wide landscape screens); phones get the
+// thin top and bottom bands. Add a row here as each section is built.
+var FRAME_MQ = '(min-width: 1100px) and (orientation: landscape)';   // keep in step with invite.css
+var FRAME_ITEMS = [
+  { section: '#rt-invitation', slot: 'tl', name: 'candelabra', w: 306, h: 432 }
+];
+
+// ─────────────────────────────────────────────────────────────────
+//  DATA: copied verbatim from site/main.js (save-the-date)
+// ─────────────────────────────────────────────────────────────────
+var COMMENTS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-k5rT2i2qzBScnQDDGulf-1xS3PO57YXrDIFdPqO5ArZhoJWmTbprKHJd5LVH4yq9YuTOu1XP5358/pub?gid=147883584&single=true&output=csv';
+var GUEST_NUMBERS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-k5rT2i2qzBScnQDDGulf-1xS3PO57YXrDIFdPqO5ArZhoJWmTbprKHJd5LVH4yq9YuTOu1XP5358/pub?gid=161076232&single=true&output=csv';
 
 var REDUCED = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 var html = document.documentElement;
@@ -72,7 +89,7 @@ function withTimeout(promise, ms) {
 function chalkDiv(name, ratio, attrs) {
   return '<div class="chalk ' + (attrs && attrs.cls || '') + '" data-chalk-src="' + v(CHALK + 'svg/' + name + '.svg') + '"' +
     ' data-chalk-color="#1a0a0a"' + (attrs && attrs.extra || '') +
-    ' style="aspect-ratio:' + ratio + '"></div>';
+    ' style="aspect-ratio:' + ratio + (attrs && attrs.style ? ';' + attrs.style : '') + '"></div>';
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -110,21 +127,73 @@ function heroMarkup() {
       '</picture>' +
       '<canvas class="rt-hero__canvas" aria-hidden="true"></canvas>' +
     '</div>' +
-    // Portrait only: paper beneath the square film, where the next section begins.
-    '<div class="rt-hero__peek">' +
-      '<p class="rt-next__label">Next: the invitation</p>' +
-    '</div>' +
     '<div class="rt-cue" aria-hidden="true">' + CUE_SVG + '</div>' +
   '</section>';
 }
 
-// Temporary: stands in for sections 2-8 until they are built.
+// Section 2. On portrait screens this sits directly under the square film and
+// is pinned with it, so the greeting shows beneath the film while it plays.
+function invitationMarkup() {
+  return '<section class="rt-invitation" id="rt-invitation" aria-labelledby="rt-invitation-names">' +
+    '<div class="rt-card">' +
+      '<div class="rt-greet">' +
+        '<p class="rt-greet__to"><i>to</i></p>' +
+        '<p class="rt-greet__name" id="guestNameDisplay"></p>' +
+        '<span class="rt-greet__rule" aria-hidden="true"></span>' +
+      '</div>' +
+      // Portrait: the church sits beneath the pinned film, so it is drawn as the
+      // film ends (see initHero) rather than by scroll position.
+      chalkDiv('church', '766/770', { cls: 'rt-church', extra: ' aria-hidden="true"' + (IS_PORTRAIT ? ' data-chalk-mode="manual"' : '') }) +
+      '<p class="rt-inv__lead" data-reveal="lines">Together with their families</p>' +
+      '<h2 class="rt-inv__names" id="rt-invitation-names" data-reveal="lines">' +
+        '<span class="rt-inv__name">Rebecca Bonavia</span> ' +
+        '<span class="rt-inv__amp">&amp;</span> ' +
+        '<span class="rt-inv__name">Thomas Bowers</span>' +
+      '</h2>' +
+      '<p class="rt-inv__ask" data-reveal="lines">Invite you to celebrate their marriage</p>' +
+      '<dl class="rt-details">' +
+        '<div class="rt-detail"><dt>Date</dt><dd>Saturday, <span class="rt-nowrap">10th July 2027</span></dd></div>' +
+        '<div class="rt-detail"><dt>Time</dt><dd>From 4.00pm</dd></div>' +
+        '<div class="rt-detail"><dt>Venue</dt><dd>St. Paul\u2019s Cathedral, Mdina, Malta</dd></div>' +
+        '<div class="rt-detail"><dt>Attire</dt><dd>Black Tie</dd></div>' +
+      '</dl>' +
+    '</div>' +
+  '</section>';
+}
+
+// Temporary: stands in for sections 3-8 until they are built.
 function nextMarkup() {
-  return '<section class="rt-next"><p class="rt-next__label">Sections 2-8 to follow</p></section>';
+  return '<section class="rt-next"><p class="rt-next__label">Sections 3-8 to follow</p></section>';
+}
+
+function frameMarkup() {
+  var items = '';
+  if (window.matchMedia && window.matchMedia(FRAME_MQ).matches) {
+    FRAME_ITEMS.forEach(function (it, i) {
+      items += '<div class="rt-frame__item rt-frame__item--' + it.slot + '" data-frame-item="' + i + '">' +
+        chalkDiv(it.name, it.w + '/' + it.h, { extra: ' data-chalk-mode="manual"', style: '--w:' + it.w }) +
+      '</div>';
+    });
+  }
+  return '<div class="rt-frame" aria-hidden="true"><div class="rt-frame__line"></div>' + items + '</div>';
+}
+
+// Shown when there is no ?name= (logic in initGuestName, from main.js).
+function promptMarkup() {
+  return '<div id="guestPrompt" role="region" aria-label="Your name">' +
+    '<p>Type your name here</p>' +
+    '<input type="text" id="guestPromptInput" placeholder="Your name..." aria-label="Your name" autocomplete="name">' +
+    '<button type="button" id="guestPromptSubmit">Submit</button>' +
+  '</div>';
 }
 
 function render(mount) {
-  mount.innerHTML = introMarkup() + heroMarkup() + '<main class="rt-main">' + nextMarkup() + '</main>';
+  mount.innerHTML = introMarkup() +
+    '<main class="rt-main">' +
+      '<div class="rt-opening">' + heroMarkup() + invitationMarkup() + '</div>' +
+      nextMarkup() +
+    '</main>' +
+    frameMarkup() + promptMarkup();
   if (showIntro) html.classList.add('rt-lock');
 }
 
@@ -267,9 +336,25 @@ function createHeroScrub(section) {
   };
 }
 
+// Any manual-mode church left undrawn (portrait without the film scrub) is
+// drawn as soon as it comes into view instead.
+function drawChurchOnView(chalkReady) {
+  var el = document.querySelector('.rt-church[data-chalk-mode="manual"]');
+  if (!el || !('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    if (!entries[0].isIntersecting) return;
+    io.disconnect();
+    chalkReady.then(function () { window.ChalkDraw.play(el, 2600); });
+  }, { rootMargin: '0px 0px -15% 0px' });
+  io.observe(el);
+}
+
 function initHero(gsap, ScrollTrigger) {
   var section = document.querySelector('.rt-hero');
   if (!section) return;
+  // Portrait: pin the film together with the invitation beneath it, so the
+  // start of the next section stays visible under the square film.
+  var pinEl = IS_PORTRAIT ? document.querySelector('.rt-opening') : section;
 
   if (REDUCED || HERO.mode === 'still') {
     if (!REDUCED) {
@@ -277,19 +362,28 @@ function initHero(gsap, ScrollTrigger) {
       gsap.fromTo(section.querySelector('.rt-hero__still'),
         { scale: 1.02, yPercent: 0 },
         { scale: 1.1, yPercent: 2, ease: 'none',
-          scrollTrigger: { trigger: section, start: 'top top', end: function () { return '+=' + window.innerHeight * HERO.viewports; }, pin: true, scrub: HERO.scrub } });
+          scrollTrigger: { trigger: pinEl, start: 'top top', end: function () { return '+=' + window.innerHeight * HERO.viewports; }, pin: true, scrub: HERO.scrub } });
+      html.classList.add('rt-pinned');
     }
     return;
   }
 
   var scrub = createHeroScrub(section);
   var state = { p: 0 };
+  var church = IS_PORTRAIT && document.querySelector('.rt-church');
   gsap.to(state, {
     p: 1,
     ease: 'none',
-    onUpdate: function () { scrub.set(state.p); },
+    onUpdate: function () {
+      scrub.set(state.p);
+      // Portrait: ink the church beneath the film as the glass is taken away
+      if (church && state.p > 0.7) {
+        var el = church; church = null;
+        if (window.ChalkDraw) window.ChalkDraw.play(el, 2600);
+      }
+    },
     scrollTrigger: {
-      trigger: section,
+      trigger: pinEl,
       start: 'top top',
       end: function () { return '+=' + window.innerHeight * HERO.viewports; },
       pin: true,
@@ -297,6 +391,96 @@ function initHero(gsap, ScrollTrigger) {
       invalidateOnRefresh: true,
       onRefresh: function () { scrub.resize(); }
     }
+  });
+  html.classList.add('rt-pinned');
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  REVEALS: headings and key lines slide up line by line behind a mask
+// ─────────────────────────────────────────────────────────────────
+
+// Plays a reveal once its trigger enters view, but never while the intro
+// is still covering the page.
+function onEnter(ScrollTrigger, trigger, start, play) {
+  ScrollTrigger.create({
+    trigger: trigger,
+    start: start,
+    once: true,
+    pinnedContainer: IS_PORTRAIT && trigger.closest('.rt-opening') ? '.rt-opening' : undefined,
+    onEnter: function () { introDone.then(play); }
+  });
+}
+
+function initReveals(gsap, ScrollTrigger, SplitText) {
+  if (REDUCED) return;
+
+  // Greeting: the guest's name, then the rule drawn out beneath it
+  var greet = document.querySelector('.rt-greet');
+  if (greet) {
+    var tl = gsap.timeline({ paused: true });
+    tl.from(greet.querySelectorAll('.rt-greet__to, .rt-greet__name'), { y: 14, opacity: 0, duration: 1.2, ease: 'expo.out', stagger: 0.18 })
+      .from(greet.querySelector('.rt-greet__rule'), { scaleX: 0, duration: 1.1, ease: 'expo.out' }, '-=0.8');
+    onEnter(ScrollTrigger, greet, 'top 92%', function () { tl.play(); });
+  }
+
+  document.querySelectorAll('[data-reveal="lines"]').forEach(function (el) {
+    SplitText.create(el, {
+      type: 'lines',
+      mask: 'lines',
+      linesClass: 'rt-line',
+      autoSplit: true,
+      onSplit: function (self) {
+        var tween = gsap.from(self.lines, { yPercent: 105, opacity: 0, duration: 1.15, ease: 'expo.out', stagger: 0.12, paused: true });
+        onEnter(ScrollTrigger, el, 'top 86%', function () { tween.play(); });
+        return tween;
+      }
+    });
+  });
+
+  // The four detail tiles fade up in sequence
+  var details = document.querySelector('.rt-details');
+  if (details) {
+    var tiles = gsap.from(details.children, { y: 18, opacity: 0, duration: 0.95, ease: 'power3.out', stagger: 0.15, paused: true });
+    onEnter(ScrollTrigger, details, 'top 85%', function () { tiles.play(); });
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  FRAME: fixed chalk border; illustrations draw in as sections are reached
+// ─────────────────────────────────────────────────────────────────
+
+function initFrame(chalkReady) {
+  var frame = document.querySelector('.rt-frame');
+  var media = document.querySelector('.rt-hero__media');
+  if (!frame || !('IntersectionObserver' in window)) return;
+
+  // The frame belongs to the paper, not the film: show it once the film has
+  // scrolled away. (A direct check: IntersectionObserver misreports the film
+  // while it is inside the pinned container on portrait screens.)
+  var ticking = false;
+  function check() {
+    ticking = false;
+    frame.classList.toggle('is-visible', !media || media.getBoundingClientRect().bottom <= 0);
+  }
+  function queue() { if (!ticking) { ticking = true; requestAnimationFrame(check); } }
+  window.addEventListener('scroll', queue, { passive: true });
+  window.addEventListener('resize', queue);
+  check();
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      var item = frame.querySelector('[data-frame-item="' + e.target.__rtFrameItem + '"] .chalk');
+      if (item) chalkReady.then(function () { window.ChalkDraw.play(item, 2200); });
+    });
+  }, { rootMargin: '0px 0px -40% 0px' });
+
+  FRAME_ITEMS.forEach(function (it, i) {
+    var section = document.querySelector(it.section);
+    if (!section || !frame.querySelector('[data-frame-item="' + i + '"]')) return;
+    section.__rtFrameItem = i;
+    io.observe(section);
   });
 }
 
@@ -318,6 +502,105 @@ function initCue() {
 }
 
 // ─────────────────────────────────────────────────────────────────
+//  Guest name: copied from site/main.js. Changes from the original:
+//  the prompt waits for the intro to finish (was a fixed 2s), and the
+//  [GuestAllowance] debug logs are removed.
+// ─────────────────────────────────────────────────────────────────
+var guestName = '';
+
+function initGuestName() {
+  var raw = window.location.search;
+  var match = raw.match(/[?&]name=([^]*?)(?:&(?:utm_|gclid|fbclid|ref=)|$)/i);
+  if (!match) match = raw.match(/[?&]name=([^]*)/i);
+
+  if (match && match[1]) {
+    var decoded = decodeURIComponent(match[1].trim());
+    guestName = decoded.replace(/\s+$/, '');
+    $('#guestNameDisplay').html(escapeHtml(guestName));
+    $('#commentGuestName').val(guestName);
+    loadGuestAllowance(guestName);
+  } else {
+    // No name in URL — show Guest and display soft prompt once the intro has gone
+    guestName = 'Guest';
+    $('#guestNameDisplay').html('Guest');
+    $('#commentGuestName').val('Guest');
+    introDone.then(function () {
+      setTimeout(function() { $('#guestPrompt').fadeIn(400); }, 1200);
+    });
+  }
+
+  // Prompt input — show submit button once user starts typing
+  $('#guestPromptInput').on('input', function() {
+    var val = $(this).val().trim();
+    if (val.length > 0) {
+      $('#guestPromptSubmit').fadeIn(200);
+    } else {
+      $('#guestPromptSubmit').fadeOut(150);
+    }
+  });
+
+  // Submit: update URL and reload so name persists everywhere
+  $('#guestPromptSubmit').on('click', function() {
+    var val = $('#guestPromptInput').val().trim();
+    if (!val) return;
+    var encoded = encodeURIComponent(val);
+    var newURL = window.location.pathname + '?name=' + encoded;
+    window.location.href = newURL;
+  });
+
+  // Also submit on Enter key
+  $('#guestPromptInput').on('keydown', function(e) {
+    if (e.key === 'Enter') { $('#guestPromptSubmit').trigger('click'); }
+  });
+}
+
+function escapeHtml(str) {
+  return $('<div>').text(str).html();
+}
+
+function loadGuestAllowance(name) {
+  if (!name || name === 'Guest') return;
+  fetch(GUEST_NUMBERS_CSV_URL)
+    .then(function(r) { return r.text(); })
+    .then(function(csv) {
+      var rows = csv.trim().split('\n');
+      var allowance = null;
+      var nameLower = name.trim().toLowerCase();
+      for (var i = 0; i < rows.length; i++) {
+        var cols = rows[i].split(',');
+        if (cols.length >= 2) {
+          var sheetName = cols[0].replace(/^"+|"+$/g, '').trim().toLowerCase();
+          if (sheetName === nameLower) {
+            allowance = parseInt(cols[1].replace(/[^0-9]/g, ''), 10);
+            break;
+          }
+        }
+      }
+      if (allowance && allowance > 0) {
+        applyGuestAllowance(allowance);
+      }
+    })
+    .catch(function(err) { console.log('[GuestAllowance] Error:', err); });
+}
+
+function applyGuestAllowance(max) {
+  var selectEl = document.querySelector('.rsvpTotal');
+  if (!selectEl) return;
+  selectEl.innerHTML = '';
+  for (var i = 1; i <= max; i++) {
+    var opt = document.createElement('option');
+    opt.value = i;
+    opt.text = i;
+    if (i === Math.min(max, 2)) opt.selected = true;
+    selectEl.appendChild(opt);
+  }
+  if (max === 1) {
+    var box = selectEl.closest('.rsvpTotalBox');
+    if (box) box.style.display = 'none';
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
 //  BOOT
 // ─────────────────────────────────────────────────────────────────
 
@@ -330,6 +613,14 @@ function boot() {
   chalkReady.catch(function (err) { console.error('[invite]', err); });
   runIntro(chalkReady);
   initCue();
+  initFrame(chalkReady);
+  if (window.jQuery) {
+    $ = window.jQuery;
+    initGuestName();
+    // No name in the link: a neutral greeting rather than the guest-name style
+    if (guestName === 'Guest') $('#guestNameDisplay').addClass('rt-greet__name--anon');
+  }
+  else console.error('[invite] jQuery missing: guest name and forms disabled');
 
   // Motion only switches on if GSAP arrives promptly. If it's late, the page
   // stays static rather than pinning and jumping under a guest mid-read.
@@ -345,11 +636,14 @@ function boot() {
     ScrollTrigger.config({ ignoreMobileResize: true });
     html.classList.add('rt-motion');
     initHero(gsap, ScrollTrigger);
+    if (REDUCED || HERO.mode === 'still') drawChurchOnView(chalkReady);
+    initReveals(gsap, ScrollTrigger, window.SplitText);
     // Webfonts and images change layout; recompute trigger positions once settled.
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
     window.addEventListener('load', function () { ScrollTrigger.refresh(); });
   }).catch(function (err) {
     console.error('[invite] Motion disabled:', err);
+    drawChurchOnView(chalkReady);
   });
 }
 

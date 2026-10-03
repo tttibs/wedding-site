@@ -147,33 +147,20 @@ html.rt-lock body {
 .rt-hero.is-live .rt-hero__canvas {
   opacity: 1;
 }
-.rt-hero__peek {
-  display: none;
-}
 
+/* Portrait: a square film, with the invitation (pinned with it) beneath */
 @media (orientation: portrait) {
   .rt-hero {
-    display: flex;
-    flex-direction: column;
+    height: auto;
     background: var(--rt-paper);
   }
   .rt-hero__media {
     position: relative;
     inset: auto;
-    flex: none;
     width: 100%;
     aspect-ratio: 1 / 1;
-    max-height: 72%;
-  }
-  .rt-hero__media::after {
-    display: none;
-  }
-  .rt-hero__peek {
-    flex: 1;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 40px 16px 0;
+    max-height: 70vh;
+    max-height: 70svh;
   }
 }
 
@@ -203,16 +190,304 @@ html.rt-lock body {
   animation: rtCueBob 2s ease-in-out infinite;
 }
 @media (orientation: portrait) {
+  /* sit on the foot of the square film rather than the foot of the screen */
   .rt-cue {
-    color: var(--rt-ink);
-  }
-  .rt-cue svg {
-    filter: none;
+    bottom: 14px;
   }
 }
 @keyframes rtCueBob {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(6px); }
+}
+
+/* ── Section 2: the invitation ── */
+.rt-invitation {
+  position: relative;
+  z-index: 3;
+  padding: 72px 16px 96px;
+  background-color: var(--rt-paper);
+  isolation: isolate;
+}
+.rt-invitation::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--rt-tex-cotton);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.22;
+  pointer-events: none;
+}
+/* Landscape, once the film is pinned: the paper is laid over the end of the
+   film, rising from below like a sheet set down on the table */
+@media (orientation: landscape) {
+  html.rt-pinned .rt-invitation {
+    margin-top: -14vh;
+    box-shadow: 0 -22px 48px -18px rgba(26, 10, 10, 0.45);
+  }
+}
+@media (orientation: portrait) {
+  .rt-invitation {
+    padding: 28px 16px 72px;
+  }
+}
+
+.rt-card {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 56px 28px 48px;
+  background-color: #fbf8f0;
+  box-shadow:
+    0 1px 2px rgba(26, 10, 10, 0.06),
+    0 22px 44px -18px rgba(26, 10, 10, 0.22);
+  isolation: isolate;
+}
+.rt-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--rt-tex-fibre);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.45;
+  pointer-events: none;
+}
+@media (min-width: 640px) {
+  .rt-card { padding: 72px 64px 64px; }
+}
+
+.rt-greet__to {
+  font-family: var(--rt-serif);
+  font-size: 1.05em;
+  color: var(--rt-ink-soft);
+  line-height: 1;
+}
+.rt-greet__name {
+  margin-top: 10px;
+  min-height: 1.15em;
+  font-family: var(--rt-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.9rem, 1.4rem + 2.4vw, 2.6rem);
+  line-height: 1.15;
+  color: var(--rt-red);
+  text-wrap: balance;
+}
+.rt-greet__name--anon {
+  font-style: normal;
+  font-size: clamp(1.5rem, 1.2rem + 1.4vw, 1.9rem);
+  color: var(--rt-ink-soft);
+}
+.rt-greet__rule {
+  display: block;
+  width: 56px;
+  height: 1px;
+  margin: 22px auto 0;
+  background: rgba(118, 29, 29, 0.45);
+}
+
+.rt-church {
+  width: min(62%, 250px);
+  margin: 40px auto 36px;
+}
+
+.rt-inv__lead {
+  text-wrap: balance;
+  font-size: max(0.72em, 12.5px);
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--rt-ink-soft);
+}
+.rt-inv__names {
+  margin-top: 28px;
+  font-family: var(--rt-serif);
+  font-weight: 400;
+  font-size: clamp(2rem, 1.5rem + 2.6vw, 3rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--rt-ink);
+}
+.rt-inv__name {
+  display: block;
+}
+.rt-inv__amp {
+  display: block;
+  margin: 6px 0;
+  font-style: italic;
+  font-size: 0.7em;
+  color: var(--rt-red);
+}
+.rt-inv__ask {
+  margin-top: 26px;
+  text-wrap: balance;
+  font-family: var(--rt-serif);
+  font-style: italic;
+  font-size: 1.15em;
+  color: var(--rt-ink-soft);
+}
+
+.rt-details {
+  margin: 44px 0 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  border-top: 1px solid rgba(26, 10, 10, 0.14);
+}
+.rt-detail {
+  padding: 18px 8px;
+  border-bottom: 1px solid rgba(26, 10, 10, 0.14);
+}
+.rt-detail dt {
+  font-size: max(0.68em, 12px);
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--rt-red);
+}
+.rt-detail dd {
+  margin: 6px 0 0;
+  font-family: var(--rt-serif);
+  font-size: 1.1em;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+@media (min-width: 640px) {
+  .rt-details {
+    grid-template-columns: 1fr 1fr;
+  }
+  .rt-detail {
+    padding: 22px 16px;
+  }
+  .rt-detail:nth-child(odd) {
+    border-right: 1px solid rgba(26, 10, 10, 0.14);
+  }
+}
+
+.rt-nowrap {
+  white-space: nowrap;
+}
+
+/* SplitText line masks: keep descenders and italics from being clipped */
+#rt-invite .rt-line {
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+/* ── Fixed chalk frame ── */
+.rt-frame {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 900ms cubic-bezier(0.45, 0, 0.2, 1);
+}
+.rt-frame.is-visible {
+  opacity: 1;
+}
+.rt-frame__line {
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(26, 10, 10, 0.22);
+  /* paper margin outside the line, like a mount: content slides beneath it */
+  box-shadow: 0 0 0 15px var(--rt-paper);
+}
+.rt-frame__item {
+  position: absolute;
+}
+.rt-frame__item .chalk {
+  width: calc(var(--w) * 0.36px);
+}
+.rt-frame__item--tl { top: 34px; left: 34px; }
+.rt-frame__item--tr { top: 34px; right: 34px; }
+.rt-frame__item--bl { bottom: 34px; left: 34px; }
+.rt-frame__item--br { bottom: 34px; right: 34px; }
+.rt-frame__item--l  { top: 50%; left: 34px; transform: translateY(-50%); }
+.rt-frame__item--r  { top: 50%; right: 34px; transform: translateY(-50%); }
+/* Phones and narrow screens: just thin bands at the top and bottom */
+@media not all and (min-width: 1100px) and (orientation: landscape) {
+  .rt-frame__line {
+    inset: 10px 10px auto 10px;
+    height: calc(100% - 20px);
+    border-left: 0;
+    border-right: 0;
+  }
+  .rt-frame__item { display: none; }
+}
+
+/* ── Guest name prompt (no ?name= in the link) ── */
+#guestPrompt {
+  display: none;
+  position: fixed;
+  left: 50%;
+  bottom: max(28px, calc(env(safe-area-inset-bottom) + 16px));
+  z-index: 900;
+  width: min(320px, calc(100vw - 32px));
+  padding: 18px 22px 20px;
+  transform: translateX(-50%);
+  background: rgba(251, 248, 240, 0.98);
+  box-shadow: 0 1px 2px rgba(26, 10, 10, 0.08), 0 18px 40px -12px rgba(26, 10, 10, 0.3);
+  font-family: var(--rt-sans);
+  text-align: center;
+  color: var(--rt-ink);
+}
+#guestPrompt p {
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rt-ink-soft);
+}
+#guestPromptInput {
+  width: 100%;
+  padding: 4px 0 6px;
+  border: 0;
+  border-bottom: 1px solid rgba(118, 29, 29, 0.4);
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--rt-serif);
+  font-style: italic;
+  font-size: 18px;
+  text-align: center;
+  color: var(--rt-red);
+  outline: none;
+}
+#guestPromptInput::placeholder {
+  color: rgba(26, 10, 10, 0.4);
+}
+#guestPromptInput:focus-visible {
+  border-bottom-color: var(--rt-red);
+}
+#guestPromptSubmit {
+  display: none;
+  width: 100%;
+  margin-top: 14px;
+  padding: 11px 22px;
+  border: 0;
+  border-radius: 2px;
+  background: var(--rt-red);
+  color: var(--rt-paper);
+  font-family: var(--rt-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 160ms var(--rt-ease-out), background-color 200ms ease;
+}
+#guestPromptSubmit:active {
+  transform: scale(0.97);
+}
+#guestPromptSubmit:focus-visible {
+  outline: 2px solid var(--rt-red);
+  outline-offset: 3px;
+}
+@media (hover: hover) and (pointer: fine) {
+  #guestPromptSubmit:hover { background: #5a1515; }
 }
 
 /* ── Temporary placeholder for sections still to be built ── */
