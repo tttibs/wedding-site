@@ -275,6 +275,7 @@ function introMarkup() {
     '<div class="chalk rt-intro__mark" data-chalk-inline data-chalk-mode="manual" data-chalk-color="#1a0a0a" style="aspect-ratio:1066/1061">' +
       MONOGRAM_SVG +
     '</div>' +
+    '<p class="rt-intro__note">Just a moment while we set the table\u2026</p>' +
   '</div>';
 }
 
