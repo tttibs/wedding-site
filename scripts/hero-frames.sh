@@ -17,10 +17,10 @@ ffmpeg -v error -ss "$START" -i "$SRC" -an \
   -c:v libwebp -quality 46 -compression_level 6 -start_number 1 "$OUT/d/%03d.webp"
 
 # Mobile: every second frame, cropped to the left 5%-75% of the width
-# (keeps the tray and the wine glass that is lifted away), 960 tall
+# (keeps the tray and the wine glass that is lifted away), 1080 tall
 ffmpeg -v error -ss "$START" -i "$SRC" -an \
-  -vf "select='not(mod(n\,2))',crop=iw*0.70:ih:iw*0.05:0,scale=-2:960:flags=lanczos" \
-  -fps_mode vfr -c:v libwebp -quality 52 -compression_level 6 -start_number 1 "$OUT/m/%03d.webp"
+  -vf "select='not(mod(n\,2))',crop=iw*0.70:ih:iw*0.05:0,scale=-2:1080:flags=lanczos" \
+  -fps_mode vfr -c:v libwebp -quality 60 -compression_level 6 -start_number 1 "$OUT/m/%03d.webp"
 
 # Still: the first frame, for reduced motion and first paint
 ffmpeg -v error -y -ss "$START" -i "$SRC" -an -frames:v 1 \

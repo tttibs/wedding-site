@@ -57,6 +57,16 @@ html.rt-lock body {
   color: var(--rt-ink);
 }
 
+#rt-invite .rt-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 #rt-invite .chalk svg {
   display: block;
 }
@@ -140,6 +150,9 @@ html.rt-lock body {
 }
 .rt-cue.is-visible {
   opacity: 1;
+}
+.rt-cue:not(.is-visible) svg {
+  animation-play-state: paused;
 }
 .rt-cue svg {
   display: block;

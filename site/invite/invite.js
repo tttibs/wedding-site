@@ -21,7 +21,7 @@ window.__rtInviteInit = true;
 // ─────────────────────────────────────────────────────────────────
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261003a';
+var RT_VERSION = '20261003b';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -98,7 +98,8 @@ function introMarkup() {
 }
 
 function heroMarkup() {
-  return '<section class="rt-hero" aria-label="Rebecca and Thomas">' +
+  return '<section class="rt-hero" aria-labelledby="rt-title">' +
+    '<h1 class="rt-sr" id="rt-title">Rebecca Bonavia &amp; Thomas Bowers. Saturday 10 July 2027, Mdina, Malta.</h1>' +
     '<img class="rt-hero__still" src="' + v(BASE + HERO.still) + '" alt="A candlelit dinner table from above. On a silver tray, a lace card reads Rebecca and Thomas, 10th July 2027, Malta." fetchpriority="high" decoding="async">' +
     '<canvas class="rt-hero__canvas" aria-hidden="true"></canvas>' +
     '<div class="rt-cue" aria-hidden="true">' + CUE_SVG + '</div>' +
@@ -155,7 +156,13 @@ function runIntro(chalkReady) {
   // Never hold the page hostage: fade out even if the drawing fails to load.
   setTimeout(function () { finish(false); }, 4500);
 
+  // If the drawing can't start promptly (slow connection), skip straight to the hero.
+  var started = false;
+  setTimeout(function () { if (!started) finish(true); }, 1500);
+
   chalkReady.then(function () {
+    if (finished) return;
+    started = true;
     return window.ChalkDraw.play(mark, 1500);
   }).then(function () {
     setTimeout(function () { finish(false); }, 400);
@@ -223,12 +230,21 @@ function createHeroScrub(section) {
     if (!section.classList.contains('is-live')) section.classList.add('is-live');
   }
 
-  // Progressive preload: first and last frames, then every 16th, 8th, 4th, 2nd, all.
-  var queue = [0, n - 1], seen = {};
+  // Progressive preload: first and last frames, then every 16th and 8th straight
+  // away (enough to scrub coarsely); the rest (every 4th, 2nd, all) only once the
+  // guest starts scrolling, so a guest who just reads the top on roaming data
+  // doesn't download the whole film.
+  var queue = [0, n - 1], rest = [], seen = {};
   seen[0] = seen[n - 1] = true;
   [16, 8, 4, 2, 1].forEach(function (step) {
-    for (var i = 0; i < n; i += step) if (!seen[i]) { seen[i] = true; queue.push(i); }
+    for (var i = 0; i < n; i += step) if (!seen[i]) { seen[i] = true; (step >= 8 ? queue : rest).push(i); }
   });
+  function more() {
+    window.removeEventListener('scroll', more);
+    queue = queue.concat(rest); rest = [];
+    pump();
+  }
+  window.addEventListener('scroll', more, { passive: true });
   var active = 0;
   function pump() {
     while (active < 4 && queue.length) {
