@@ -10,6 +10,8 @@
  *   data-chalk-color="#111"   ink colour (any CSS colour)
  *   data-chalk-start="0.9"    starts drawing when the top reaches this point of the viewport (0 = top, 1 = bottom)
  *   data-chalk-end="0.45"     fully drawn when the middle reaches this point of the viewport
+ *   data-chalk-mode="manual"  ignore scroll; draw only when ChalkDraw.play(el, ms) is called
+ *                             (for fixed-position or horizontally moving drawings)
  */
 (function () {
   "use strict";
@@ -141,6 +143,7 @@
     return {
       el: el, segs: segs, total: total, k: 0,
       shown: 0, target: 0, done: false,
+      manual: el.getAttribute("data-chalk-mode") === "manual",
       startAt: num(el.getAttribute("data-chalk-start"), 0.9),
       endAt: num(el.getAttribute("data-chalk-end"), 0.45)
     };
@@ -181,6 +184,14 @@
     for (var i = 0; i < items.length; i++) {
       var it = items[i];
       if (!it.segs || it.done) continue;
+      if (it.manual) {
+        // time-driven: playAt is set by ChalkDraw.play()
+        if (it.playAt == null) continue;
+        var tp = Math.max(0, Math.min(1, (now - it.playAt) / it.playDur));
+        if (tp > it.shown) { it.shown = it.target = tp; reveal(it, tp); }
+        if (tp < 1) busy = true;
+        continue;
+      }
       it.target = Math.max(it.target, scrollTarget(it)); // never goes backwards
       if (it.shown < it.target) {
         // ease toward the scroll position so fast scrolls still look hand-drawn
@@ -209,8 +220,20 @@
       var built = build(el, src);
       for (var key in built) item[key] = built[key];
       if (reduceMotion || item.forceComplete) { item.target = item.shown = 1; reveal(item, 1); return; }
+      if (item.manual) { if (item.wantPlay) startPlay(item); return; }
       requestTick();
     }).catch(function (err) { console.error(err); });
+  }
+
+  function startPlay(item) {
+    item.playAt = performance.now();
+    requestTick();
+  }
+
+  function itemFor(el) {
+    var item = items.filter(function (x) { return x.el === el; })[0];
+    if (!item) { el.__chalk = true; item = { el: el }; items.push(item); }
+    return item;
   }
 
   function init(root) {
@@ -239,6 +262,18 @@
 
   window.ChalkDraw = {
     init: init,
+    // Draw a manual-mode container over ms milliseconds. Resolves when drawn.
+    play: function (el, ms) {
+      var item = itemFor(el);
+      item.playDur = Math.max(1, ms || 1500);
+      item.wantPlay = true;
+      return new Promise(function (resolve) {
+        if (item.done) { resolve(); return; }
+        el.addEventListener("chalk:drawn", function () { resolve(); }, { once: true });
+        if (item.segs) { if (item.playAt == null) startPlay(item); }
+        else prepare(item);
+      });
+    },
     // Instantly finish one container (or all if omitted)
     complete: function (el) {
       items.forEach(function (it) {
