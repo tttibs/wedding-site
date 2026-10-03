@@ -53,7 +53,7 @@ var GUIDE = {
 };
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261006a';
+var RT_VERSION = '20261006b';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -379,6 +379,7 @@ function rsvpMarkup() {
         '<button type="submit" class="button fill">Submit</button>' +
       '</form>' +
       '<div class="rt-seal" aria-hidden="true">' + SEAL_SVG + '</div>' +
+      '<p class="rt-sr" role="status" id="rsvpStatus"></p>' +
     '</div>' +
   '</section>';
 }
@@ -1053,7 +1054,10 @@ function applyGuestAllowance(max) {
 // ─────────────────────────────────────────────────────────────────
 //  RSVP + comments: copied from site/main.js ($(document).ready block).
 //  Changes from the original: on a successful RSVP the wax seal is
-//  pressed onto the card before the (unchanged) confirmation.
+//  pressed onto the card before the (unchanged) confirmation, which is
+//  also announced to screen readers; a reply already sending or sent
+//  can't be submitted again (Enter on the focused button used to send a
+//  second row); jQuery's slide animations are off with reduced motion.
 // ─────────────────────────────────────────────────────────────────
 
 // Presses the seal onto the RSVP card, then calls done. The confirmation
@@ -1085,6 +1089,7 @@ function playSeal(done) {
 }
 
 function initForms() {
+  if (REDUCED) $.fx.off = true;
 
   // ── RSVP form: show/hide guest count ──
   $('.rsvpForm .attend').on('change', function() {
@@ -1102,6 +1107,7 @@ function initForms() {
     e.preventDefault();
     var $form = $(this);
     var $btn  = $form.find('.button[type="submit"]');
+    if ($btn.hasClass('disabled') || $btn.hasClass('success')) return;
 
     var attending = $form.find('input[name="rsvp_status"]:checked').val();
     if (!attending) {
@@ -1131,6 +1137,7 @@ function initForms() {
     }).then(function() {
       playSeal(function() {
         $btn.removeClass('disabled').addClass('success').text('Thanks for letting us know!');
+        $('#rsvpStatus').text('Thank you, your RSVP has been sent.');
         $form.find('.formGuts').slideUp(300);
         if (!$form.find('.addCalendarBtn').length) {
           var $calBtn = $('<button type="button" class="button addCalendarBtn">Add to calendar</button>');
@@ -1280,7 +1287,8 @@ function appendComment(c) {
   ).css({
     '--r': ((seeded(key, 1) * 6) - 3).toFixed(2) + 'deg',
     '--dx': ((seeded(key, 2) * 20) - 10).toFixed(1) + 'px',
-    '--dy': ((seeded(key, 3) * 16) - 8).toFixed(1) + 'px'
+    '--dy': ((seeded(key, 3) * 16) - 8).toFixed(1) + 'px',
+    '--i': $('.commentsWrapper .comments .list').children().length % 3
   });
 
   $('.commentsWrapper .comments .list').append($card);
@@ -1327,14 +1335,17 @@ function showCalendarOptions() {
       + '&st=' + ev.start + '&et=' + ev.end + '&desc=' + desc + '&in_loc=' + loc;
     return '<div class="calGroup">' +
       '<p class="calGroup__title">' + $('<div>').text(ev.title.split(' | ')[0]).html() + '</p>' +
-      '<a class="calOption" href="' + googleURL + '" target="_blank" rel="noopener">Google</a>' +
-      '<a class="calOption" href="' + outlookURL + '" target="_blank" rel="noopener">Outlook</a>' +
-      '<a class="calOption" href="' + yahooURL + '" target="_blank" rel="noopener">Yahoo</a>' +
+      '<a class="calOption" href="' + googleURL + '" target="_blank" rel="noopener">Google<span class="rt-sr"> calendar: ' + $('<div>').text(ev.title).html() + '</span></a>' +
+      '<a class="calOption" href="' + outlookURL + '" target="_blank" rel="noopener">Outlook<span class="rt-sr"> calendar: ' + $('<div>').text(ev.title).html() + '</span></a>' +
+      '<a class="calOption" href="' + yahooURL + '" target="_blank" rel="noopener">Yahoo<span class="rt-sr"> calendar: ' + $('<div>').text(ev.title).html() + '</span></a>' +
     '</div>';
   }).join('');
 
-  var $options = $('<div class="calendarOptions" style="display:none;">' + groups +
-    '<a class="calOption icsDownload" href="#">Apple / Other (.ics), all three events</a>' +
+  // The single .ics file (all three events) first: one tap on an iPhone
+  var $options = $('<div class="calendarOptions" style="display:none;">' +
+    '<button type="button" class="button icsDownload">Apple / Other: all three events</button>' +
+    '<p class="calOptions__or">Or add each event</p>' +
+    groups +
     '</div>');
 
   $options.find('.icsDownload').on('click', function(e) {

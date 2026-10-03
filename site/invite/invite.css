@@ -781,7 +781,7 @@ html.rt-stage .rt-hero {
   #rt-invite .button:hover { background: var(--rt-ink); color: var(--rt-paper); }
   #rt-invite .button.fill:hover { background: #5a1515; border-color: #5a1515; }
 }
-#rt-invite .button.disabled { opacity: 0.45; pointer-events: none; }
+#rt-invite .button.disabled { opacity: 0.7; pointer-events: none; cursor: progress; }
 
 /* ── Section 5: RSVP ── */
 .rt-rsvp {
@@ -847,9 +847,10 @@ html.rt-stage .rt-hero {
   outline: 2px solid var(--rt-red);
   outline-offset: 3px;
 }
-/* Revealed by the existing jQuery slideDown once an answer is chosen */
-.rsvpForm .addTotal,
-.rsvpForm .button[type="submit"] {
+/* Revealed by the existing jQuery slideDown once an answer is chosen
+   (the #rt-invite prefix outranks the general .button display) */
+#rt-invite .rsvpForm .addTotal,
+#rt-invite .rsvpForm .button[type="submit"] {
   display: none;
 }
 .rsvpForm .addTotal {
@@ -912,10 +913,16 @@ html.rt-stage .rt-hero {
   resize: vertical;
 }
 .rsvpForm textarea::placeholder { color: rgba(26, 10, 10, 0.45); font-style: italic; }
+/* The confirmation reads as a line of the letter, not a button */
 #rt-invite .rsvpForm .button.success {
-  border-color: var(--rt-ink);
+  border-color: transparent;
   background: transparent;
   color: var(--rt-ink);
+  font-family: var(--rt-serif);
+  font-style: italic;
+  font-size: 1.2em;
+  letter-spacing: 0;
+  text-transform: none;
   pointer-events: none;
 }
 #rt-invite .addCalendarBtn {
@@ -939,20 +946,25 @@ html.rt-stage .rt-hero {
 }
 .calOption {
   display: inline-block;
-  margin: 2px 10px;
-  padding: 6px 2px;
-  font-size: 13px;
+  margin: 2px 8px;
+  padding: 10px 4px;
+  font-size: 14px;
   letter-spacing: 0.08em;
   color: var(--rt-red);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
-.calOption.icsDownload {
-  display: block;
-  margin-top: 8px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(26, 10, 10, 0.12);
+#rt-invite .icsDownload {
+  display: flex;
+  margin: 6px auto 0;
+}
+.calOptions__or {
+  margin: 16px 0 4px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--rt-ink-soft);
 }
 .calOption:focus-visible { outline: 2px solid var(--rt-red); outline-offset: 2px; }
 
@@ -1053,7 +1065,8 @@ html.rt-stage .rt-hero {
   transform: translate(var(--dx), calc(var(--dy) - 26px)) rotate(calc(var(--r) + 3deg));
 }
 .rt-note.is-settling {
-  transition: opacity 500ms ease, transform 750ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 400ms cubic-bezier(0.23, 1, 0.32, 1), transform 750ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--i, 0) * 70ms);
 }
 
 /* ── Section 7: a little guide to Malta ── */
@@ -1066,6 +1079,9 @@ html.rt-stage .rt-hero {
   z-index: 1;
   max-width: 980px;
   margin: 0 auto;
+}
+@media (max-width: 600px) {
+  .rt-guide__intro { text-align: left; }
 }
 .rt-guide__intro {
   max-width: 62ch;
@@ -1140,8 +1156,8 @@ html.rt-stage .rt-hero {
 .rt-place__map {
   display: inline-block;
   margin-top: 14px;
-  padding: 4px 0;
-  font-size: 12px;
+  padding: 6px 0;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -1202,8 +1218,8 @@ html.rt-stage .rt-hero {
   color: rgba(247, 243, 233, 0.85);
 }
 .rt-footer .footer-countdown {
-  font-size: 0.74em;
-  font-weight: 300;
+  font-size: 0.8em;
+  font-weight: 400;
   letter-spacing: 0.05em;
   color: rgba(247, 243, 233, 0.7);
 }
