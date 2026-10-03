@@ -370,6 +370,137 @@ html.rt-stage .rt-hero {
   margin-bottom: -0.08em;
 }
 
+/* ── Section headings (Order of events, The details, ...) ── */
+.rt-heading {
+  font-family: var(--rt-serif);
+  font-weight: 400;
+  font-size: clamp(1.6rem, 1.2rem + 1.8vw, 2.4rem);
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rt-ink);
+}
+
+/* ── Section 3: order of events ── */
+.rt-events {
+  position: relative;
+  padding: 96px 16px 112px;
+}
+.rt-events__inner {
+  position: relative;
+  z-index: 1;
+}
+.rt-events__track {
+  display: grid;
+  gap: 28px;
+  max-width: 460px;
+  margin: 48px auto 0;
+}
+@media (min-width: 1024px) and (orientation: landscape) {
+  .rt-events__track {
+    max-width: 980px;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.rt-chapter {
+  position: relative;
+  padding: 36px 30px 34px;
+  background-color: #fbf8f0;
+  box-shadow:
+    0 2px 4px rgba(26, 10, 10, 0.14),
+    0 12px 24px -10px rgba(26, 10, 10, 0.26),
+    0 30px 56px -24px rgba(26, 10, 10, 0.4);
+  text-align: center;
+  isolation: isolate;
+}
+.rt-chapter::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--rt-tex-fibre);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.45;
+  pointer-events: none;
+}
+.rt-chapter__art {
+  display: flex;
+  justify-content: center;
+  height: 112px;
+  margin-bottom: 22px;
+}
+.rt-chapter__art .chalk {
+  height: 100%;
+  width: auto;
+}
+.rt-chapter__part {
+  font-size: max(0.68em, 12px);
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--rt-red);
+}
+.rt-chapter__title {
+  margin: 10px 0 0;
+  font-family: var(--rt-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.6rem, 1.3rem + 1vw, 2rem);
+  line-height: 1.15;
+}
+.rt-chapter__when {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 14px;
+  font-size: 0.82em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--rt-ink-soft);
+}
+.rt-chapter__text {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(26, 10, 10, 0.12);
+  font-size: 0.94em;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+/* Horizontal chapters (wide screens, motion on): the section is pinned and
+   the cards slide in from the right, one at a time */
+.rt-events--h {
+  height: 100vh;
+  height: 100svh;
+  padding: 0;
+  overflow: hidden;
+}
+.rt-events--h .rt-events__inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 7vh 0 6vh;
+}
+.rt-events--h .rt-events__track {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  max-width: none;
+  width: max-content;
+  margin: 5vh 0 0;
+  /* start with every card off to the right; end with the last card in view */
+  padding: 0 8vw 0 100vw;
+}
+.rt-events--h .rt-chapter {
+  flex: none;
+  width: clamp(340px, 30vw, 420px);
+  max-height: 70vh;
+  overflow: hidden;
+}
+
 /* ── Chalk border: drawings and flourishes down the page edges ── */
 /* Not clipped: flourishes run on into the next section. The page itself
    (#rt-invite, overflow-x: clip) trims whatever passes the screen edge. */

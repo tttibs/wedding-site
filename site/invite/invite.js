@@ -23,7 +23,7 @@ var $ = window.jQuery;
 // ─────────────────────────────────────────────────────────────────
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261004b';
+var RT_VERSION = '20261004c';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -71,8 +71,30 @@ var BORDER = {
     { name: 'wine-bottle', w: 166, h: 408, side: 'r', top: 22, peek: 26, f: 1.6, rot: 8, phone: { bottom: 34, peek: 22, rot: 14 } },
     { name: 'carafe',      w: 274, h: 494, side: 'r', top: 63, peek: 30, f: 1.4, rot: -6 },
     { name: 'swirl-tall',  w: 220, h: 920, side: 'r', top: 96, peek: 50, f: 1.4, rot: 180, phone: { peek: 55 } }
+  ],
+  '#rt-events': [
+    { name: 'fork',        w: 214, h: 352, side: 'l', top: 18, peek: 32, f: 1.5, rot: -14 },
+    { name: 'swirl-short', w: 200, h: 600, side: 'l', top: 52, peek: 50, f: 1.4, rot: 176, phone: { peek: 55 } },
+    { name: 'spoon',       w: 246, h: 332, side: 'r', top: 42, peek: 30, f: 1.5, rot: 12 },
+    { name: 'swirl-curl',  w: 280, h: 180, side: 'r', top: 14, peek: 40, f: 1.4, rot: -10 }
   ]
 };
+
+// Section 3: the chapters of the weekend. Each has a small chalk drawing.
+var EVENTS = [
+  { part: 'Prologue', title: 'Welcome drinks', date: 'Thursday 8th July 2027', time: '3pm \u2013 5pm',
+    art: { name: 'wine-glass', w: 165, h: 397 },
+    text: 'Before the big day, join us for a relaxed welcome drink as the sun sets over Malta. Whether you\u2019ve just landed or have been exploring for days, it\u2019s the perfect chance to catch up, meet the people you\u2019ll be dancing with on Saturday, and raise a glass to the weekend ahead. Venue details to follow.' },
+  { part: 'Part I', title: 'The ceremony', date: 'Saturday 10th July 2027', time: '4pm \u2013 5pm',
+    art: { name: 'candlestick', w: 216, h: 374 },
+    text: 'Guests to arrive from 3.30pm for the ceremony commencing promptly at 4pm. Following the ceremony guests will be transported to the reception venue.' },
+  { part: 'Part II', title: 'The party', date: 'Saturday 10th July 2027', time: 'Till 2am',
+    art: { name: 'corkscrew', w: 236, h: 298 },
+    text: 'Cocktail hour, a sit down dinner and lots of dancing to follow.' },
+  { part: 'Epilogue', title: 'The debrief', date: 'Sunday 11th July', time: '12pm',
+    art: { name: 'lemon', w: 235, h: 227 },
+    text: 'Join us for a relaxing afternoon with aperols by our favourite beach shack in Malta.' }
+];
 
 // ─────────────────────────────────────────────────────────────────
 //  DATA: copied verbatim from site/main.js (save-the-date)
@@ -176,9 +198,31 @@ function invitationMarkup() {
   '</section>';
 }
 
-// Temporary: stands in for sections 3-8 until they are built.
+// Section 3. On wide screens the chapters slide in from the right while the
+// section is pinned (initEvents); otherwise they stack.
+function eventsMarkup() {
+  return '<section class="rt-events" id="rt-events" aria-labelledby="rt-events-title">' +
+    borderMarkup('#rt-events') +
+    '<div class="rt-events__inner">' +
+      '<h2 class="rt-heading" id="rt-events-title" data-reveal="lines">Order of events</h2>' +
+      '<div class="rt-events__track">' + EVENTS.map(function (e) {
+        return '<article class="rt-chapter">' +
+          '<div class="rt-chapter__art" aria-hidden="true">' +
+            chalkDiv(e.art.name, e.art.w + '/' + e.art.h, { extra: ' data-chalk-mode="manual"' }) +
+          '</div>' +
+          '<p class="rt-chapter__part">' + e.part + '</p>' +
+          '<h3 class="rt-chapter__title">' + e.title + '</h3>' +
+          '<p class="rt-chapter__when"><span>' + e.date + '</span><span>' + e.time + '</span></p>' +
+          '<p class="rt-chapter__text">' + e.text + '</p>' +
+        '</article>';
+      }).join('') + '</div>' +
+    '</div>' +
+  '</section>';
+}
+
+// Temporary: stands in for sections 4-8 until they are built.
 function nextMarkup() {
-  return '<section class="rt-next"><p class="rt-next__label">Sections 3-8 to follow</p></section>';
+  return '<section class="rt-next"><p class="rt-next__label">Sections 4-8 to follow</p></section>';
 }
 
 // The chalk border layer for one section (sits behind the section's content).
@@ -213,6 +257,7 @@ function render(mount) {
   mount.innerHTML = introMarkup() +
     '<main class="rt-main">' +
       '<div class="rt-opening">' + heroMarkup() + invitationMarkup() + '</div>' +
+      eventsMarkup() +
       nextMarkup() +
     '</main>' +
     promptMarkup();
@@ -417,8 +462,8 @@ function initStage(gsap, ScrollTrigger) {
 // Border drawings wait until the film has gone, then each draws once it is
 // entirely on screen (tall flourishes: once their top is near the top of the
 // screen). Several arriving together draw one after another.
-function initBorder(chalkReady) {
-  var items = [].slice.call(document.querySelectorAll('.rt-border .chalk')).filter(function (el) {
+function watchDrawings(chalkReady, selector) {
+  var items = [].slice.call(document.querySelectorAll(selector)).filter(function (el) {
     return el.getClientRects().length;   // skip drawings hidden at this screen size
   });
   if (!items.length) return;
@@ -467,6 +512,67 @@ function initChurch(chalkReady) {
     setTimeout(function () {
       chalkReady.then(function () { window.ChalkDraw.play(el, 2600); });
     }, 450);
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  EVENTS: chapter cards slide in from the right while the section is pinned
+// ─────────────────────────────────────────────────────────────────
+
+var CHALK_READY = Promise.resolve();
+function drawArt(card, delay) {
+  var el = card.querySelector('.rt-chapter__art .chalk');
+  if (!el) return;
+  setTimeout(function () {
+    CHALK_READY.then(function () { window.ChalkDraw.play(el, 2000); });
+  }, delay || 0);
+}
+
+// Wide, tall-enough landscape screens get the horizontal chapters
+function eventsHorizontal() {
+  return !IS_PORTRAIT && window.innerWidth >= 1024 && window.innerHeight >= 660;
+}
+
+function initEvents(gsap, ScrollTrigger) {
+  var section = document.getElementById('rt-events');
+  if (!section) return;
+  var cards = [].slice.call(section.querySelectorAll('.rt-chapter'));
+  if (REDUCED) return;   // static stack; chalk-draw shows the drawings complete
+
+  if (!eventsHorizontal()) {
+    // Stacked: each card rises into place, then its drawing is inked
+    cards.forEach(function (card) {
+      var rise = gsap.from(card, { y: 36, opacity: 0, duration: 1.1, ease: 'power3.out', paused: true });
+      onEnter(ScrollTrigger, card, 'top 82%', function () { rise.play(); drawArt(card, 350); });
+    });
+    return;
+  }
+
+  section.classList.add('rt-events--h');
+  var track = section.querySelector('.rt-events__track');
+  function travel() { return Math.max(0, track.scrollWidth - window.innerWidth); }
+  var pan = gsap.to(track, {
+    x: function () { return -travel(); },
+    ease: 'none',
+    scrollTrigger: {
+      trigger: section,
+      start: 'top top',
+      end: function () { return '+=' + travel(); },
+      pin: true,
+      scrub: 0.8,
+      invalidateOnRefresh: true
+    }
+  });
+  cards.forEach(function (card) {
+    // Each card is slid across the table: a slight turn that settles as it lands
+    gsap.fromTo(card, { rotation: 3.5, y: 18 }, {
+      rotation: 0, y: 0, ease: 'none',
+      scrollTrigger: { trigger: card, containerAnimation: pan, start: 'left right', end: 'left 55%', scrub: true }
+    });
+    ScrollTrigger.create({
+      trigger: card, containerAnimation: pan, start: 'left 70%', once: true,
+      onEnter: function () { cardShown.then(function () { drawArt(card, 150); }); }
+    });
   });
 }
 
@@ -649,7 +755,8 @@ function boot() {
   chalkReady.catch(function (err) { console.error('[invite]', err); });
   runIntro(chalkReady);
   initCue();
-  initBorder(chalkReady);
+  CHALK_READY = chalkReady;
+  watchDrawings(chalkReady, '.rt-border .chalk');
   initChurch(chalkReady);
   if (window.jQuery) {
     $ = window.jQuery;
@@ -673,6 +780,7 @@ function boot() {
     ScrollTrigger.config({ ignoreMobileResize: true });
     html.classList.add('rt-motion');
     initStage(gsap, ScrollTrigger);
+    initEvents(gsap, ScrollTrigger);
     initReveals(gsap, ScrollTrigger, window.SplitText);
     // Webfonts and images change layout; recompute trigger positions once settled.
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
@@ -680,6 +788,7 @@ function boot() {
   }).catch(function (err) {
     console.error('[invite] Motion disabled:', err);
     openStage(false);
+    watchDrawings(chalkReady, '.rt-chapter__art .chalk');
   });
 }
 
