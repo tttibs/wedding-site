@@ -1386,7 +1386,8 @@ html.rt-stage .rt-hero {
 /* ─────────────────────────────────────────────────────────────────
    Navigation: a folded note card in the left border (desktop) that
    unfolds into the list of sections; on phones a small round paper
-   button in the top-right corner that opens the same list.
+   button in the bottom-right corner, within thumb reach, that opens the
+   same list upwards.
    ───────────────────────────────────────────────────────────────── */
 .rt-nav {
   position: fixed;
@@ -1519,17 +1520,20 @@ html.rt-stage .rt-hero {
 }
 .rt-nav__extra:empty { display: none; }
 
-/* Phones and portrait tablets: a round button top-right; the list opens
-   as a card beneath it */
+/* Phones and portrait tablets: a round button bottom-right; the list opens
+   as a card above it */
 @media (orientation: portrait), (max-width: 1023px) {
   .rt-nav {
-    top: max(12px, env(safe-area-inset-top));
+    top: auto;
+    bottom: max(16px, calc(env(safe-area-inset-bottom) + 10px));
     left: auto;
-    right: 12px;
-    transform: translateY(-8px);
+    right: 16px;
+    transform: translateY(8px);
   }
   .rt-nav.is-visible { transform: none; }
   .rt-nav__card {
+    display: flex;
+    flex-direction: column-reverse;   /* button at the foot, list above */
     width: 46px;
     border-radius: 23px;
     transition: width 280ms var(--rt-ease-out), border-radius 280ms var(--rt-ease-out);
@@ -1551,7 +1555,14 @@ html.rt-stage .rt-hero {
     margin: 0;
     font-size: 17px;
   }
-  .rt-nav__list { min-width: 240px; }
+  .rt-nav__list {
+    min-width: 240px;
+    padding: 14px 16px 2px;
+    border-top: 0;
+    border-bottom: 1px solid var(--rt-rule);
+    transform: translateY(6px);
+  }
+  .rt-nav.is-open .rt-nav__list { transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .rt-nav, .rt-nav__panel, .rt-nav__list, .rt-nav__card, .rt-nav__icon i { transition: none !important; }
