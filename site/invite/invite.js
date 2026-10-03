@@ -24,36 +24,69 @@ var $ = window.jQuery;
 
 // ─────────────────────────────────────────────────────────────────
 //  A LITTLE GUIDE TO MALTA: edit the places here.
-//  Anything starting "[Placeholder]" is shown as a placeholder card.
-//  maps: a Google Maps link ('' hides the link).
+//  Each tab: id, label, an optional row of chalk drawings, and places.
+//  Each place: name, area, text, and map (what to search for on Google
+//  Maps; '' hides the link). Descriptions are drafts in the couple's voice.
 //  spotify: paste the playlist's share link, e.g.
 //  'https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M' ('' shows a placeholder).
 // ─────────────────────────────────────────────────────────────────
 var GUIDE = {
   intro: 'For those visiting Malta for the first time, we\u2019ve put together a little guide to some of our favourite places, things to do and spots to eat across the island. Malta is very special to us, and we hope you\u2019ll have some time to explore beyond the wedding celebrations - whether that\u2019s wandering through the old streets of Valletta, swimming in the sea, discovering a little village or lingering over a long lunch. These are a few of the places we love and the things we\u2019d recommend making time for while you\u2019re here. We hope you enjoy discovering Malta as much as we do.',
-  groups: [
-    { title: 'History & Culture', places: [
-      { name: '[Placeholder] Place one', text: '[Placeholder] A sentence or two on why we love it.', maps: '' },
-      { name: '[Placeholder] Place two', text: '[Placeholder] A sentence or two on why we love it.', maps: '' },
-      { name: '[Placeholder] Place three', text: '[Placeholder] A sentence or two on why we love it.', maps: '' }
+  tabs: [
+    { id: 'history', label: 'History & culture', places: [
+      { name: 'St John\u2019s Co-Cathedral', area: 'Valletta', map: 'St John\'s Co-Cathedral, Valletta, Malta',
+        text: 'Plain from the outside and astonishing within: every surface is gilded and carved, and Caravaggio\u2019s The Beheading of Saint John the Baptist hangs in the oratory.' },
+      { name: '\u0126al Saflieni Hypogeum', area: 'Paola', map: 'Hal Saflieni Hypogeum, Paola, Malta',
+        text: 'A 5,000-year-old underground burial site carved out of the rock. Only a few small groups go down each day, so book weeks ahead.' },
+      { name: 'Birgu and the Three Cities', area: 'Across the Grand Harbour', map: 'Fort St Angelo, Birgu, Malta',
+        text: 'Take a traditional d\u0121\u0127ajsa boat across the harbour from Valletta, wander the quiet lanes and finish at Fort St Angelo.' },
+      { name: '\u0126a\u0121ar Qim and Mnajdra', area: 'Qrendi', map: 'Hagar Qim Temples, Qrendi, Malta',
+        text: 'Two prehistoric temples on the cliffs above the sea, older than Stonehenge and lined up with the sunrise. Lovely late in the afternoon.' },
+      { name: '\u0120gantija Temples', area: 'Xag\u0127ra, Gozo', map: 'Ggantija Temples, Xaghra, Gozo, Malta',
+        text: 'Among the oldest free-standing buildings in the world, and a good reason to take the ferry over to Gozo for the day.' }
     ] },
-    { title: 'Beach hopping', places: [
-      { name: '[Placeholder] Beaches to come', text: '[Placeholder] TBC', maps: '' }
+    { id: 'beaches', label: 'Beach hopping', places: [
+      { name: 'G\u0127ajn Tuffie\u0127a', area: 'North-west Malta', map: 'Ghajn Tuffieha Bay, Malta',
+        text: 'A long flight of steps keeps the crowds away from this sandy bay beneath the cliffs. Our favourite for a swim.' },
+      { name: 'Golden Bay', area: 'North-west Malta', map: 'Golden Bay, Malta',
+        text: 'Easy, sandy and sheltered, with sunbeds and caf\u00e9s, and some of the best sunsets on the island.' },
+      { name: 'St Peter\u2019s Pool', area: 'Delimara', map: 'St Peter\'s Pool, Delimara, Malta',
+        text: 'Flat rock shelves and deep, clear water for jumping in. Go on a Sunday morning and stop at the Marsaxlokk fish market on the way.' },
+      { name: 'Blue Lagoon', area: 'Comino', map: 'Blue Lagoon, Comino, Malta',
+        text: 'The famous turquoise water between Comino and its islet. You now need a free booked pass to land, so plan ahead and go early.' },
+      { name: 'Ramla Bay', area: 'Gozo', map: 'Ramla Bay, Gozo, Malta',
+        text: 'Gozo\u2019s wide red-gold beach, unspoilt beneath the hills. Pair it with the \u0120gantija Temples for a day on Gozo.' }
     ] },
-    { title: 'Food, wine and music',
+    { id: 'food', label: 'Food, wine & music',
       art: [
         { name: 'bread-loaf', w: 457, h: 206 }, { name: 'cheese-wheel', w: 346, h: 226 },
         { name: 'fig', w: 177, h: 222 }, { name: 'tomato', w: 205, h: 188 }, { name: 'oyster', w: 253, h: 228 }
       ],
       places: [
-        { name: '[Placeholder] Places to eat and drink to come', text: '[Placeholder] TBC', maps: '' }
-      ] }
-  ],
-  spotify: { title: 'Our playlist', url: '' }
+        { name: 'Diar il-Bniet', area: 'Dingli', map: 'Diar il-Bniet, Dingli, Malta',
+          text: 'Farm-to-table Maltese cooking from the family\u2019s own fields, a short drive from the Dingli Cliffs at sunset.' },
+        { name: 'Trabuxu Wine Bar', area: 'Valletta', map: 'Trabuxu Wine Bar, Valletta, Malta',
+          text: 'Maltese wines and small plates in a centuries-old stone cellar. Perfect for a slow evening.' },
+        { name: 'Meridiana Wine Estate', area: 'Ta\u2019 Qali', map: 'Meridiana Wine Estate, Ta\' Qali, Malta',
+          text: 'A boutique vineyard in the middle of the island. Book a tasting with a platter of local cheese and bread (weekdays).' },
+        { name: 'The Bridge Bar', area: 'Valletta', map: 'The Bridge Bar, Valletta, Malta',
+          text: 'Live jazz on the steps of Valletta with the Grand Harbour below, on its weekly music nights.' },
+        { name: 'Nenu the Artisan Baker', area: 'Valletta', map: 'Nenu the Artisan Baker, Valletta, Malta',
+          text: 'Traditional Maltese baking, from proper ftira to timpana. A good, unhurried lunch in Valletta.' }
+      ] },
+    { id: 'playlist', label: 'Our playlist', spotify: '' }
+  ]
 };
 
+// ─────────────────────────────────────────────────────────────────
+//  BACKGROUND MUSIC: put the track in site/invite/music/ and set src to
+//  its file name, e.g. 'music/piano.mp3'. '' hides the music toggle.
+//  Off by default; guests turn it on from the navigation.
+// ─────────────────────────────────────────────────────────────────
+var MUSIC = { src: '', volume: 0.3 };
+
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261006b';
+var RT_VERSION = '20261007d';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -117,15 +150,14 @@ var BORDER = {
     { name: 'swirl-short', w: 200, h: 600, side: 'r', top: 36, peek: 50, f: 1.4, rot: 6,   phone: { peek: 64, top: 30 } }
   ],
   '#rt-notes': [
-    { name: 'swirl-tall',  w: 220, h: 920, side: 'l', top: 27, peek: 52, f: 1.4,           phone: { peek: 66, top: 20 } },
-    { name: 'pear',        w: 187, h: 287, side: 'r', top: 63, peek: 28, f: 1.5, rot: 8,   phone: { peek: 52, top: 56 } }
+    { name: 'swirl-tall',  w: 220, h: 920, side: 'l', top: 32, peek: 52, f: 1.4,           phone: { peek: 66, top: 34 } },
+    { name: 'pear',        w: 187, h: 287, side: 'r', top: 69, peek: 28, f: 1.5, rot: 8,   phone: { peek: 52, top: 66 } }
   ],
   '#rt-guide': [
-    { name: 'candelabra',  w: 306, h: 432, side: 'r', top: 15, peek: 30, f: 1.4, rot: 6,   phone: { peek: 56, top: 4 } },
-    { name: 'swirl-short', w: 200, h: 600, side: 'l', top: 39, peek: 50, f: 1.4, rot: 180, phone: { peek: 64, top: 30 } },
-    { name: 'wine-glass',  w: 165, h: 397, side: 'r', top: 52, peek: 26, f: 1.5, rot: -6,  phone: { peek: 50, top: 52 } },
-    { name: 'garlic',      w: 204, h: 258, side: 'l', top: 80, peek: 28, f: 1.5, rot: -8,  phone: { peek: 52, top: 74 } },
-    { name: 'swirl-curl',  w: 280, h: 180, side: 'r', top: 88, peek: 40, f: 1.4, rot: 10,  phone: { peek: 50, top: 92 } }
+    { name: 'candelabra',  w: 306, h: 432, side: 'r', top: 20, peek: 30, f: 1.4, rot: 6,   phone: { peek: 56, top: 8 } },
+    { name: 'swirl-short', w: 200, h: 600, side: 'l', top: 46, peek: 50, f: 1.4, rot: 180, phone: { peek: 64, top: 46 } },
+    { name: 'wine-glass',  w: 165, h: 397, side: 'r', top: 58, peek: 26, f: 1.5, rot: -6,  phone: { peek: 50, top: 74 } },
+    { name: 'swirl-curl',  w: 280, h: 180, side: 'l', top: 92, peek: 40, f: 1.4, rot: 10,  phone: { peek: 50, top: 94 } }
   ]
 };
 
@@ -264,7 +296,7 @@ function invitationMarkup() {
         '<span class="rt-greet__rule" aria-hidden="true"></span>' +
       '</div>' +
       // Drawn once the card has appeared (see initStage)
-      chalkDiv('church', '766/770', { cls: 'rt-church', extra: ' aria-hidden="true" data-chalk-mode="manual"' }) +
+      chalkDiv('church', '766/770', { cls: 'rt-church', color: 'rgba(247,243,233,0.92)', extra: ' aria-hidden="true" data-chalk-mode="manual"' }) +
       '<p class="rt-inv__lead" data-reveal="lines">Together with their families</p>' +
       '<h2 class="rt-inv__names" id="rt-invitation-names" data-reveal="lines">' +
         '<span class="rt-inv__name">Rebecca Bonavia</span> ' +
@@ -405,48 +437,54 @@ function notesMarkup() {
   '</section>';
 }
 
-function isPlaceholder(str) { return /^\[Placeholder\]/.test(str || ''); }
-
-// Section 7. Content comes from GUIDE at the top of this file.
+// Section 7: a tabbed guide (behaviour in initGuide). Content from GUIDE.
 function guideMarkup() {
-  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
-  var groups = GUIDE.groups.map(function (g) {
-    var art = (g.art || []).map(function (a) {
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+  var tabs = GUIDE.tabs.map(function (t, i) {
+    return '<button type="button" role="tab" class="rt-tabs__tab" id="rt-tab-' + t.id + '"' +
+      ' aria-selected="' + (i === 0) + '" aria-controls="rt-tabpanel-' + t.id + '" tabindex="' + (i === 0 ? 0 : -1) + '">' +
+      esc(t.label) + '</button>';
+  }).join('');
+  var panels = GUIDE.tabs.map(function (t, i) {
+    var body = '';
+    if (t.places) {
+      body = '<ul class="rt-guide__list">' + t.places.map(function (pl, k) {
+        return '<li class="rt-guide__place" style="--i:' + k + '">' +
+          '<div class="rt-guide__place-head">' +
+            '<h3 class="rt-guide__place-name">' + esc(pl.name) + '</h3>' +
+            '<p class="rt-guide__place-area">' + esc(pl.area) + '</p>' +
+          '</div>' +
+          '<div class="rt-guide__place-body">' +
+            '<p class="rt-guide__place-text">' + esc(pl.text) + '</p>' +
+            (pl.map ? '<a class="rt-guide__map" href="https://www.google.com/maps/search/?api=1&amp;query=' + encodeURIComponent(pl.map) + '" target="_blank" rel="noopener">View on Google Maps<span class="rt-sr">: ' + esc(pl.name) + ' (opens in a new tab)</span></a>' : '') +
+          '</div>' +
+        '</li>';
+      }).join('') + '</ul>';
+    } else {
+      var m = /open\.spotify\.com\/(playlist|album)\/([A-Za-z0-9]+)/.exec(t.spotify || '');
+      body = m
+        ? '<iframe class="rt-guide__spotify-frame" title="Our playlist on Spotify" loading="lazy" src="https://open.spotify.com/embed/' + m[1] + '/' + m[2] + '" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>'
+        : '<p class="rt-guide__placeholder">[Placeholder] Our Spotify playlist is coming soon.</p>';
+    }
+    var art = (t.art || []).map(function (a) {
       return '<div class="rt-guide__art-item" style="--w:' + a.w + '">' +
         chalkDiv(a.name, a.w + '/' + a.h, { extra: ' data-chalk-mode="manual"' }) + '</div>';
     }).join('');
-    var places = g.places.map(function (pl) {
-      var ph = isPlaceholder(pl.name);
-      return '<article class="rt-place' + (ph ? ' rt-place--placeholder' : '') + '">' +
-        '<h4 class="rt-place__name">' + esc(pl.name) + '</h4>' +
-        '<p class="rt-place__text">' + esc(pl.text) + '</p>' +
-        (pl.maps ? '<a class="rt-place__map" href="' + esc(pl.maps) + '" target="_blank" rel="noopener">View on Google Maps<span class="rt-sr"> (opens in a new tab)</span></a>' : '') +
-      '</article>';
-    }).join('');
-    return '<div class="rt-guide__group">' +
-      '<h3 class="rt-guide__group-title">' + esc(g.title) + '</h3>' +
+    return '<div class="rt-tabs__panel" role="tabpanel" id="rt-tabpanel-' + t.id + '" aria-labelledby="rt-tab-' + t.id + '" tabindex="0"' + (i === 0 ? '' : ' hidden') + '>' +
       (art ? '<div class="rt-guide__art" aria-hidden="true">' + art + '</div>' : '') +
-      '<div class="rt-guide__places' + (g.places.length === 1 ? ' rt-guide__places--one' : '') + '">' + places + '</div>' +
+      body +
     '</div>';
   }).join('');
-  var sp = GUIDE.spotify || {};
-  var embed = '';
-  var m = /open\.spotify\.com\/(playlist|album)\/([A-Za-z0-9]+)/.exec(sp.url || '');
-  if (m) {
-    embed = '<iframe class="rt-guide__spotify-frame" title="' + esc(sp.title || 'Spotify playlist') + '" loading="lazy" ' +
-      'src="https://open.spotify.com/embed/' + m[1] + '/' + m[2] + '" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>';
-  } else {
-    embed = '<div class="rt-place rt-place--placeholder rt-guide__spotify-placeholder"><p class="rt-place__text">[Placeholder] Spotify playlist to come</p></div>';
-  }
   return '<section class="rt-guide" id="rt-guide" aria-labelledby="rt-guide-title">' +
     borderMarkup('#rt-guide') +
     '<div class="rt-guide__inner">' +
       '<h2 class="rt-heading" id="rt-guide-title" data-reveal="lines">A little guide to Malta</h2>' +
       '<p class="rt-guide__intro" data-reveal="lines">' + esc(GUIDE.intro) + '</p>' +
-      groups +
-      '<div class="rt-guide__group rt-guide__spotify">' +
-        '<h3 class="rt-guide__group-title">' + esc(sp.title || 'Our playlist') + '</h3>' +
-        embed +
+      '<div class="rt-tabs">' +
+        '<div class="rt-tabs__list" role="tablist" aria-label="A little guide to Malta">' + tabs +
+          '<span class="rt-tabs__ink" aria-hidden="true"></span>' +
+        '</div>' +
+        '<div class="rt-tabs__sheet">' + panels + '</div>' +
       '</div>' +
     '</div>' +
   '</section>';
@@ -486,6 +524,37 @@ function borderMarkup(selector) {
   }).join('') + '</div>';
 }
 
+// Navigation: a folded note in the left border (desktop) or a small round
+// button top-right (phones) that opens a list of the sections.
+var NAV = [
+  { href: '#rt-invitation', label: 'The invitation' },
+  { href: '#rt-events', label: 'Order of events' },
+  { href: '#rt-faq', label: 'The details' },
+  { href: '#rt-rsvp', label: 'RSVP' },
+  { href: '#rt-notes', label: 'Notes' },
+  { href: '#rt-guide', label: 'A little guide to Malta' }
+];
+function navMarkup() {
+  return '<nav class="rt-nav" aria-label="Sections">' +
+    '<div class="rt-nav__card">' +
+      '<button type="button" class="rt-nav__toggle" aria-expanded="false" aria-controls="rt-nav-panel">' +
+        '<span class="rt-nav__kicker" aria-hidden="true">Contents</span>' +
+        '<span class="rt-nav__title">The weekend</span>' +
+        '<span class="rt-nav__icon" aria-hidden="true"><i></i><i></i><i></i></span>' +
+        '<span class="rt-sr">: open the list of sections</span>' +
+      '</button>' +
+      '<div class="rt-nav__panel" id="rt-nav-panel" inert>' +
+        '<div class="rt-nav__clip">' +
+          '<ol class="rt-nav__list">' + NAV.map(function (n) {
+            return '<li><a class="rt-nav__link" href="' + n.href + '">' + n.label + '</a></li>';
+          }).join('') + '</ol>' +
+          '<div class="rt-nav__extra"></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</nav>';
+}
+
 // Shown when there is no ?name= (logic in initGuestName, from main.js).
 function promptMarkup() {
   return '<div id="guestPrompt" role="region" aria-label="Your name">' +
@@ -497,6 +566,7 @@ function promptMarkup() {
 
 function render(mount) {
   mount.innerHTML = introMarkup() +
+    '<div class="rt-cloth" aria-hidden="true"></div>' +
     '<main class="rt-main">' +
       '<div class="rt-opening">' + heroMarkup() + invitationMarkup() + '</div>' +
       eventsMarkup() +
@@ -506,6 +576,7 @@ function render(mount) {
       guideMarkup() +
     '</main>' +
     footerMarkup() +
+    navMarkup() +
     promptMarkup();
   if (showIntro) html.classList.add('rt-lock');
 }
@@ -707,6 +778,7 @@ function initStage(gsap, ScrollTrigger) {
     // Stand-in for a frame sequence: a slow, scroll-driven drift over the still
     tl.fromTo(hero.querySelector('.rt-hero__still'), { scale: 1.02 }, { scale: 1.1, duration: HERO.viewports, ease: 'none' });
   }
+  stageControl = function () { openStage(true); collapseStage(tl.scrollTrigger, tl, hero, ScrollTrigger); };
   tl.to(hero, { opacity: 0, duration: 0.6, ease: 'none' })
     .call(function () { openStage(true); })
     .to({}, { duration: 0.4 });
@@ -714,7 +786,9 @@ function initStage(gsap, ScrollTrigger) {
 
 // Removes the opening's pinned scroll distance and the film, keeping the page
 // exactly where it is on screen.
+var stageControl = null;   // set by initStage; lets navigation collapse it first
 function collapseStage(st, tl, hero, ScrollTrigger) {
+  stageControl = null;
   var distance = st.end - st.start;
   var y = window.pageYOffset;
   st.kill();
@@ -876,6 +950,201 @@ function initFaq() {
       if (to) { e.preventDefault(); to.focus(); }
     });
   });
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  GUIDE TABS: automatic activation; Arrow Left/Right, Home and End move
+//  between tabs. The new page settles in and a drawn underline slides to
+//  the chosen tab. Works without GSAP.
+// ─────────────────────────────────────────────────────────────────
+
+function initGuide() {
+  var list = document.querySelector('.rt-tabs__list');
+  if (!list) return;
+  var tabs = [].slice.call(list.querySelectorAll('[role="tab"]'));
+  var ink = list.querySelector('.rt-tabs__ink');
+  var drawn = {};
+
+  function moveInk(tab) {
+    if (!ink) return;
+    ink.style.transform = 'translateX(' + tab.offsetLeft + 'px) scaleX(' + tab.offsetWidth / 100 + ')';
+  }
+  function drawArt(panel) {
+    if (drawn[panel.id]) return;
+    drawn[panel.id] = true;
+    [].slice.call(panel.querySelectorAll('.rt-guide__art .chalk')).forEach(function (el, k) {
+      setTimeout(function () {
+        CHALK_READY.then(function () { window.ChalkDraw.play(el, 1600); });
+      }, 250 + k * 280);
+    });
+  }
+  function select(tab, focus) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.setAttribute('tabindex', on ? '0' : '-1');
+      var panel = document.getElementById(t.getAttribute('aria-controls'));
+      if (on) {
+        panel.hidden = false;
+        // restart the settle-in for the newly shown page
+        panel.classList.remove('is-entering');
+        void panel.offsetWidth;
+        panel.classList.add('is-entering');
+        drawArt(panel);
+      } else {
+        panel.hidden = true;
+      }
+    });
+    moveInk(tab);
+    if (focus) tab.focus();
+  }
+  tabs.forEach(function (tab, i) {
+    tab.addEventListener('click', function () { select(tab); });
+    tab.addEventListener('keydown', function (e) {
+      var to = null;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') to = tabs[(i + 1) % tabs.length];
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') to = tabs[(i - 1 + tabs.length) % tabs.length];
+      else if (e.key === 'Home') to = tabs[0];
+      else if (e.key === 'End') to = tabs[tabs.length - 1];
+      if (to) { e.preventDefault(); select(to, true); }
+    });
+  });
+  function current() { return tabs.filter(function (t) { return t.getAttribute('aria-selected') === 'true'; })[0]; }
+  moveInk(current());
+  window.addEventListener('resize', function () { moveInk(current()); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { moveInk(current()); });
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  MUSIC: a quiet loop, off until a guest turns it on (browsers block
+//  sound before a tap anyway). Fades in and out, pauses while the tab is
+//  hidden, and nothing downloads until it's first switched on. The choice
+//  is remembered for the visit and resumes on the next tap after a reload.
+// ─────────────────────────────────────────────────────────────────
+
+var MUSIC_KEY = 'rtMusicOn';
+function initMusic() {
+  var slot = document.querySelector('.rt-nav__extra');
+  if (!MUSIC.src || !slot) return;
+  slot.innerHTML = '<button type="button" class="rt-music" aria-pressed="false">' +
+    '<span class="rt-music__bars" aria-hidden="true"><i></i><i></i><i></i></span>' +
+    '<span class="rt-music__label">Music</span></button>';
+  var btn = slot.querySelector('.rt-music');
+  var audio = null, on = false, fadeTimer = null;
+
+  function fade(to, ms, done) {
+    clearInterval(fadeTimer);
+    var from = audio.volume, start = performance.now();
+    fadeTimer = setInterval(function () {
+      var t = Math.min(1, (performance.now() - start) / ms);
+      audio.volume = from + (to - from) * t;
+      if (t >= 1) { clearInterval(fadeTimer); if (done) done(); }
+    }, 40);
+  }
+  function play() {
+    if (!audio) {
+      audio = new Audio(v(BASE + MUSIC.src));
+      audio.loop = true;
+      audio.preload = 'auto';
+    }
+    audio.volume = 0;
+    var p = audio.play();
+    if (p && p.catch) p.catch(function () { setState(false); });
+    fade(MUSIC.volume, 2500);
+  }
+  function pause() {
+    if (!audio) return;
+    fade(0, 800, function () { audio.pause(); });
+  }
+  function setState(next) {
+    on = next;
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.classList.toggle('is-on', on);
+    try { window.sessionStorage.setItem(MUSIC_KEY, on ? '1' : '0'); } catch (e) {}
+  }
+  btn.addEventListener('click', function () {
+    if (on) { setState(false); pause(); } else { setState(true); play(); }
+  });
+  document.addEventListener('visibilitychange', function () {
+    if (!audio || !on) return;
+    if (document.hidden) audio.pause();
+    else play();
+  });
+  // Turned on earlier in this visit: resume on the guest's next tap
+  var wasOn = false;
+  try { wasOn = window.sessionStorage.getItem(MUSIC_KEY) === '1'; } catch (e) {}
+  if (wasOn) {
+    var resume = function (e) {
+      if (btn.contains(e.target)) return;
+      window.removeEventListener('pointerdown', resume);
+      setState(true); play();
+    };
+    window.addEventListener('pointerdown', resume);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  NAVIGATION
+// ─────────────────────────────────────────────────────────────────
+
+function initNav() {
+  var nav = document.querySelector('.rt-nav');
+  if (!nav) return;
+  var toggle = nav.querySelector('.rt-nav__toggle');
+  var panel = nav.querySelector('.rt-nav__panel');
+  var links = [].slice.call(nav.querySelectorAll('.rt-nav__link'));
+
+  // The note belongs to the paper, so it arrives once the film has gone
+  stageOpen.then(function () { nav.classList.add('is-visible'); });
+
+  function setOpen(open, focusBack) {
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    nav.classList.toggle('is-open', open);
+    if (open) { panel.removeAttribute('inert'); }
+    else {
+      panel.setAttribute('inert', '');
+      if (focusBack) toggle.focus();
+    }
+  }
+  toggle.addEventListener('click', function () {
+    setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && nav.classList.contains('is-open')) setOpen(false, true);
+  });
+  document.addEventListener('click', function (e) {
+    if (nav.classList.contains('is-open') && !nav.contains(e.target)) setOpen(false);
+  });
+
+  links.forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var target = document.querySelector(a.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      setOpen(false);
+      // Jumping past the opening: retire the film first so positions are final
+      if (stageControl) stageControl();
+      var y = target.getBoundingClientRect().top + window.pageYOffset - 8;
+      window.scrollTo({ top: Math.max(0, y), behavior: REDUCED ? 'auto' : 'smooth' });
+      // Move focus to the section (for keyboard and screen-reader users)
+      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+      setTimeout(function () { target.focus({ preventScroll: true }); }, REDUCED ? 0 : 700);
+    });
+  });
+
+  // Mark the section currently in view
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        links.forEach(function (a) {
+          if (a.getAttribute('href') === '#' + en.target.id) a.setAttribute('aria-current', 'true');
+          else a.removeAttribute('aria-current');
+        });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    NAV.forEach(function (n) { var el = document.querySelector(n.href); if (el) io.observe(el); });
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -1420,9 +1689,12 @@ function boot() {
   watchDrawings(chalkReady, '.rt-border .chalk');
   initChurch(chalkReady);
   initFaq();
+  initNav();
+  initMusic();
+  initGuide();
   updateCountdown();
   setInterval(updateCountdown, 1000);
-  watchDrawings(chalkReady, '.rt-guide__art .chalk, .rt-footer__mark .chalk');
+  watchDrawings(chalkReady, '.rt-footer__mark .chalk');
 
   if (window.jQuery) {
     $ = window.jQuery;
