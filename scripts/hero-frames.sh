@@ -17,17 +17,16 @@ ffmpeg -v error -ss "$START" -i "$SRC" -an \
   -vf "scale=1728:-2:flags=lanczos" \
   -c:v libwebp -quality 66 -compression_level 6 -start_number 1 "$OUT/d/%03d.webp"
 
-# Mobile (portrait screens): every second frame, cropped to a square that
-# holds the tray and the wine glass that is lifted away, 1200x1200
+# Mobile (portrait screens): every second frame, a centred square crop, 1200x1200
 ffmpeg -v error -ss "$START" -i "$SRC" -an \
-  -vf "select='not(mod(n\,2))',crop=ih:ih:iw*0.063:0,scale=1200:1200:flags=lanczos" \
+  -vf "select='not(mod(n\,2))',crop=ih:ih:(iw-ih)/2:0,scale=1200:1200:flags=lanczos" \
   -fps_mode vfr -c:v libwebp -quality 66 -compression_level 6 -start_number 1 "$OUT/m/%03d.webp"
 
 # Still: the first frame, for reduced motion and first paint
 ffmpeg -v error -y -ss "$START" -i "$SRC" -an -frames:v 1 \
   -vf "scale=1728:-2:flags=lanczos" -q:v 3 "$OUT/still.jpg"
 ffmpeg -v error -y -ss "$START" -i "$SRC" -an -frames:v 1 \
-  -vf "crop=ih:ih:iw*0.063:0,scale=1200:1200:flags=lanczos" -q:v 3 "$OUT/still-square.jpg"
+  -vf "crop=ih:ih:(iw-ih)/2:0,scale=1200:1200:flags=lanczos" -q:v 3 "$OUT/still-square.jpg"
 
 echo "desktop: $(ls "$OUT/d" | wc -l) frames, $(du -sh "$OUT/d" | cut -f1)"
 echo "mobile:  $(ls "$OUT/m" | wc -l) frames, $(du -sh "$OUT/m" | cut -f1)"

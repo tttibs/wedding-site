@@ -23,7 +23,7 @@ var $ = window.jQuery;
 // ─────────────────────────────────────────────────────────────────
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261004d';
+var RT_VERSION = '20261005a';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -58,25 +58,22 @@ var IS_PORTRAIT = !!(window.matchMedia && window.matchMedia(PORTRAIT_MQ).matches
 // drawing hidden past the screen edge; f = size factor; rot in degrees.
 // Flourishes use the same size factors as the drawings, so their chalk lines
 // are the same weight.
-// phone: also shown on phones (no margin). A flourish weaves along the edge
-// ({ peek }); a drawing sits in the space below the card ({ bottom: px from
-// the section's foot, peek, rot }).
+// phone: also shown on phones, peeking in from the edge beside the narrower
+// card ({ peek, top?, rot? } override the desktop values).
 // Add a block here as each section is built.
 var BORDER = {
   '#rt-invitation': [
-    { name: 'candelabra',  w: 306, h: 432, side: 'l', top: 4,  peek: 30, f: 1.6, rot: -6, phone: { bottom: 18, peek: 24, rot: -8 } },
-    { name: 'swirl-tall',  w: 220, h: 920, side: 'l', top: 36, peek: 52, f: 1.4, phone: { peek: 55 } },
-    { name: 'olive-sprig', w: 234, h: 236, side: 'l', top: 74, peek: 28, f: 1.5, rot: 16 },
-    { name: 'swirl-short', w: 200, h: 600, side: 'r', top: 0,  peek: 50, f: 1.4, rot: 4, phone: { peek: 55 } },
-    { name: 'wine-bottle', w: 166, h: 408, side: 'r', top: 22, peek: 26, f: 1.6, rot: 8, phone: { bottom: 34, peek: 22, rot: 14 } },
-    { name: 'carafe',      w: 274, h: 494, side: 'r', top: 63, peek: 30, f: 1.4, rot: -6 },
-    { name: 'swirl-tall',  w: 220, h: 920, side: 'r', top: 96, peek: 50, f: 1.4, rot: 180, phone: { peek: 55 } }
+    { name: 'candelabra',  w: 306, h: 432, side: 'l', top: 2,  peek: 30, f: 1.6, rot: -6,  phone: { peek: 56, top: 5 } },
+    { name: 'olive-sprig', w: 234, h: 236, side: 'l', top: 53, peek: 28, f: 1.5, rot: 16,  phone: { peek: 52, top: 42 } },
+    { name: 'swirl-short', w: 200, h: 600, side: 'l', top: 79, peek: 50, f: 1.4,           phone: { peek: 64, top: 66 } },
+    { name: 'wine-bottle', w: 166, h: 408, side: 'r', top: 4,  peek: 26, f: 1.6, rot: 8,   phone: { peek: 50, top: 14 } },
+    { name: 'carafe',      w: 274, h: 494, side: 'r', top: 49, peek: 30, f: 1.4, rot: -6,  phone: { peek: 56, top: 46 } },
+    { name: 'swirl-curl',  w: 280, h: 180, side: 'r', top: 101, peek: 40, f: 1.4, rot: -10, phone: { peek: 50, top: 90 } }
   ],
   '#rt-events': [
-    { name: 'fork',        w: 214, h: 352, side: 'l', top: 18, peek: 32, f: 1.5, rot: -14 },
-    { name: 'swirl-short', w: 200, h: 600, side: 'l', top: 52, peek: 50, f: 1.4, rot: 176, phone: { peek: 55 } },
-    { name: 'spoon',       w: 246, h: 332, side: 'r', top: 42, peek: 30, f: 1.5, rot: 12 },
-    { name: 'swirl-curl',  w: 280, h: 180, side: 'r', top: 14, peek: 40, f: 1.4, rot: -10 }
+    // On desktop this section is one screen tall (pinned), so it holds just two
+    { name: 'fork',        w: 214, h: 352, side: 'l', top: 64, peek: 32, f: 1.5, rot: -14 },
+    { name: 'swirl-short', w: 200, h: 600, side: 'r', top: 42, peek: 50, f: 1.4, rot: 176, phone: { peek: 64, top: 78 } }
   ]
 };
 
@@ -237,8 +234,9 @@ function borderMarkup(selector) {
     var ph = it.phone, cls = '';
     var style = 'top:' + it.top + '%;--peek:' + it.peek + ';--w:' + it.w + ';--f:' + it.f + ';--rot:' + (it.rot || 0) + 'deg';
     if (ph) {
-      cls = ph.bottom != null ? ' rt-border__item--phone-foot' : ' rt-border__item--phone-edge';
-      style += ';--ppeek:' + (ph.peek || 50) + ';--prot:' + (ph.rot || 0) + 'deg' + (ph.bottom != null ? ';--pb:' + ph.bottom : '');
+      cls = ' rt-border__item--phone';
+      style += ';--ppeek:' + (ph.peek || 60) + ';--prot:' + (ph.rot != null ? ph.rot : (it.rot || 0)) + 'deg' +
+        ';--ptop:' + (ph.top != null ? ph.top : it.top) + '%';
     }
     return '<div class="rt-border__item rt-border__item--' + it.side + cls + '" style="' + style + '">' +
       chalkDiv(it.name, it.w + '/' + it.h, { extra: ' data-chalk-mode="manual"' + (it.name.indexOf('swirl') === 0 ? ' data-swirl' : '') }) +
@@ -450,7 +448,11 @@ function initStage(gsap, ScrollTrigger) {
       pin: true,
       scrub: HERO.scrub,
       invalidateOnRefresh: true,
-      onRefresh: function () { if (scrub) scrub.resize(); }
+      onRefresh: function () { if (scrub) scrub.resize(); },
+      // Once the guest has scrolled on past the opening, it is done: the film
+      // shouldn't play back over the invitation when they scroll up again.
+      // (The scrub lags the scroll slightly, so the stage may not have opened yet.)
+      onLeave: function (self) { openStage(true); collapseStage(self, tl, hero, ScrollTrigger); }
     }
   });
   if (scrub) {
@@ -462,6 +464,19 @@ function initStage(gsap, ScrollTrigger) {
   tl.to(hero, { opacity: 0, duration: 0.6, ease: 'none' })
     .call(function () { openStage(true); })
     .to({}, { duration: 0.4 });
+}
+
+// Removes the opening's pinned scroll distance and the film, keeping the page
+// exactly where it is on screen.
+function collapseStage(st, tl, hero, ScrollTrigger) {
+  var distance = st.end - st.start;
+  var y = window.pageYOffset;
+  st.kill();
+  tl.kill();
+  hero.style.display = 'none';
+  html.classList.add('rt-stage-done');
+  window.scrollTo(0, Math.max(0, y - distance));
+  ScrollTrigger.refresh();
 }
 
 // Border drawings wait until the film has gone, then each draws once it is
@@ -533,9 +548,11 @@ function drawArt(card, delay) {
   }, delay || 0);
 }
 
-// Wide, tall-enough landscape screens get the horizontal chapters
+// The chapters slide in sideways on wide landscape screens and on phones
+// tall enough to hold a card; otherwise they stack.
 function eventsHorizontal() {
-  return !IS_PORTRAIT && window.innerWidth >= 1024 && window.innerHeight >= 720;
+  if (IS_PORTRAIT) return window.innerHeight >= 640;
+  return window.innerWidth >= 1024 && window.innerHeight >= 720;
 }
 
 function initEvents(gsap, ScrollTrigger) {

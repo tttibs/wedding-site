@@ -222,7 +222,14 @@ html.rt-stage .rt-hero {
 }
 @media (orientation: portrait) {
   .rt-invitation {
-    padding: 28px 16px 72px;
+    padding: 28px 10vw 72px;
+  }
+  .rt-invitation .rt-card {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+  .rt-inv__names {
+    font-size: clamp(1.7rem, 7.4vw, 2.4rem);
   }
 }
 
@@ -505,6 +512,37 @@ html.rt-stage .rt-hero {
   flex: none;
   width: clamp(340px, 30vw, 420px);
 }
+@media (orientation: portrait) {
+  .rt-events--h .rt-events__inner {
+    padding: 5vh 0 4vh;
+  }
+  .rt-events--h .rt-events__track {
+    gap: 22px;
+    margin-top: 3vh;
+    padding: 0 12vw 0 86vw;
+  }
+  .rt-events--h .rt-chapter {
+    width: 76vw;
+    max-width: 340px;
+    padding: 26px 22px 24px;
+  }
+  .rt-events--h .rt-chapter__art {
+    height: 84px;
+    margin-bottom: 14px;
+  }
+  .rt-events--h .rt-chapter__text {
+    font-size: 0.88em;
+    line-height: 1.6;
+    margin-top: 14px;
+    padding-top: 14px;
+  }
+}
+@media (orientation: portrait) {
+  .rt-events:not(.rt-events--h) {
+    padding-left: 10vw;
+    padding-right: 10vw;
+  }
+}
 
 /* ── Chalk border: drawings and flourishes down the page edges ── */
 /* Not clipped: flourishes run on into the next section. The page itself
@@ -529,25 +567,17 @@ html.rt-stage .rt-hero {
   transform: translateX(calc(var(--peek) * 1%)) rotate(var(--rot));
 }
 
-/* Phones and portrait tablets: no margin. Flourishes weave along the edges;
-   the larger drawings sit below the card, peeking in from the sides. */
+/* Phones and portrait tablets: the cards are narrower, leaving a border in
+   which a few drawings and flourishes peek in from the screen edges */
 @media (orientation: portrait), (max-width: 1023px) {
   .rt-border__item {
     display: none;
+    top: var(--ptop) !important;
     width: calc(var(--w) * var(--f) * 0.42px);
   }
-  .rt-border__item--phone-edge,
-  .rt-border__item--phone-foot { display: block; }
-  .rt-border__item--phone-foot {
-    top: auto !important;
-    bottom: calc(var(--pb) * 1px);
-    width: calc(var(--w) * var(--f) * 0.31px);
-  }
+  .rt-border__item--phone { display: block; }
   .rt-border__item--l { transform: translateX(calc(var(--ppeek) * -1%)) rotate(var(--prot)); }
   .rt-border__item--r { transform: translateX(calc(var(--ppeek) * 1%)) rotate(var(--prot)); }
-  .rt-invitation {
-    padding-bottom: 290px;
-  }
 }
 
 /* ── Guest name prompt (no ?name= in the link) ── */
