@@ -105,6 +105,7 @@ Add an **Embed** element where you want it and paste the matching line:
 | `data-chalk-color` | `#111` | Ink colour, any CSS colour |
 | `data-chalk-start` | `0.9` | Starts drawing when its top reaches this point of the screen (0 top → 1 bottom) |
 | `data-chalk-end` | `0.45` | Fully drawn when its middle reaches this point |
+| `data-chalk-mode` | (scroll) | `manual` ignores scroll; the drawing waits for `ChalkDraw.play(el, ms)` and then draws over `ms` milliseconds. For fixed-position drawings (intro, frame) and ones that move sideways |
 
 Behaviour:
 - Drawing follows scroll position but never goes backwards; once drawn it stays.
