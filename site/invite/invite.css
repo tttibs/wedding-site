@@ -14,7 +14,6 @@
   --rt-sans: "Montserrat", Helvetica, Arial, sans-serif;
   --rt-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --rt-tex-cotton: url("https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a31ae67aacd01f62852319_tx_bg_heavy-cotton.png");
-  --rt-tex-cloth: url("https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a1c1eb3d0433641a8578c7_AdobeStock_284123015.jpeg");
   --rt-tex-fibre: url("https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a038bf6dc4a990a9424663_tx_card_fiber-02%20(1).png");
 }
 
@@ -48,7 +47,8 @@ html.rt-lock body {
   box-sizing: border-box;
 }
 
-#rt-invite :where(h1, h2, h3, h4, p, figure, ul, ol) {
+/* zero specificity, so every class rule below can set its own spacing */
+:where(#rt-invite) :where(h1, h2, h3, h4, p, figure, ul, ol) {
   margin: 0;
   padding: 0;
 }
@@ -204,21 +204,21 @@ html.rt-lock body {
 /* ── Section 2: the invitation ── */
 .rt-invitation {
   position: relative;
-  z-index: 3;
   padding: 88px 16px 112px;
-  background-color: var(--rt-paper);
-  background-image: var(--rt-tex-cloth);
-  background-size: cover;
-  background-position: center;
-  isolation: isolate;
 }
-/* Landscape, once the film is pinned: the paper is laid over the end of the
-   film, rising from below like a sheet set down on the table */
-@media (orientation: landscape) {
-  html.rt-pinned .rt-invitation {
-    margin-top: -14vh;
-    box-shadow: 0 -22px 48px -18px rgba(26, 10, 10, 0.45);
-  }
+
+/* The opening stage (motion on): the film lies over the top of the
+   invitation, fades away to the paper, and the card is set down beneath */
+html.rt-stage .rt-opening {
+  position: relative;
+}
+html.rt-stage .rt-hero {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  pointer-events: none;
 }
 @media (orientation: portrait) {
   .rt-invitation {
@@ -371,45 +371,180 @@ html.rt-lock body {
   margin-bottom: -0.08em;
 }
 
-/* ── Chalk border: drawings and flourishes down the page margins ── */
+/* ── Section headings (Order of events, The details, ...) ── */
+.rt-heading {
+  font-family: var(--rt-serif);
+  font-weight: 400;
+  font-size: clamp(1.6rem, 1.2rem + 1.8vw, 2.4rem);
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rt-ink);
+}
+
+/* ── Section 3: order of events ── */
+.rt-events {
+  position: relative;
+  padding: 96px 16px 112px;
+}
+.rt-events__inner {
+  position: relative;
+  z-index: 1;
+}
+.rt-events__track {
+  display: grid;
+  gap: 28px;
+  max-width: 460px;
+  margin: 48px auto 0;
+}
+@media (min-width: 1024px) and (orientation: landscape) {
+  .rt-events__track {
+    max-width: 980px;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.rt-chapter {
+  position: relative;
+  padding: 36px 30px 34px;
+  background-color: #fbf8f0;
+  box-shadow:
+    0 2px 4px rgba(26, 10, 10, 0.14),
+    0 12px 24px -10px rgba(26, 10, 10, 0.26),
+    0 30px 56px -24px rgba(26, 10, 10, 0.4);
+  text-align: center;
+  isolation: isolate;
+}
+.rt-chapter::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--rt-tex-fibre);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.45;
+  pointer-events: none;
+}
+.rt-chapter__art {
+  display: flex;
+  justify-content: center;
+  height: 112px;
+  margin-bottom: 22px;
+}
+.rt-chapter__art .chalk {
+  height: 100%;
+  width: auto;
+}
+.rt-chapter__heading {
+  margin: 0;
+  font-weight: 400;
+}
+.rt-chapter__part {
+  display: block;
+  font-size: max(0.68em, 12px);
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--rt-red);
+}
+.rt-chapter__title {
+  display: block;
+  margin: 10px 0 0;
+  font-family: var(--rt-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.6rem, 1.3rem + 1vw, 2rem);
+  line-height: 1.15;
+}
+.rt-chapter__when {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 14px;
+  font-size: 0.9em;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--rt-ink-soft);
+}
+.rt-chapter__text {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(26, 10, 10, 0.12);
+  font-size: 0.94em;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+/* Horizontal chapters (wide screens, motion on): the section is pinned and
+   the cards slide in from the right, one at a time */
+.rt-events--h {
+  height: 100vh;
+  height: 100svh;
+  padding: 0;
+  overflow: hidden;
+}
+.rt-events--h .rt-events__inner {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 7vh 0 6vh;
+}
+.rt-events--h .rt-events__track {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  max-width: none;
+  width: max-content;
+  margin: 5vh 0 0;
+  /* start with the first card just showing at the right; end with the last in view */
+  padding: 0 8vw 0 88vw;
+}
+.rt-events--h .rt-chapter {
+  flex: none;
+  width: clamp(340px, 30vw, 420px);
+}
+
+/* ── Chalk border: drawings and flourishes down the page edges ── */
+/* Not clipped: flourishes run on into the next section. The page itself
+   (#rt-invite, overflow-x: clip) trims whatever passes the screen edge. */
 .rt-border {
   position: absolute;
   inset: 0;
   z-index: 0;
-  overflow: hidden;
   pointer-events: none;
 }
 .rt-border__item {
   position: absolute;
   /* native width x size factor x a scale that shrinks with the margin */
   width: calc(var(--w) * var(--f) * min(0.85px, (100vw - 640px) / 760));
-  transform: rotate(var(--rot));
 }
-.rt-border__item--l { left: calc(var(--x) * 1%); }
-.rt-border__item--r { right: calc(var(--x) * 1%); }
+.rt-border__item--l {
+  left: 0;
+  transform: translateX(calc(var(--peek) * -1%)) rotate(var(--rot));
+}
+.rt-border__item--r {
+  right: 0;
+  transform: translateX(calc(var(--peek) * 1%)) rotate(var(--rot));
+}
 
-/* Phones and portrait tablets: no margin. Swirls weave in and out of the
-   edges; the larger drawings sit below the card, peeking in from the sides. */
+/* Phones and portrait tablets: no margin. Flourishes weave along the edges;
+   the larger drawings sit below the card, peeking in from the sides. */
 @media (orientation: portrait), (max-width: 1023px) {
   .rt-border__item {
     display: none;
-    width: calc(var(--w) * var(--f) * 0.6px);
+    width: calc(var(--w) * var(--f) * 0.42px);
   }
   .rt-border__item--phone-edge,
   .rt-border__item--phone-foot { display: block; }
   .rt-border__item--phone-foot {
     top: auto !important;
     bottom: calc(var(--pb) * 1px);
-    width: calc(var(--w) * var(--f) * 0.5px);
+    width: calc(var(--w) * var(--f) * 0.31px);
   }
-  .rt-border__item--l {
-    left: 0;
-    transform: translateX(calc(var(--peek) * -1%)) rotate(var(--prot));
-  }
-  .rt-border__item--r {
-    right: 0;
-    transform: translateX(calc(var(--peek) * 1%)) rotate(var(--prot));
-  }
+  .rt-border__item--l { transform: translateX(calc(var(--ppeek) * -1%)) rotate(var(--prot)); }
+  .rt-border__item--r { transform: translateX(calc(var(--ppeek) * 1%)) rotate(var(--prot)); }
   .rt-invitation {
     padding-bottom: 290px;
   }
