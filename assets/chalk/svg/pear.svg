@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="575 83 187 287.1" width="187" height="287.1" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
-  <title>Pear</title>
-  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
-    <path stroke-width="8" d="M655 160 C630 165,630 215,620 240 C595 280,605 335,660 338 C715 340,730 285,705 245 C690 220,690 165,665 160"/>
-    <path stroke-width="8" d="M660 160 C662 140,668 125,680 115"/>
-    <path stroke-width="8" d="M668 138 C690 120,720 125,730 140 C710 150,688 148,668 138"/>
-  </g>
-</svg>

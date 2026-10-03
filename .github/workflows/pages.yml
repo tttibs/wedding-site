@@ -1,8 +1,8 @@
 # Publishes to GitHub Pages on every push to main. Only these are uploaded:
 #   site/*                    -> /            (main.css, main.js, invite/)
 #   preview.html              -> /preview.html
-#   assets/chalk/chalk-draw.js, assets/chalk/svg/ -> /illustrations/
-# CLAUDE.md, apps-script/, assets/hero/source/ and .claude/ are never served.
+#   illustrations/            -> /illustrations/  (the chalk package, unedited)
+# CLAUDE.md, apps-script/, assets/ and .claude/ are never served.
 # Requires Settings → Pages → Source: "GitHub Actions".
 name: Deploy site to GitHub Pages
 
@@ -32,14 +32,14 @@ jobs:
         run: |
           node --check site/main.js
           node --check site/invite/invite.js
-          node --check assets/chalk/chalk-draw.js
+          node --check site/invite/chalk-draw.js
+          node --check illustrations/chalk-draw.js
       - name: Assemble site
         run: |
-          mkdir -p _site/illustrations
+          mkdir -p _site
           cp -R site/. _site/
           cp preview.html _site/
-          cp assets/chalk/chalk-draw.js _site/illustrations/
-          cp -R assets/chalk/svg _site/illustrations/svg
+          cp -R illustrations _site/illustrations
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -35,10 +35,8 @@
     <path stroke-width="8" data-sync="1" d="M502 540 L502 412 L507 412 L507 402 L473 402 L473 412 L478 412 L478 540"/>
     <path stroke-width="8" d="M215 376 C245 376,245 422,215 422 C185 422,185 376,215 376"/>
     <path stroke-width="8" data-sync="1" d="M585 376 C555 376,555 422,585 422 C615 422,615 376,585 376"/>
-    <path stroke-width="7" d="M215 399 L215 385"/>
-    <path stroke-width="7" data-sync="1" d="M585 399 L585 385"/>
-    <path stroke-width="7" d="M215 399 L226 405"/>
-    <path stroke-width="7" data-sync="1" d="M585 399 L574 405"/>
+    <path stroke-width="7" d="M585 399 L585 385"/>
+    <path stroke-width="7" d="M585 399 L574 405"/>
     <path stroke-width="8" d="M375 538 L375 472 C375 437,425 437,425 472 L425 538"/>
     <path stroke-width="7" d="M400 446 L400 538"/>
     <path stroke-width="7" d="M375 492 L425 492"/>
