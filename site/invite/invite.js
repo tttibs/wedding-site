@@ -21,7 +21,7 @@ window.__rtInviteInit = true;
 // ─────────────────────────────────────────────────────────────────
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261003b';
+var RT_VERSION = '20261003c';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -36,20 +36,17 @@ var LIBS = {
 };
 
 // Hero scroll-scrub. Frames come from scripts/hero-frames.sh.
-// mode 'frames' scrubs the image sequence; 'still' shows still.jpg with a slow zoom.
+// mode 'frames' scrubs the image sequence; 'still' shows the still with a slow zoom.
+// Landscape screens get the full-bleed film; portrait screens get a square crop
+// (holding the tray and the glass) with the next section showing beneath it.
 var HERO = {
   mode: 'frames',
-  still: 'hero/still.jpg',
-  desktop: { dir: 'hero/d/', count: 145, cropX0: 0, cropW: 1 },
-  // mobile frames are cropped to 5%-75% of the source width
-  mobile:  { dir: 'hero/m/', count: 73, cropX0: 0.05, cropW: 0.70 },
-  // Horizontal focus (0-1 of the source film) across scrub progress. On narrow
-  // screens the crop follows the hand lifting the glass, then settles back on
-  // the tray. Wide screens show the whole table, so the clamp makes this a no-op.
-  focus: [[0, 0.50], [0.36, 0.50], [0.54, 0.35], [0.72, 0.36], [0.88, 0.50], [1, 0.50]],
+  desktop: { dir: 'hero/d/', count: 145, still: 'hero/still.jpg' },
+  square:  { dir: 'hero/m/', count: 73,  still: 'hero/still-square.jpg' },
   viewports: 3,   // pinned scroll distance
   scrub: 0.6      // seconds of catch-up: gives the scrub a little weight
 };
+var PORTRAIT_MQ = '(orientation: portrait)';   // keep in step with invite.css
 
 var REDUCED = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 var html = document.documentElement;
@@ -88,27 +85,42 @@ function markIntroSeen() { try { window.sessionStorage.setItem(INTRO_KEY, '1'); 
 
 var showIntro = !REDUCED && !introSeen();
 
-var CUE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+// Inlined (from assets/chalk/svg/monogram.svg) so the intro can start drawing
+// without waiting for a download.
+var MONOGRAM_SVG = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"11.4 32.9 1066.1 1061.1\" width=\"1066.1\" height=\"1061.1\" data-chalk=\"1\" data-step=\"5\" data-minw=\"0\" data-wave=\"38,13,95,52,19,7\" data-taper=\"0.45,40,0.35,55\" data-alpha=\"0.5,0.55,0.75\" data-speed=\"1.6\" data-overlap=\"0.85\"><title>R &amp; T monogram</title><g fill=\"none\" stroke=\"#111\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke-width=\"12\" d=\"M245 880 C200 830,170 760,160 690 C150 650,90 640,60 610 C35 580,50 520,80 480 C110 440,100 410,130 390 C170 360,250 330,330 300 C420 260,440 160,520 70 C580 60,640 120,700 140 C790 150,880 200,910 290 C930 350,910 410,940 440 C1010 450,1050 520,1040 590 C1030 650,970 680,990 730 C1010 790,960 850,880 875 C862 880,850 882,840 880\"/><path stroke-width=\"11\" d=\"M240 378 C320 350,410 320,440 250 C470 170,500 110,550 100 C590 95,598 150,568 160 C550 165,545 142,562 138\"/><path stroke-width=\"11\" d=\"M820 235 C880 270,910 330,895 375 C885 405,858 402,866 384\"/><path stroke-width=\"11\" d=\"M935 478 C990 490,1015 540,1005 590 C995 640,950 650,955 700 C960 760,920 810,860 830 C830 840,815 820,830 805 C840 797,852 805,848 815\"/><path stroke-width=\"11\" d=\"M185 400 C160 410,140 440,140 470 C140 500,100 510,105 560 C110 600,170 605,172 575 C173 560,155 558,152 570\"/><path stroke-width=\"11\" d=\"M208 682 C205 745,222 805,255 838 C282 862,318 835,312 800 C308 778,284 782,290 800\"/><path stroke-width=\"12\" d=\"M165 965 C160 935,210 930,235 955 C255 975,270 1010,290 1030 C310 1050,330 1055,360 1055 L770 1058 C800 1020,815 960,840 930 C860 915,890 920,888 945 C886 960,868 958,868 948\"/><path stroke-width=\"10\" d=\"M318 948 C330 940,342 960,340 990 C338 1000,345 1003,360 1003 L750 998 C770 960,780 920,800 910\"/><path stroke-width=\"10\" d=\"M418 612 C392 610,378 588,392 566 C410 538,452 548,446 576 C442 596,412 594,418 572 C428 532,470 488,530 484 C585 480,602 516,580 548 C560 576,512 582,494 570 C484 563,490 550,502 556\"/><path stroke-width=\"11\" d=\"M520 488 C516 560,506 640,486 700 C472 742,438 752,424 730 C412 710,436 696,448 712 C456 724,448 742,434 746\"/><path stroke-width=\"10\" d=\"M508 572 C540 596,546 654,560 698 C574 742,612 750,630 722 C642 702,628 684,612 694 C602 702,608 716,620 714\"/><path stroke-width=\"9\" d=\"M664 612 C658 594,632 594,634 614 C636 632,660 636,656 654 C652 672,626 674,626 656 C626 640,654 630,674 636\"/><path stroke-width=\"10\" d=\"M700 560 C668 566,650 540,664 520 C680 498,720 504,712 528 C706 546,682 540,690 522 C704 492,760 498,800 492 C834 486,852 470,846 452 C840 436,818 440,820 456 C822 468,836 470,842 462\"/><path stroke-width=\"11\" d=\"M770 496 C768 566,760 640,742 696 C728 740,694 752,678 730 C664 710,688 694,700 710 C710 724,700 742,684 744\"/></g></svg>";
+
+var CUE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="6 9 12 15 18 9"></polyline></svg>';
 
 function introMarkup() {
   if (!showIntro) return '';
   return '<div class="rt-intro" aria-hidden="true">' +
-    chalkDiv('monogram', '1066/1061', { cls: 'rt-intro__mark', extra: ' data-chalk-mode="manual"' }) +
+    '<div class="chalk rt-intro__mark" data-chalk-inline data-chalk-mode="manual" data-chalk-color="#1a0a0a" style="aspect-ratio:1066/1061">' +
+      MONOGRAM_SVG +
+    '</div>' +
   '</div>';
 }
 
 function heroMarkup() {
   return '<section class="rt-hero" aria-labelledby="rt-title">' +
     '<h1 class="rt-sr" id="rt-title">Rebecca Bonavia &amp; Thomas Bowers. Saturday 10 July 2027, Mdina, Malta.</h1>' +
-    '<img class="rt-hero__still" src="' + v(BASE + HERO.still) + '" alt="A candlelit dinner table from above. On a silver tray, a lace card reads Rebecca and Thomas, 10th July 2027, Malta." fetchpriority="high" decoding="async">' +
-    '<canvas class="rt-hero__canvas" aria-hidden="true"></canvas>' +
+    '<div class="rt-hero__media">' +
+      '<picture>' +
+        '<source media="' + PORTRAIT_MQ + '" srcset="' + v(BASE + HERO.square.still) + '">' +
+        '<img class="rt-hero__still" src="' + v(BASE + HERO.desktop.still) + '" alt="A candlelit dinner table from above. On a silver tray, a lace card reads Rebecca and Thomas, 10th July 2027, Malta." fetchpriority="high" decoding="async">' +
+      '</picture>' +
+      '<canvas class="rt-hero__canvas" aria-hidden="true"></canvas>' +
+    '</div>' +
+    // Portrait only: paper beneath the square film, where the next section begins.
+    '<div class="rt-hero__peek">' +
+      '<p class="rt-next__label">Next: the invitation</p>' +
+    '</div>' +
     '<div class="rt-cue" aria-hidden="true">' + CUE_SVG + '</div>' +
   '</section>';
 }
 
 // Temporary: stands in for sections 2-8 until they are built.
 function nextMarkup() {
-  return '<section class="rt-next"><p class="rt-next__label">Next: the invitation</p></section>';
+  return '<section class="rt-next"><p class="rt-next__label">Sections 2-8 to follow</p></section>';
 }
 
 function render(mount) {
@@ -117,7 +129,7 @@ function render(mount) {
 }
 
 // ─────────────────────────────────────────────────────────────────
-//  INTRO: monogram draws on paper, holds, fades to the hero (~2.5s)
+//  INTRO: monogram draws on paper, holds, fades to the hero (~4.5s)
 // ─────────────────────────────────────────────────────────────────
 
 var introDone = showIntro ? null : Promise.resolve();
@@ -141,7 +153,7 @@ function runIntro(chalkReady) {
     setTimeout(function () {
       if (el.parentNode) el.parentNode.removeChild(el);
       resolveDone();
-    }, fast ? 350 : 650);
+    }, fast ? 350 : 1050);
   }
   function skip() { finish(true); }
 
@@ -153,19 +165,20 @@ function runIntro(chalkReady) {
     });
   }, 300);
 
-  // Never hold the page hostage: fade out even if the drawing fails to load.
-  setTimeout(function () { finish(false); }, 4500);
+  // Never hold the page hostage: fade out even if something stalls.
+  setTimeout(function () { finish(false); }, 7500);
 
-  // If the drawing can't start promptly (slow connection), skip straight to the hero.
+  // The drawing is inline, so it only waits for chalk-draw.js. If that can't
+  // arrive promptly (very slow connection), go straight to the hero.
   var started = false;
-  setTimeout(function () { if (!started) finish(true); }, 1500);
+  setTimeout(function () { if (!started) finish(true); }, 3000);
 
   chalkReady.then(function () {
     if (finished) return;
     started = true;
-    return window.ChalkDraw.play(mark, 1500);
+    return window.ChalkDraw.play(mark, 2800);
   }).then(function () {
-    setTimeout(function () { finish(false); }, 400);
+    setTimeout(function () { finish(false); }, 800);
   }).catch(function () { finish(false); });
 }
 
@@ -173,33 +186,19 @@ function runIntro(chalkReady) {
 //  HERO: scroll-scrubbed frame sequence on a canvas
 // ─────────────────────────────────────────────────────────────────
 
-function smooth(t) { return t * t * (3 - 2 * t); }
-
-function focusAt(p) {
-  var k = HERO.focus;
-  for (var i = 1; i < k.length; i++) {
-    if (p <= k[i][0]) {
-      var a = k[i - 1], b = k[i];
-      var t = b[0] === a[0] ? 1 : (p - a[0]) / (b[0] - a[0]);
-      return a[1] + (b[1] - a[1]) * smooth(t);
-    }
-  }
-  return k[k.length - 1][1];
-}
-
 function pad3(n) { return (n < 10 ? '00' : n < 100 ? '0' : '') + n; }
 
 function createHeroScrub(section) {
   var canvas = section.querySelector('.rt-hero__canvas');
   var ctx = canvas.getContext('2d');
-  var narrow = window.matchMedia('(max-width: 768px), (orientation: portrait) and (max-width: 1024px)').matches;
-  var set = narrow ? HERO.mobile : HERO.desktop;
+  var portrait = window.matchMedia(PORTRAIT_MQ).matches;
+  var set = portrait ? HERO.square : HERO.desktop;
   var n = set.count;
   var frames = new Array(n);
-  var cur = 0, progress = 0, drawn = null, drawnFocus = -1;
+  var cur = 0, drawn = null;
 
   function size() {
-    var dpr = Math.min(window.devicePixelRatio || 1, narrow ? 1.5 : 2);
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
     if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; drawn = null; }
   }
@@ -216,17 +215,15 @@ function createHeroScrub(section) {
   function draw() {
     var img = nearest(cur);
     if (!img) return;
-    var f = focusAt(progress);
-    if (img === drawn && Math.abs(f - drawnFocus) < 0.0005) return;
+    if (img === drawn) return;
     var cw = canvas.width, ch = canvas.height;
     var iw = img.naturalWidth, ih = img.naturalHeight;
     var s = Math.max(cw / iw, ch / ih);
     var dw = iw * s, dh = ih * s;
-    var fx = (f - set.cropX0) / set.cropW;            // focus in this frame set's space
-    var x = Math.min(0, Math.max(cw - dw, cw / 2 - fx * dw));
+    var x = (cw - dw) / 2;
     var y = (ch - dh) / 2;
     ctx.drawImage(img, x, y, dw, dh);
-    drawn = img; drawnFocus = f;
+    drawn = img;
     if (!section.classList.contains('is-live')) section.classList.add('is-live');
   }
 
@@ -263,7 +260,6 @@ function createHeroScrub(section) {
 
   return {
     set: function (p) {
-      progress = p;
       cur = Math.round(p * (n - 1));
       draw();
     },
