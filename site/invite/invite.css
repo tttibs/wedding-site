@@ -1485,3 +1485,187 @@ html.rt-stage .rt-hero {
 .rt-rsvp__card .rt-seal {
   filter: drop-shadow(0 6px 8px rgba(26, 10, 10, 0.55)) drop-shadow(0 0 1px rgba(247, 243, 233, 0.6));
 }
+
+/* ─────────────────────────────────────────────────────────────────
+   Navigation: a folded note card in the left border (desktop) that
+   unfolds into the list of sections; on phones a small round paper
+   button in the top-right corner that opens the same list.
+   ───────────────────────────────────────────────────────────────── */
+.rt-nav {
+  position: fixed;
+  z-index: 800;
+  text-align: left;
+  top: 26px;
+  left: 26px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) rotate(-3deg);
+  transition: opacity 600ms ease, transform 700ms var(--rt-ease-out), visibility 0s 600ms;
+}
+.rt-nav.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: rotate(-3deg);
+  transition: opacity 600ms ease, transform 700ms var(--rt-ease-out), visibility 0s;
+}
+.rt-nav__card {
+  position: relative;
+  width: 176px;
+  background-color: #fbf8f0;
+  box-shadow:
+    0 1px 2px rgba(26, 10, 10, 0.14),
+    0 10px 22px -8px rgba(26, 10, 10, 0.34);
+  isolation: isolate;
+}
+.rt-nav__card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--rt-tex-fibre);
+  background-size: cover;
+  opacity: 0.45;
+  pointer-events: none;
+}
+.rt-nav__toggle {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  width: 100%;
+  padding: 14px 16px 15px;
+  border: 0;
+  background: none;
+  color: var(--rt-ink);
+  text-align: left;
+  cursor: pointer;
+}
+.rt-nav__toggle:focus-visible,
+.rt-nav__link:focus-visible {
+  outline: 2px solid var(--rt-focus);
+  outline-offset: 2px;
+}
+.rt-nav__kicker {
+  grid-column: 1;
+  font-family: var(--rt-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--rt-blue-ink);
+}
+.rt-nav__title {
+  grid-column: 1;
+  margin-top: 2px;
+  font-family: var(--rt-serif);
+  font-style: italic;
+  font-size: 19px;
+  line-height: 1.2;
+}
+.rt-nav__icon {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  position: relative;
+  width: 16px;
+  height: 12px;
+}
+.rt-nav__icon i {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  border-radius: 1px;
+  background: currentColor;
+  transition: transform 280ms var(--rt-ease-out), opacity 200ms ease;
+}
+.rt-nav__icon i:nth-child(1) { top: 0; }
+.rt-nav__icon i:nth-child(2) { top: 5px; width: 70%; }
+.rt-nav__icon i:nth-child(3) { top: 10px; }
+.rt-nav.is-open .rt-nav__icon i:nth-child(1) { transform: translateY(5px) rotate(45deg); }
+.rt-nav.is-open .rt-nav__icon i:nth-child(2) { opacity: 0; }
+.rt-nav.is-open .rt-nav__icon i:nth-child(3) { transform: translateY(-5px) rotate(-45deg); }
+
+/* The unfold, as in the details */
+.rt-nav__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 220ms var(--rt-ease-out);
+}
+.rt-nav.is-open .rt-nav__panel {
+  grid-template-rows: 1fr;
+  transition-duration: 300ms;
+}
+.rt-nav__clip {
+  min-height: 0;
+  overflow: hidden;
+}
+.rt-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 2px 16px 14px;
+  border-top: 1px solid rgba(26, 10, 10, 0.12);
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 160ms ease, transform 220ms var(--rt-ease-out);
+}
+.rt-nav.is-open .rt-nav__list {
+  opacity: 1;
+  transform: none;
+  transition: opacity 200ms 60ms ease, transform 280ms var(--rt-ease-out);
+}
+.rt-nav__link {
+  display: block;
+  padding: 9px 0;
+  font-family: var(--rt-sans);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--rt-ink);
+  text-decoration: none;
+  transition: color 200ms ease;
+}
+.rt-nav__link[aria-current="true"] {
+  color: var(--rt-blue-ink);
+  font-weight: 600;
+}
+@media (hover: hover) and (pointer: fine) {
+  .rt-nav__link:hover { color: var(--rt-blue-ink); }
+}
+.rt-nav__extra:empty { display: none; }
+
+/* Phones and portrait tablets: a round button top-right; the list opens
+   as a card beneath it */
+@media (orientation: portrait), (max-width: 1023px) {
+  .rt-nav {
+    top: max(12px, env(safe-area-inset-top));
+    left: auto;
+    right: 12px;
+    transform: translateY(-8px);
+  }
+  .rt-nav.is-visible { transform: none; }
+  .rt-nav__card {
+    width: 46px;
+    border-radius: 23px;
+    transition: width 280ms var(--rt-ease-out), border-radius 280ms var(--rt-ease-out);
+    overflow: hidden;
+  }
+  .rt-nav.is-open .rt-nav__card {
+    width: min(270px, calc(100vw - 24px));
+    border-radius: 4px;
+  }
+  .rt-nav__toggle {
+    height: 46px;
+    padding: 0 15px;
+  }
+  .rt-nav__kicker,
+  .rt-nav__title {
+    display: none;
+  }
+  .rt-nav.is-open .rt-nav__title {
+    display: block;
+    margin: 0;
+    font-size: 17px;
+  }
+  .rt-nav__list { min-width: 240px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rt-nav, .rt-nav__panel, .rt-nav__list, .rt-nav__card, .rt-nav__icon i { transition: none !important; }
+}

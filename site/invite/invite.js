@@ -53,7 +53,7 @@ var GUIDE = {
 };
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261007a';
+var RT_VERSION = '20261007b';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -486,6 +486,37 @@ function borderMarkup(selector) {
   }).join('') + '</div>';
 }
 
+// Navigation: a folded note in the left border (desktop) or a small round
+// button top-right (phones) that opens a list of the sections.
+var NAV = [
+  { href: '#rt-invitation', label: 'The invitation' },
+  { href: '#rt-events', label: 'Order of events' },
+  { href: '#rt-faq', label: 'The details' },
+  { href: '#rt-rsvp', label: 'RSVP' },
+  { href: '#rt-notes', label: 'Notes' },
+  { href: '#rt-guide', label: 'A little guide to Malta' }
+];
+function navMarkup() {
+  return '<nav class="rt-nav" aria-label="Sections">' +
+    '<div class="rt-nav__card">' +
+      '<button type="button" class="rt-nav__toggle" aria-expanded="false" aria-controls="rt-nav-panel">' +
+        '<span class="rt-nav__kicker" aria-hidden="true">Contents</span>' +
+        '<span class="rt-nav__title">The weekend</span>' +
+        '<span class="rt-nav__icon" aria-hidden="true"><i></i><i></i><i></i></span>' +
+        '<span class="rt-sr">: open the list of sections</span>' +
+      '</button>' +
+      '<div class="rt-nav__panel" id="rt-nav-panel" inert>' +
+        '<div class="rt-nav__clip">' +
+          '<ol class="rt-nav__list">' + NAV.map(function (n) {
+            return '<li><a class="rt-nav__link" href="' + n.href + '">' + n.label + '</a></li>';
+          }).join('') + '</ol>' +
+          '<div class="rt-nav__extra"></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</nav>';
+}
+
 // Shown when there is no ?name= (logic in initGuestName, from main.js).
 function promptMarkup() {
   return '<div id="guestPrompt" role="region" aria-label="Your name">' +
@@ -507,6 +538,7 @@ function render(mount) {
       guideMarkup() +
     '</main>' +
     footerMarkup() +
+    navMarkup() +
     promptMarkup();
   if (showIntro) html.classList.add('rt-lock');
 }
@@ -708,6 +740,7 @@ function initStage(gsap, ScrollTrigger) {
     // Stand-in for a frame sequence: a slow, scroll-driven drift over the still
     tl.fromTo(hero.querySelector('.rt-hero__still'), { scale: 1.02 }, { scale: 1.1, duration: HERO.viewports, ease: 'none' });
   }
+  stageControl = function () { openStage(true); collapseStage(tl.scrollTrigger, tl, hero, ScrollTrigger); };
   tl.to(hero, { opacity: 0, duration: 0.6, ease: 'none' })
     .call(function () { openStage(true); })
     .to({}, { duration: 0.4 });
@@ -715,7 +748,9 @@ function initStage(gsap, ScrollTrigger) {
 
 // Removes the opening's pinned scroll distance and the film, keeping the page
 // exactly where it is on screen.
+var stageControl = null;   // set by initStage; lets navigation collapse it first
 function collapseStage(st, tl, hero, ScrollTrigger) {
+  stageControl = null;
   var distance = st.end - st.start;
   var y = window.pageYOffset;
   st.kill();
@@ -877,6 +912,70 @@ function initFaq() {
       if (to) { e.preventDefault(); to.focus(); }
     });
   });
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  NAVIGATION
+// ─────────────────────────────────────────────────────────────────
+
+function initNav() {
+  var nav = document.querySelector('.rt-nav');
+  if (!nav) return;
+  var toggle = nav.querySelector('.rt-nav__toggle');
+  var panel = nav.querySelector('.rt-nav__panel');
+  var links = [].slice.call(nav.querySelectorAll('.rt-nav__link'));
+
+  // The note belongs to the paper, so it arrives once the film has gone
+  stageOpen.then(function () { nav.classList.add('is-visible'); });
+
+  function setOpen(open, focusBack) {
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    nav.classList.toggle('is-open', open);
+    if (open) { panel.removeAttribute('inert'); }
+    else {
+      panel.setAttribute('inert', '');
+      if (focusBack) toggle.focus();
+    }
+  }
+  toggle.addEventListener('click', function () {
+    setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && nav.classList.contains('is-open')) setOpen(false, true);
+  });
+  document.addEventListener('click', function (e) {
+    if (nav.classList.contains('is-open') && !nav.contains(e.target)) setOpen(false);
+  });
+
+  links.forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var target = document.querySelector(a.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      setOpen(false);
+      // Jumping past the opening: retire the film first so positions are final
+      if (stageControl) stageControl();
+      var y = target.getBoundingClientRect().top + window.pageYOffset - 8;
+      window.scrollTo({ top: Math.max(0, y), behavior: REDUCED ? 'auto' : 'smooth' });
+      // Move focus to the section (for keyboard and screen-reader users)
+      if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+      setTimeout(function () { target.focus({ preventScroll: true }); }, REDUCED ? 0 : 700);
+    });
+  });
+
+  // Mark the section currently in view
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        links.forEach(function (a) {
+          if (a.getAttribute('href') === '#' + en.target.id) a.setAttribute('aria-current', 'true');
+          else a.removeAttribute('aria-current');
+        });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    NAV.forEach(function (n) { var el = document.querySelector(n.href); if (el) io.observe(el); });
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -1421,6 +1520,7 @@ function boot() {
   watchDrawings(chalkReady, '.rt-border .chalk');
   initChurch(chalkReady);
   initFaq();
+  initNav();
   updateCountdown();
   setInterval(updateCountdown, 1000);
   watchDrawings(chalkReady, '.rt-guide__art .chalk, .rt-footer__mark .chalk');
