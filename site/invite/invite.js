@@ -78,8 +78,15 @@ var GUIDE = {
   ]
 };
 
+// ─────────────────────────────────────────────────────────────────
+//  BACKGROUND MUSIC: put the track in site/invite/music/ and set src to
+//  its file name, e.g. 'music/piano.mp3'. '' hides the music toggle.
+//  Off by default; guests turn it on from the navigation.
+// ─────────────────────────────────────────────────────────────────
+var MUSIC = { src: '', volume: 0.3 };
+
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261007c';
+var RT_VERSION = '20261007d';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -1009,6 +1016,74 @@ function initGuide() {
 }
 
 // ─────────────────────────────────────────────────────────────────
+//  MUSIC: a quiet loop, off until a guest turns it on (browsers block
+//  sound before a tap anyway). Fades in and out, pauses while the tab is
+//  hidden, and nothing downloads until it's first switched on. The choice
+//  is remembered for the visit and resumes on the next tap after a reload.
+// ─────────────────────────────────────────────────────────────────
+
+var MUSIC_KEY = 'rtMusicOn';
+function initMusic() {
+  var slot = document.querySelector('.rt-nav__extra');
+  if (!MUSIC.src || !slot) return;
+  slot.innerHTML = '<button type="button" class="rt-music" aria-pressed="false">' +
+    '<span class="rt-music__bars" aria-hidden="true"><i></i><i></i><i></i></span>' +
+    '<span class="rt-music__label">Music</span></button>';
+  var btn = slot.querySelector('.rt-music');
+  var audio = null, on = false, fadeTimer = null;
+
+  function fade(to, ms, done) {
+    clearInterval(fadeTimer);
+    var from = audio.volume, start = performance.now();
+    fadeTimer = setInterval(function () {
+      var t = Math.min(1, (performance.now() - start) / ms);
+      audio.volume = from + (to - from) * t;
+      if (t >= 1) { clearInterval(fadeTimer); if (done) done(); }
+    }, 40);
+  }
+  function play() {
+    if (!audio) {
+      audio = new Audio(v(BASE + MUSIC.src));
+      audio.loop = true;
+      audio.preload = 'auto';
+    }
+    audio.volume = 0;
+    var p = audio.play();
+    if (p && p.catch) p.catch(function () { setState(false); });
+    fade(MUSIC.volume, 2500);
+  }
+  function pause() {
+    if (!audio) return;
+    fade(0, 800, function () { audio.pause(); });
+  }
+  function setState(next) {
+    on = next;
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    btn.classList.toggle('is-on', on);
+    try { window.sessionStorage.setItem(MUSIC_KEY, on ? '1' : '0'); } catch (e) {}
+  }
+  btn.addEventListener('click', function () {
+    if (on) { setState(false); pause(); } else { setState(true); play(); }
+  });
+  document.addEventListener('visibilitychange', function () {
+    if (!audio || !on) return;
+    if (document.hidden) audio.pause();
+    else play();
+  });
+  // Turned on earlier in this visit: resume on the guest's next tap
+  var wasOn = false;
+  try { wasOn = window.sessionStorage.getItem(MUSIC_KEY) === '1'; } catch (e) {}
+  if (wasOn) {
+    var resume = function (e) {
+      if (btn.contains(e.target)) return;
+      window.removeEventListener('pointerdown', resume);
+      setState(true); play();
+    };
+    window.addEventListener('pointerdown', resume);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
 //  NAVIGATION
 // ─────────────────────────────────────────────────────────────────
 
@@ -1615,6 +1690,7 @@ function boot() {
   initChurch(chalkReady);
   initFaq();
   initNav();
+  initMusic();
   initGuide();
   updateCountdown();
   setInterval(updateCountdown, 1000);
