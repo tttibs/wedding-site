@@ -110,11 +110,13 @@ html.rt-lock body {
 }
 
 /* ── Hero ── */
-/* Landscape: full-bleed film. Portrait: square film on top, paper beneath. */
+/* Full-bleed film in both orientations (portrait uses its own tall frames) */
 .rt-hero {
   position: relative;
   height: 100vh;
-  height: 100svh;
+  /* the large viewport: the film still fills the screen once a phone's
+     browser bar slides away (while the bar shows, the foot sits behind it) */
+  height: 100lvh;
   overflow: hidden;
   background: var(--rt-ink);
 }
@@ -185,6 +187,10 @@ html.rt-lock body {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+/* Keep the cue above the browser bar: the film runs behind it */
+@supports (height: 1lvh) {
+  .rt-cue { bottom: calc(max(24px, calc(env(safe-area-inset-bottom) + 14px)) + (100lvh - 100svh)); }
 }
 .rt-cue__label {
   margin-top: -6px;
