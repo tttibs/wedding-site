@@ -22,8 +22,38 @@ var $ = window.jQuery;
 //  CONFIGURATION
 // ─────────────────────────────────────────────────────────────────
 
+// ─────────────────────────────────────────────────────────────────
+//  A LITTLE GUIDE TO MALTA: edit the places here.
+//  Anything starting "[Placeholder]" is shown as a placeholder card.
+//  maps: a Google Maps link ('' hides the link).
+//  spotify: paste the playlist's share link, e.g.
+//  'https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M' ('' shows a placeholder).
+// ─────────────────────────────────────────────────────────────────
+var GUIDE = {
+  intro: 'For those visiting Malta for the first time, we\u2019ve put together a little guide to some of our favourite places, things to do and spots to eat across the island. Malta is very special to us, and we hope you\u2019ll have some time to explore beyond the wedding celebrations - whether that\u2019s wandering through the old streets of Valletta, swimming in the sea, discovering a little village or lingering over a long lunch. These are a few of the places we love and the things we\u2019d recommend making time for while you\u2019re here. We hope you enjoy discovering Malta as much as we do.',
+  groups: [
+    { title: 'History & Culture', places: [
+      { name: '[Placeholder] Place one', text: '[Placeholder] A sentence or two on why we love it.', maps: '' },
+      { name: '[Placeholder] Place two', text: '[Placeholder] A sentence or two on why we love it.', maps: '' },
+      { name: '[Placeholder] Place three', text: '[Placeholder] A sentence or two on why we love it.', maps: '' }
+    ] },
+    { title: 'Beach hopping', places: [
+      { name: '[Placeholder] Beaches to come', text: '[Placeholder] TBC', maps: '' }
+    ] },
+    { title: 'Food, wine and music',
+      art: [
+        { name: 'bread-loaf', w: 457, h: 206 }, { name: 'cheese-wheel', w: 346, h: 226 },
+        { name: 'fig', w: 177, h: 222 }, { name: 'tomato', w: 205, h: 188 }, { name: 'oyster', w: 253, h: 228 }
+      ],
+      places: [
+        { name: '[Placeholder] Places to eat and drink to come', text: '[Placeholder] TBC', maps: '' }
+      ] }
+  ],
+  spotify: { title: 'Our playlist', url: '' }
+};
+
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261005c';
+var RT_VERSION = '20261006b';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -79,8 +109,39 @@ var BORDER = {
     // Short section (questions closed): placed low, clear of section 3's drawings
     { name: 'prickly-pear', w: 287, h: 381, side: 'l', top: 48, peek: 30, f: 1.4, rot: -6, phone: { peek: 56, top: 20 } },
     { name: 'cherries',     w: 204, h: 257, side: 'r', top: 62, peek: 28, f: 1.5, rot: 10, phone: { peek: 52, top: 52 } }
+  ],
+  // Sections 5 and 6 grow (form opening, notes loading): their border layers
+  // have a fixed height in invite.css, so these % values don't drift.
+  '#rt-rsvp': [
+    { name: 'spoon',       w: 246, h: 332, side: 'l', top: 40, peek: 30, f: 1.5, rot: 10,  phone: { peek: 56, top: 40 } },
+    { name: 'swirl-short', w: 200, h: 600, side: 'r', top: 36, peek: 50, f: 1.4, rot: 6,   phone: { peek: 64, top: 30 } }
+  ],
+  '#rt-notes': [
+    { name: 'swirl-tall',  w: 220, h: 920, side: 'l', top: 27, peek: 52, f: 1.4,           phone: { peek: 66, top: 20 } },
+    { name: 'pear',        w: 187, h: 287, side: 'r', top: 63, peek: 28, f: 1.5, rot: 8,   phone: { peek: 52, top: 56 } }
+  ],
+  '#rt-guide': [
+    { name: 'candelabra',  w: 306, h: 432, side: 'r', top: 15, peek: 30, f: 1.4, rot: 6,   phone: { peek: 56, top: 4 } },
+    { name: 'swirl-short', w: 200, h: 600, side: 'l', top: 39, peek: 50, f: 1.4, rot: 180, phone: { peek: 64, top: 30 } },
+    { name: 'wine-glass',  w: 165, h: 397, side: 'r', top: 52, peek: 26, f: 1.5, rot: -6,  phone: { peek: 50, top: 52 } },
+    { name: 'garlic',      w: 204, h: 258, side: 'l', top: 80, peek: 28, f: 1.5, rot: -8,  phone: { peek: 52, top: 74 } },
+    { name: 'swirl-curl',  w: 280, h: 180, side: 'r', top: 88, peek: 40, f: 1.4, rot: 10,  phone: { peek: 50, top: 92 } }
   ]
 };
+
+// Add to calendar: the weekend's three events. Times are UTC (Malta is UTC+2
+// in July): welcome drinks 3-5pm, the wedding 3.30pm-2am, the debrief 12-4pm.
+var CAL_EVENTS = [
+  { id: 'prologue', title: 'Welcome drinks | Rebecca & Thomas', start: '20270708T130000Z', end: '20270708T150000Z',
+    location: 'Malta (venue details to follow)',
+    desc: 'Welcome drinks before the wedding of Rebecca Bonavia & Thomas Bowers, 3pm to 5pm. Venue details to follow.' },
+  { id: 'wedding', title: 'The wedding of Rebecca & Thomas', start: '20270710T133000Z', end: '20270711T000000Z',
+    location: 'St. Paul\u2019s Cathedral, Mdina, Malta',
+    desc: 'Guests to arrive from 3.30pm for the ceremony at 4pm at St. Paul\u2019s Cathedral, Mdina. Transport to the reception venue follows the ceremony; cocktail hour, dinner and dancing till 2am. Black tie. Adults only.' },
+  { id: 'epilogue', title: 'The debrief | Rebecca & Thomas', start: '20270711T100000Z', end: '20270711T140000Z',
+    location: 'Malta (venue details to follow)',
+    desc: 'A relaxing afternoon with aperols by our favourite beach shack in Malta, from 12pm.' }
+];
 
 // Section 4: the details. Each answer is a list of paragraphs.
 var FAQ = [
@@ -121,6 +182,7 @@ var EVENTS = [
 // ─────────────────────────────────────────────────────────────────
 //  DATA: copied verbatim from site/main.js (save-the-date)
 // ─────────────────────────────────────────────────────────────────
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyW_tw6VFHiZNEz7iZcm4eTxI3d3mJMGReY7x-bNjx40S1WLgDdgYUe8lrx0vgHTVh0/exec';
 var COMMENTS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-k5rT2i2qzBScnQDDGulf-1xS3PO57YXrDIFdPqO5ArZhoJWmTbprKHJd5LVH4yq9YuTOu1XP5358/pub?gid=147883584&single=true&output=csv';
 var GUEST_NUMBERS_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ-k5rT2i2qzBScnQDDGulf-1xS3PO57YXrDIFdPqO5ArZhoJWmTbprKHJd5LVH4yq9YuTOu1XP5358/pub?gid=161076232&single=true&output=csv';
 
@@ -147,7 +209,7 @@ function withTimeout(promise, ms) {
 
 function chalkDiv(name, ratio, attrs) {
   return '<div class="chalk ' + (attrs && attrs.cls || '') + '" data-chalk-src="' + v(CHALK + 'svg/' + name + '.svg') + '"' +
-    ' data-chalk-color="#1a0a0a"' + (attrs && attrs.extra || '') +
+    ' data-chalk-color="' + (attrs && attrs.color || '#1a0a0a') + '"' + (attrs && attrs.extra || '') +
     ' style="aspect-ratio:' + ratio + (attrs && attrs.style ? ';' + attrs.style : '') + '"></div>';
 }
 
@@ -272,9 +334,136 @@ function faqMarkup() {
   '</section>';
 }
 
-// Temporary: stands in for sections 5-8 until they are built.
-function nextMarkup() {
-  return '<section class="rt-next"><p class="rt-next__label">Sections 5-8 to follow</p></section>';
+// The wax seal pressed onto the RSVP card once a reply is sent. Drawn in SVG:
+// an uneven pool of wax, a pressed ring and the couple's initials.
+var SEAL_SVG = '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">' +
+  '<defs>' +
+    '<radialGradient id="rtWax" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#9a2a26"/><stop offset="0.55" stop-color="#761d1d"/><stop offset="1" stop-color="#4f1111"/></radialGradient>' +
+    '<filter id="rtEmboss" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="0.4" flood-color="#c45a52" flood-opacity="0.7"/></filter>' +
+  '</defs>' +
+  '<path fill="url(#rtWax)" d="M61 4c9 1 13 7 21 9s15 2 20 9 2 14 5 21 9 11 8 19-8 11-10 19-1 15-8 20-14 2-21 5-10 9-18 9-11-6-19-8-15-1-20-8-2-14-5-21-9-11-8-19 8-11 10-19 1-15 8-20 14-2 21-5 9-11 16-11z"/>' +
+  '<circle cx="60" cy="60" r="38" fill="none" stroke="#4f1111" stroke-width="2" opacity="0.55"/>' +
+  '<circle cx="60" cy="60" r="35" fill="none" stroke="#a63a33" stroke-width="0.8" opacity="0.6"/>' +
+  '<text x="60" y="70" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-style="italic" font-size="30" fill="#5a1414" filter="url(#rtEmboss)">R&amp;T</text>' +
+'</svg>';
+
+// Section 5. Same form, field names and behaviour as the save-the-date.
+function rsvpMarkup() {
+  return '<section class="rt-rsvp" id="rt-rsvp" aria-labelledby="rt-rsvp-title">' +
+    borderMarkup('#rt-rsvp') +
+    '<div class="rt-rsvp__card">' +
+      '<h2 class="rt-heading" id="rt-rsvp-title" data-reveal="lines">Please RSVP</h2>' +
+      '<p class="rt-rsvp__by">Kindly respond by 17th December 2026</p>' +
+      '<form class="rsvpForm" method="post" action="preview">' +
+        '<div class="formGuts">' +
+          '<input type="hidden" name="id" id="guestId" value="">' +
+          '<input type="hidden" name="project_token" value="PATZ57Y8">' +
+          '<fieldset class="rt-rsvp__choice">' +
+            '<legend class="rt-sr">Will you attend?</legend>' +
+            '<input type="radio" name="rsvp_status" id="attendYes" class="attend yes" value="1">' +
+            '<label for="attendYes" class="button">Will Attend</label>' +
+            '<input type="radio" name="rsvp_status" id="attendNo" class="attend no" value="0">' +
+            '<label for="attendNo" class="button">Will Not Attend</label>' +
+          '</fieldset>' +
+          '<div class="addTotal">' +
+            '<div class="rsvpTotalBox">' +
+              '<h4 class="errorMessage"><label for="rsvpTotal">Total attending</label></h4>' +
+              '<select name="rsvp_total" class="rsvpTotal" id="rsvpTotal">' +
+                '<option value="1">1</option><option value="2" selected="">2</option><option value="3">3</option>' +
+              '</select>' +
+            '</div>' +
+            '<label class="rt-rsvp__note-label" for="noteToHost">A private note to us (optional)</label>' +
+            '<textarea name="note_to_host" id="noteToHost" placeholder="Leave a private message..." rows="2"></textarea>' +
+          '</div>' +
+        '</div>' +
+        '<button type="submit" class="button fill">Submit</button>' +
+      '</form>' +
+      '<div class="rt-seal" aria-hidden="true">' + SEAL_SVG + '</div>' +
+      '<p class="rt-sr" role="status" id="rsvpStatus"></p>' +
+    '</div>' +
+  '</section>';
+}
+
+// Section 6. The comment form and the wall it feeds (read from the sheet).
+function notesMarkup() {
+  return '<section class="rt-notes" id="rt-notes" aria-labelledby="rt-notes-title">' +
+    borderMarkup('#rt-notes') +
+    '<div class="comment">' +
+      '<form class="commentForm">' +
+        '<h2 class="rt-heading" id="rt-notes-title" data-reveal="lines">Leave us a note</h2>' +
+        '<input type="hidden" name="id" value="">' +
+        '<input type="hidden" name="project_token" value="PATZ57Y8">' +
+        '<input type="hidden" id="commentGuestName" name="guest_name" value="">' +
+        '<label class="rt-notes__label" for="rsvpComment">Your note will appear on the wall below</label>' +
+        '<textarea rows="3" name="rsvp_comment" class="rsvpComment" id="rsvpComment"></textarea>' +
+        '<button class="button">Post</button>' +
+      '</form>' +
+    '</div>' +
+    '<div class="commentsWrapper">' +
+      '<div class="comments" style="display:none;"><div class="list"></div></div>' +
+    '</div>' +
+  '</section>';
+}
+
+function isPlaceholder(str) { return /^\[Placeholder\]/.test(str || ''); }
+
+// Section 7. Content comes from GUIDE at the top of this file.
+function guideMarkup() {
+  function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+  var groups = GUIDE.groups.map(function (g) {
+    var art = (g.art || []).map(function (a) {
+      return '<div class="rt-guide__art-item" style="--w:' + a.w + '">' +
+        chalkDiv(a.name, a.w + '/' + a.h, { extra: ' data-chalk-mode="manual"' }) + '</div>';
+    }).join('');
+    var places = g.places.map(function (pl) {
+      var ph = isPlaceholder(pl.name);
+      return '<article class="rt-place' + (ph ? ' rt-place--placeholder' : '') + '">' +
+        '<h4 class="rt-place__name">' + esc(pl.name) + '</h4>' +
+        '<p class="rt-place__text">' + esc(pl.text) + '</p>' +
+        (pl.maps ? '<a class="rt-place__map" href="' + esc(pl.maps) + '" target="_blank" rel="noopener">View on Google Maps<span class="rt-sr"> (opens in a new tab)</span></a>' : '') +
+      '</article>';
+    }).join('');
+    return '<div class="rt-guide__group">' +
+      '<h3 class="rt-guide__group-title">' + esc(g.title) + '</h3>' +
+      (art ? '<div class="rt-guide__art" aria-hidden="true">' + art + '</div>' : '') +
+      '<div class="rt-guide__places' + (g.places.length === 1 ? ' rt-guide__places--one' : '') + '">' + places + '</div>' +
+    '</div>';
+  }).join('');
+  var sp = GUIDE.spotify || {};
+  var embed = '';
+  var m = /open\.spotify\.com\/(playlist|album)\/([A-Za-z0-9]+)/.exec(sp.url || '');
+  if (m) {
+    embed = '<iframe class="rt-guide__spotify-frame" title="' + esc(sp.title || 'Spotify playlist') + '" loading="lazy" ' +
+      'src="https://open.spotify.com/embed/' + m[1] + '/' + m[2] + '" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>';
+  } else {
+    embed = '<div class="rt-place rt-place--placeholder rt-guide__spotify-placeholder"><p class="rt-place__text">[Placeholder] Spotify playlist to come</p></div>';
+  }
+  return '<section class="rt-guide" id="rt-guide" aria-labelledby="rt-guide-title">' +
+    borderMarkup('#rt-guide') +
+    '<div class="rt-guide__inner">' +
+      '<h2 class="rt-heading" id="rt-guide-title" data-reveal="lines">A little guide to Malta</h2>' +
+      '<p class="rt-guide__intro" data-reveal="lines">' + esc(GUIDE.intro) + '</p>' +
+      groups +
+      '<div class="rt-guide__group rt-guide__spotify">' +
+        '<h3 class="rt-guide__group-title">' + esc(sp.title || 'Our playlist') + '</h3>' +
+        embed +
+      '</div>' +
+    '</div>' +
+  '</section>';
+}
+
+// Section 8. The save-the-date footer (names and countdown), with the
+// monogram drawn in as a sign-off.
+function footerMarkup() {
+  return '<footer class="rt-footer">' +
+    '<div class="rt-footer__mark">' +
+      chalkDiv('monogram', '1066/1061', { color: 'rgba(247,243,233,0.92)', extra: ' data-chalk-mode="manual" aria-hidden="true"' }) +
+    '</div>' +
+    '<div class="rt-footer__bar">' +
+      '<div class="footer-names">Rebecca Bonavia &amp; Thomas Bowers</div>' +
+      '<div class="footer-countdown">The countdown is on! <span id="weddingCountdown">...</span> seconds until our big day.</div>' +
+    '</div>' +
+  '</footer>';
 }
 
 // The chalk border layer for one section (sits behind the section's content).
@@ -312,8 +501,11 @@ function render(mount) {
       '<div class="rt-opening">' + heroMarkup() + invitationMarkup() + '</div>' +
       eventsMarkup() +
       faqMarkup() +
-      nextMarkup() +
+      rsvpMarkup() +
+      notesMarkup() +
+      guideMarkup() +
     '</main>' +
+    footerMarkup() +
     promptMarkup();
   if (showIntro) html.classList.add('rt-lock');
 }
@@ -860,6 +1052,358 @@ function applyGuestAllowance(max) {
 }
 
 // ─────────────────────────────────────────────────────────────────
+//  RSVP + comments: copied from site/main.js ($(document).ready block).
+//  Changes from the original: on a successful RSVP the wax seal is
+//  pressed onto the card before the (unchanged) confirmation, which is
+//  also announced to screen readers; a reply already sending or sent
+//  can't be submitted again (Enter on the focused button used to send a
+//  second row); jQuery's slide animations are off with reduced motion.
+// ─────────────────────────────────────────────────────────────────
+
+// Presses the seal onto the RSVP card, then calls done. The confirmation
+// never depends on this: done also runs on a timer if animation fails.
+function playSeal(done) {
+  var seal = document.querySelector('.rt-seal');
+  var card = document.querySelector('.rt-rsvp__card');
+  var called = false;
+  function finish() { if (!called) { called = true; done(); } }
+  setTimeout(finish, 700);
+  if (!seal) return;
+  seal.classList.add('is-on');
+  if (!seal.animate) return;
+  try {
+    if (REDUCED) {
+      seal.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, fill: 'both' });
+    } else {
+      // Pressed down from above: lands with a little weight, the card gives slightly
+      seal.animate([
+        { opacity: 0, transform: 'scale(1.35) rotate(-14deg)' },
+        { opacity: 1, transform: 'scale(1) rotate(-8deg)' }
+      ], { duration: 380, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', fill: 'both' });
+      if (card) card.animate([
+        { transform: 'translateY(0)' }, { transform: 'translateY(0)', offset: 0.6 },
+        { transform: 'translateY(3px)', offset: 0.75 }, { transform: 'translateY(0)' }
+      ], { duration: 520, easing: 'ease-out' });
+    }
+  } catch (e) { /* the confirmation still runs */ }
+}
+
+function initForms() {
+  if (REDUCED) $.fx.off = true;
+
+  // ── RSVP form: show/hide guest count ──
+  $('.rsvpForm .attend').on('change', function() {
+    if ($(this).hasClass('no')) {
+      $('.rsvpForm .rsvpTotalBox').slideUp(400);
+    } else {
+      $('.rsvpForm .rsvpTotalBox').slideDown(400);
+    }
+    $('.rsvpForm .addTotal').slideDown(400);
+    $('.rsvpForm .button[type="submit"]').slideDown(400);
+  });
+
+  // ── RSVP form: submit to Google Sheets ──
+  $('.rsvpForm').submit(function(e) {
+    e.preventDefault();
+    var $form = $(this);
+    var $btn  = $form.find('.button[type="submit"]');
+    if ($btn.hasClass('disabled') || $btn.hasClass('success')) return;
+
+    var attending = $form.find('input[name="rsvp_status"]:checked').val();
+    if (!attending) {
+      alert('Please select Will Attend or Will Not Attend.');
+      return;
+    }
+
+    $btn.addClass('disabled').text('Submitting…');
+
+    var payload = {
+      type:       'rsvp',
+      name:       guestName || 'Guest',
+      attending:  attending === '1' ? 'Yes' : 'No',
+      total:      $form.find('select[name="rsvp_total"]').val() || '1',
+      note:       $form.find('textarea[name="note_to_host"]').val() || '',
+      timestamp:  new Date().toISOString()
+    };
+
+    // Apps Script requires form-encoded data (not JSON) when called from a browser.
+    // We use no-cors mode because Apps Script doesn't return CORS headers on POST.
+    // This is fire-and-forget — we optimistically show success immediately.
+    fetch(APPS_SCRIPT_URL, {
+      method:   'POST',
+      mode:     'no-cors',
+      headers:  { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body:     'data=' + encodeURIComponent(JSON.stringify(payload))
+    }).then(function() {
+      playSeal(function() {
+        $btn.removeClass('disabled').addClass('success').text('Thanks for letting us know!');
+        $('#rsvpStatus').text('Thank you, your RSVP has been sent.');
+        $form.find('.formGuts').slideUp(300);
+        if (!$form.find('.addCalendarBtn').length) {
+          var $calBtn = $('<button type="button" class="button addCalendarBtn">Add to calendar</button>');
+          $calBtn.on('click', showCalendarOptions);
+          $btn.after($calBtn);
+        }
+      });
+    }).catch(function() {
+      $btn.removeClass('disabled').text('Try Again');
+      alert('Something went wrong — please try again.');
+    });
+  });
+
+  // ── Comment form: submit to Google Sheets + display inline ──
+  $('.commentForm').submit(function(e) {
+    e.preventDefault();
+    var $form    = $(this);
+    var $btn     = $form.find('.button');
+    var $textarea = $form.find('textarea[name="rsvp_comment"]');
+    var comment  = $textarea.val().trim();
+
+    if (!comment) {
+      alert('Please write a comment before submitting.');
+      return;
+    }
+
+    $btn.addClass('disabled').text('Submitting…');
+
+    var payload = {
+      type:      'comment',
+      name:      guestName || 'Guest',
+      comment:   comment,
+      timestamp: new Date().toISOString()
+    };
+
+    fetch(APPS_SCRIPT_URL, {
+      method:   'POST',
+      mode:     'no-cors',
+      headers:  { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body:     'data=' + encodeURIComponent(JSON.stringify(payload))
+    }).then(function() {
+        // Show the comment immediately on the page
+        appendComment({ comment: comment, name: guestName, timestamp: payload.timestamp });
+        $('.commentsWrapper .comments').slideDown(400);
+
+        $btn.removeClass('disabled').text('Comment Submitted ✓');
+        $textarea.val('');
+
+        setTimeout(function() {
+          $btn.text('Submit Another');
+          $btn.removeClass('disabled');
+        }, 3000);
+    }).catch(function() {
+        $btn.removeClass('disabled').text('Try Again');
+        alert('Something went wrong — please try again.');
+    });
+  });
+
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Notes wall: loadComments, parseCSVComments and parseCSVLine copied
+//  verbatim from site/main.js. appendComment now builds a paper card
+//  (same fields, same escaping), and cards settle in as they appear.
+// ─────────────────────────────────────────────────────────────────
+function loadComments() {
+  fetch(COMMENTS_CSV_URL)
+    .then(function(res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.text();
+    })
+    .then(function(csv) {
+      var comments = parseCSVComments(csv);
+      if (comments.length > 0) {
+        $('.commentsWrapper .comments .list').empty();
+        comments.forEach(function(c) { appendComment(c); });
+        $('.commentsWrapper .comments').show();
+      }
+    })
+    .catch(function(err) {
+      console.error('[Comments] Failed to load:', err);
+    });
+}
+
+function parseCSVComments(csv) {
+  var lines = csv.trim().split('\n');
+  var comments = [];
+  for (var i = 1; i < lines.length; i++) {
+    var line = lines[i].trim();
+    if (!line) continue;
+    var fields = parseCSVLine(line);
+    // Support both old format (Timestamp, Comment) and new (Timestamp, Name, Comment)
+    var hasName = fields.length >= 3;
+    var commentField = hasName ? fields[2] : fields[1];
+    var nameField    = hasName ? fields[1] : '';
+    if (commentField && commentField.replace(/^"|"$/g, '')) {
+      comments.push({
+        timestamp: fields[0].replace(/^"|"$/g, ''),
+        name:      nameField.replace(/^"|"$/g, '').replace(/""/g, '"'),
+        comment:   commentField.replace(/^"|"$/g, '').replace(/""/g, '"')
+      });
+    }
+  }
+  return comments.reverse();
+}
+
+function parseCSVLine(line) {
+  var fields = [];
+  var current = '';
+  var inQuotes = false;
+  for (var i = 0; i < line.length; i++) {
+    var ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i+1] === '"') { current += '"'; i++; }
+      else { inQuotes = !inQuotes; }
+    } else if (ch === ',' && !inQuotes) {
+      fields.push(current); current = '';
+    } else {
+      current += ch;
+    }
+  }
+  fields.push(current);
+  return fields;
+}
+
+// A stable pseudo-random number (0-1) from a string, so each note keeps
+// the same tilt and offset on every visit.
+function seeded(str, salt) {
+  var h = 2166136261 ^ salt;
+  for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return ((h >>> 0) % 10000) / 10000;
+}
+
+var noteObserver = null;
+function appendComment(c) {
+  var date = c.timestamp ? new Date(c.timestamp).toLocaleDateString('en-GB', {
+    day: 'numeric', month: 'long', year: 'numeric'
+  }) : '';
+
+  var nameStr = (c.name && c.name !== 'Guest') ? $('<div>').text(c.name).html() : '';
+
+  var key = (c.timestamp || '') + (c.comment || '');
+  var $card = $('<article class="rt-note">').html(
+    '<p class="rt-note__text">' + $('<div>').text(c.comment).html() + '</p>' +
+    (nameStr ? '<p class="rt-note__name">' + nameStr + '</p>' : '') +
+    (date ? '<p class="rt-note__date">' + date + '</p>' : '')
+  ).css({
+    '--r': ((seeded(key, 1) * 6) - 3).toFixed(2) + 'deg',
+    '--dx': ((seeded(key, 2) * 20) - 10).toFixed(1) + 'px',
+    '--dy': ((seeded(key, 3) * 16) - 8).toFixed(1) + 'px',
+    '--i': $('.commentsWrapper .comments .list').children().length % 3
+  });
+
+  $('.commentsWrapper .comments .list').append($card);
+
+  // Settle in like a card dropped on the table, as each comes into view
+  if (noteObserver) {
+    $card.addClass('is-waiting');
+    noteObserver.observe($card[0]);
+  }
+}
+
+function initNotesSettle() {
+  if (REDUCED || !('IntersectionObserver' in window)) return;
+  noteObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      noteObserver.unobserve(e.target);
+      e.target.classList.add('is-settling');
+      e.target.classList.remove('is-waiting');
+    });
+  }, { rootMargin: '0px 0px -12% 0px' });
+}
+
+// ── Calendar options: the weekend's three events (CAL_EVENTS) ──
+// Changed from the save-the-date: three events instead of one. Google,
+// Outlook and Yahoo links are per event; the .ics file holds all three.
+function showCalendarOptions() {
+  var $btn = $(this);
+  if ($btn.next('.calendarOptions').length) {
+    $btn.next('.calendarOptions').slideToggle(200);
+    return;
+  }
+
+  function iso(t) { return t.replace(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z$/, '$1-$2-$3T$4:$5:$6Z'); }
+  var groups = CAL_EVENTS.map(function (ev) {
+    var title = encodeURIComponent(ev.title);
+    var desc = encodeURIComponent(ev.desc);
+    var loc = encodeURIComponent(ev.location);
+    var googleURL = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
+      + '&text=' + title + '&dates=' + ev.start + '/' + ev.end + '&details=' + desc + '&location=' + loc;
+    var outlookURL = 'https://outlook.office.com/calendar/action/compose?rru=addevent'
+      + '&subject=' + title + '&startdt=' + iso(ev.start) + '&enddt=' + iso(ev.end) + '&body=' + desc + '&location=' + loc;
+    var yahooURL = 'https://calendar.yahoo.com/?v=60&title=' + title
+      + '&st=' + ev.start + '&et=' + ev.end + '&desc=' + desc + '&in_loc=' + loc;
+    return '<div class="calGroup">' +
+      '<p class="calGroup__title">' + $('<div>').text(ev.title.split(' | ')[0]).html() + '</p>' +
+      '<a class="calOption" href="' + googleURL + '" target="_blank" rel="noopener">Google<span class="rt-sr"> calendar: ' + $('<div>').text(ev.title).html() + '</span></a>' +
+      '<a class="calOption" href="' + outlookURL + '" target="_blank" rel="noopener">Outlook<span class="rt-sr"> calendar: ' + $('<div>').text(ev.title).html() + '</span></a>' +
+      '<a class="calOption" href="' + yahooURL + '" target="_blank" rel="noopener">Yahoo<span class="rt-sr"> calendar: ' + $('<div>').text(ev.title).html() + '</span></a>' +
+    '</div>';
+  }).join('');
+
+  // The single .ics file (all three events) first: one tap on an iPhone
+  var $options = $('<div class="calendarOptions" style="display:none;">' +
+    '<button type="button" class="button icsDownload">Apple / Other: all three events</button>' +
+    '<p class="calOptions__or">Or add each event</p>' +
+    groups +
+    '</div>');
+
+  $options.find('.icsDownload').on('click', function(e) {
+    e.preventDefault();
+    downloadICS();
+  });
+
+  $btn.after($options);
+  $options.slideDown(200);
+}
+
+function downloadICS() {
+  function icsText(t) { return t.replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;'); }
+  var stamp = new Date().toISOString().replace(/[-:.]/g,'').slice(0,15) + 'Z';
+  var lines = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Rebecca & Thomas//Wedding Weekend//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH'
+  ];
+  CAL_EVENTS.forEach(function (ev) {
+    lines.push(
+      'BEGIN:VEVENT',
+      'UID:rebeccaandthomas-' + ev.id + '-2027@rebeccaandthomas.net',
+      'DTSTAMP:' + stamp,
+      'DTSTART:' + ev.start,
+      'DTEND:' + ev.end,
+      'SUMMARY:' + icsText(ev.title),
+      'DESCRIPTION:' + icsText(ev.desc),
+      'LOCATION:' + icsText(ev.location),
+      'STATUS:CONFIRMED',
+      'END:VEVENT'
+    );
+  });
+  lines.push('END:VCALENDAR');
+  var ics = lines.join('\r\n');
+  // Use data URI for better cross-platform support (iOS Safari, Outlook app)
+  var dataURI = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+  var a = document.createElement('a');
+  a.href = dataURI;
+  a.download = 'Rebecca_Thomas_Wedding_Weekend_2027.ics';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// ── Wedding countdown: copied verbatim from site/main.js ──
+function updateCountdown() {
+  var el = document.getElementById('weddingCountdown');
+  if (!el) return;
+  var weddingDate = new Date('2027-07-10T00:00:00');
+  var now = new Date();
+  var diff = Math.floor((weddingDate - now) / 1000);
+  if (diff > 0) el.textContent = diff.toLocaleString();
+}
+
+// ─────────────────────────────────────────────────────────────────
 //  BOOT
 // ─────────────────────────────────────────────────────────────────
 
@@ -876,8 +1420,16 @@ function boot() {
   watchDrawings(chalkReady, '.rt-border .chalk');
   initChurch(chalkReady);
   initFaq();
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+  watchDrawings(chalkReady, '.rt-guide__art .chalk, .rt-footer__mark .chalk');
+
   if (window.jQuery) {
     $ = window.jQuery;
+    initNotesSettle();
+    initForms();
+    if (document.readyState === 'complete') loadComments();
+    else $(window).on('load', loadComments);
     initGuestName();
     // No name in the link: a neutral greeting rather than the guest-name style
     if (guestName === 'Guest') $('#guestNameDisplay').addClass('rt-greet__name--anon');
