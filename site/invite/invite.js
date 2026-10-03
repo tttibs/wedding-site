@@ -23,7 +23,7 @@ var $ = window.jQuery;
 // ─────────────────────────────────────────────────────────────────
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261005a';
+var RT_VERSION = '20261005b';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -74,8 +74,33 @@ var BORDER = {
     // On desktop this section is one screen tall (pinned), so it holds just two
     { name: 'fork',        w: 214, h: 352, side: 'l', top: 64, peek: 32, f: 1.5, rot: -14 },
     { name: 'swirl-short', w: 200, h: 600, side: 'r', top: 42, peek: 50, f: 1.4, rot: 176, phone: { peek: 64, top: 78 } }
+  ],
+  '#rt-faq': [
+    // Short section (questions closed): placed low, clear of section 3's drawings
+    { name: 'prickly-pear', w: 287, h: 381, side: 'l', top: 48, peek: 30, f: 1.4, rot: -6, phone: { peek: 56, top: 20 } },
+    { name: 'cherries',     w: 204, h: 257, side: 'r', top: 62, peek: 28, f: 1.5, rot: 10, phone: { peek: 52, top: 52 } }
   ]
 };
+
+// Section 4: the details. Each answer is a list of paragraphs.
+var FAQ = [
+  { q: 'Getting to & from the wedding', a: [
+    'As many of our guests will be travelling to Malta for the wedding, we recommend making your way to the ceremony by Uber or taxi, which will be the easiest way to get to Mdina. Following the ceremony, transport will be provided from Mdina to our reception venue. At the end of the evening, guests are welcome to make their own way home from the venue by Uber or taxi.'
+  ] },
+  { q: 'The little details', a: [
+    'Once we have received your final RSVP, we\u2019ll be in touch with a link to a dedicated wedding guide with all the finer details for the day - including everything you\u2019ll need to know to make the most of our celebrations in Malta.'
+  ] },
+  { q: 'Dress code', a: [
+    'Our dress code is black tie. Tuxedos or formal suits are encouraged for gentlemen, while ladies are invited to wear floor-length gowns in any colour.',
+    'As our ceremony will take place in a church, we kindly ask that shoulders are covered during this part of the day. If your chosen outfit does not cover the shoulders, a shawl or sheer cover-up is perfectly welcome.',
+    'Our cocktail hour will take place partly on grass, so please keep this in mind when choosing your footwear.',
+    'Most importantly, we want you to feel your very best and enjoy the day with us. If you have any questions about the dress code, please don\u2019t hesitate to reach out.'
+  ] },
+  { q: 'A note on children', a: [
+    'While we adore the little ones in our lives, our wedding will be an adults-only celebration. We hope this gives you the rare gift of a late night, a slow morning, and an evening entirely your own.',
+    'If you have any concerns about childcare for the wedding date, please don\u2019t hesitate to reach out to us. We\u2019ll be more than happy to help where we can.'
+  ] }
+];
 
 // Section 3: the chapters of the weekend. Each has a small chalk drawing.
 var EVENTS = [
@@ -219,9 +244,35 @@ function eventsMarkup() {
   '</section>';
 }
 
-// Temporary: stands in for sections 4-8 until they are built.
+// Section 4: an accordion of the finer details (behaviour in initFaq).
+// Works without any animation library; panels are closed by default.
+function faqMarkup() {
+  return '<section class="rt-faq-sec" id="rt-faq" aria-labelledby="rt-faq-title">' +
+    borderMarkup('#rt-faq') +
+    '<div class="rt-faq">' +
+      '<h2 class="rt-heading" id="rt-faq-title" data-reveal="lines">The details</h2>' +
+      '<div class="rt-faq__list">' + FAQ.map(function (item, i) {
+        return '<div class="rt-faq__item">' +
+          '<h3 class="rt-faq__q">' +
+            '<button type="button" class="rt-faq__btn" id="rt-faq-btn-' + i + '" aria-expanded="false" aria-controls="rt-faq-panel-' + i + '">' +
+              '<span class="rt-faq__label">' + item.q.replace(/&/g, '&amp;') + '</span>' +
+              '<span class="rt-faq__icon" aria-hidden="true"></span>' +
+            '</button>' +
+          '</h3>' +
+          '<div class="rt-faq__panel" id="rt-faq-panel-' + i + '" role="region" aria-labelledby="rt-faq-btn-' + i + '" inert>' +
+            '<div class="rt-faq__clip"><div class="rt-faq__body">' +
+              item.a.map(function (p) { return '<p>' + p + '</p>'; }).join('') +
+            '</div></div>' +
+          '</div>' +
+        '</div>';
+      }).join('') + '</div>' +
+    '</div>' +
+  '</section>';
+}
+
+// Temporary: stands in for sections 5-8 until they are built.
 function nextMarkup() {
-  return '<section class="rt-next"><p class="rt-next__label">Sections 4-8 to follow</p></section>';
+  return '<section class="rt-next"><p class="rt-next__label">Sections 5-8 to follow</p></section>';
 }
 
 // The chalk border layer for one section (sits behind the section's content).
@@ -258,6 +309,7 @@ function render(mount) {
     '<main class="rt-main">' +
       '<div class="rt-opening">' + heroMarkup() + invitationMarkup() + '</div>' +
       eventsMarkup() +
+      faqMarkup() +
       nextMarkup() +
     '</main>' +
     promptMarkup();
@@ -599,6 +651,36 @@ function initEvents(gsap, ScrollTrigger) {
 }
 
 // ─────────────────────────────────────────────────────────────────
+//  DETAILS: accordion. Plain buttons with aria-expanded; Enter and Space
+//  work natively. Several panels can be open at once. The unfold itself is
+//  a CSS transition (invite.css), so it needs no library.
+// ─────────────────────────────────────────────────────────────────
+
+function initFaq() {
+  var buttons = [].slice.call(document.querySelectorAll('.rt-faq__btn'));
+  buttons.forEach(function (btn, i) {
+    var panel = document.getElementById(btn.getAttribute('aria-controls'));
+    btn.addEventListener('click', function () {
+      var open = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      panel.classList.toggle('is-open', open);
+      // Closed panels are inert: out of the tab order and the accessibility tree
+      if (open) panel.removeAttribute('inert');
+      else panel.setAttribute('inert', '');
+    });
+    // Arrow keys, Home and End move between the questions
+    btn.addEventListener('keydown', function (e) {
+      var to = null;
+      if (e.key === 'ArrowDown') to = buttons[(i + 1) % buttons.length];
+      else if (e.key === 'ArrowUp') to = buttons[(i - 1 + buttons.length) % buttons.length];
+      else if (e.key === 'Home') to = buttons[0];
+      else if (e.key === 'End') to = buttons[buttons.length - 1];
+      if (to) { e.preventDefault(); to.focus(); }
+    });
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────
 //  REVEALS: headings and key lines slide up line by line behind a mask
 // ─────────────────────────────────────────────────────────────────
 
@@ -639,6 +721,13 @@ function initReveals(gsap, ScrollTrigger, SplitText) {
       }
     });
   });
+
+  // The questions fade up one after another
+  var faq = document.querySelector('.rt-faq__list');
+  if (faq) {
+    var rows = gsap.from(faq.children, { y: 16, opacity: 0, duration: 0.9, ease: 'power3.out', stagger: 0.12, paused: true });
+    onEnter(ScrollTrigger, faq, 'top 85%', function () { rows.play(); });
+  }
 
   // The four detail tiles fade up in sequence
   var details = document.querySelector('.rt-details');
@@ -780,6 +869,7 @@ function boot() {
   CHALK_READY = chalkReady;
   watchDrawings(chalkReady, '.rt-border .chalk');
   initChurch(chalkReady);
+  initFaq();
   if (window.jQuery) {
     $ = window.jQuery;
     initGuestName();
