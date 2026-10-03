@@ -23,7 +23,7 @@ var $ = window.jQuery;
 // ─────────────────────────────────────────────────────────────────
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261004a';
+var RT_VERSION = '20261004b';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -51,23 +51,26 @@ var HERO = {
 var PORTRAIT_MQ = '(orientation: portrait)';   // keep in step with invite.css
 var IS_PORTRAIT = !!(window.matchMedia && window.matchMedia(PORTRAIT_MQ).matches);
 
-// Chalk border: illustrations and flourishes scattered down the page margins.
-// They scroll with the page and each draws itself once as it comes into view.
-// Per item: side 'l' or 'r'; top as a % of the section; x = distance in from
-// the page edge (% of the page width); f = size factor; rot in degrees.
-// phone: shown on phones too, where there's no margin. A swirl peeks in from
-// the edge ({ peek: % hidden off-screen }); a drawing sits in the space below
-// the card ({ bottom: px from the section's foot, peek, rot }).
+// Chalk border: large illustrations and flourishes down both edges of the
+// page, partly off-screen. They scroll with the page; each draws itself once,
+// and only when it is fully on screen. Flourishes run on into the next section.
+// Per item: side 'l' or 'r'; top as a % of its section; peek = % of the
+// drawing hidden past the screen edge; f = size factor; rot in degrees.
+// Flourishes use the same size factors as the drawings, so their chalk lines
+// are the same weight.
+// phone: also shown on phones (no margin). A flourish weaves along the edge
+// ({ peek }); a drawing sits in the space below the card ({ bottom: px from
+// the section's foot, peek, rot }).
 // Add a block here as each section is built.
 var BORDER = {
   '#rt-invitation': [
-    { name: 'candelabra',  w: 306, h: 432, side: 'l', top: 3,  x: 4,  f: 1.15, rot: -5, phone: { bottom: 18, peek: 24, rot: -8 } },
-    { name: 'swirl-tall',  w: 220, h: 920, side: 'l', top: 38, x: 9,  f: 0.62, phone: { peek: 55 } },
-    { name: 'olive-sprig', w: 234, h: 236, side: 'l', top: 77, x: 4,  f: 1.0,  rot: 14 },
-    { name: 'swirl-short', w: 200, h: 600, side: 'r', top: 1,  x: 12, f: 0.6,  rot: 4, phone: { peek: 55 } },
-    { name: 'wine-bottle', w: 166, h: 408, side: 'r', top: 25, x: 6,  f: 1.1,  rot: 7, phone: { bottom: 34, peek: 22, rot: 14 } },
-    { name: 'swirl-curl',  w: 280, h: 180, side: 'r', top: 56, x: 9,  f: 0.8,  rot: -8 },
-    { name: 'carafe',      w: 274, h: 494, side: 'r', top: 65, x: 6,  f: 0.95, rot: -6 }
+    { name: 'candelabra',  w: 306, h: 432, side: 'l', top: 4,  peek: 30, f: 1.6, rot: -6, phone: { bottom: 18, peek: 24, rot: -8 } },
+    { name: 'swirl-tall',  w: 220, h: 920, side: 'l', top: 36, peek: 52, f: 1.4, phone: { peek: 55 } },
+    { name: 'olive-sprig', w: 234, h: 236, side: 'l', top: 74, peek: 28, f: 1.5, rot: 16 },
+    { name: 'swirl-short', w: 200, h: 600, side: 'r', top: 0,  peek: 50, f: 1.4, rot: 4, phone: { peek: 55 } },
+    { name: 'wine-bottle', w: 166, h: 408, side: 'r', top: 22, peek: 26, f: 1.6, rot: 8, phone: { bottom: 34, peek: 22, rot: 14 } },
+    { name: 'carafe',      w: 274, h: 494, side: 'r', top: 63, peek: 30, f: 1.4, rot: -6 },
+    { name: 'swirl-tall',  w: 220, h: 920, side: 'r', top: 96, peek: 50, f: 1.4, rot: 180, phone: { peek: 55 } }
   ]
 };
 
@@ -154,9 +157,8 @@ function invitationMarkup() {
         '<p class="rt-greet__name" id="guestNameDisplay"></p>' +
         '<span class="rt-greet__rule" aria-hidden="true"></span>' +
       '</div>' +
-      // Portrait: the church sits beneath the pinned film, so it is drawn as the
-      // film ends (see initHero) rather than by scroll position.
-      chalkDiv('church', '766/770', { cls: 'rt-church', extra: ' aria-hidden="true"' + (IS_PORTRAIT ? ' data-chalk-mode="manual"' : '') }) +
+      // Drawn once the card has appeared (see initStage)
+      chalkDiv('church', '766/770', { cls: 'rt-church', extra: ' aria-hidden="true" data-chalk-mode="manual"' }) +
       '<p class="rt-inv__lead" data-reveal="lines">Together with their families</p>' +
       '<h2 class="rt-inv__names" id="rt-invitation-names" data-reveal="lines">' +
         '<span class="rt-inv__name">Rebecca Bonavia</span> ' +
@@ -187,13 +189,13 @@ function borderMarkup(selector) {
     // Width is relative to the drawing's native width, so line weights match
     // across all the illustrations (as chalk-draw's README recommends).
     var ph = it.phone, cls = '';
-    var style = 'top:' + it.top + '%;--x:' + it.x + ';--w:' + it.w + ';--f:' + it.f + ';--rot:' + (it.rot || 0) + 'deg';
+    var style = 'top:' + it.top + '%;--peek:' + it.peek + ';--w:' + it.w + ';--f:' + it.f + ';--rot:' + (it.rot || 0) + 'deg';
     if (ph) {
       cls = ph.bottom != null ? ' rt-border__item--phone-foot' : ' rt-border__item--phone-edge';
-      style += ';--peek:' + (ph.peek || 50) + ';--prot:' + (ph.rot || 0) + 'deg' + (ph.bottom != null ? ';--pb:' + ph.bottom : '');
+      style += ';--ppeek:' + (ph.peek || 50) + ';--prot:' + (ph.rot || 0) + 'deg' + (ph.bottom != null ? ';--pb:' + ph.bottom : '');
     }
     return '<div class="rt-border__item rt-border__item--' + it.side + cls + '" style="' + style + '">' +
-      chalkDiv(it.name, it.w + '/' + it.h, { extra: ' data-chalk-start="0.95" data-chalk-end="0.55"' }) +
+      chalkDiv(it.name, it.w + '/' + it.h, { extra: ' data-chalk-mode="manual"' + (it.name.indexOf('swirl') === 0 ? ' data-swirl' : '') }) +
     '</div>';
   }).join('') + '</div>';
 }
@@ -356,78 +358,131 @@ function createHeroScrub(section) {
   };
 }
 
-// Any manual-mode church left undrawn (portrait without the film scrub) is
-// drawn as soon as it comes into view instead.
-function drawChurchOnView(chalkReady) {
-  var el = document.querySelector('.rt-church[data-chalk-mode="manual"]');
-  if (!el || !('IntersectionObserver' in window)) return;
-  var io = new IntersectionObserver(function (entries) {
-    if (!entries[0].isIntersecting) return;
-    io.disconnect();
-    chalkReady.then(function () { window.ChalkDraw.play(el, 2600); });
-  }, { rootMargin: '0px 0px -15% 0px' });
-  io.observe(el);
+// ─────────────────────────────────────────────────────────────────
+//  STAGE: the film plays under the scroll, fades to paper, the chalk
+//  border draws itself, then the invitation card is set down
+// ─────────────────────────────────────────────────────────────────
+
+var stageOpened = false, resolveStage, resolveCard;
+var stageOpen = new Promise(function (r) { resolveStage = r; });   // the film has gone
+var cardShown = new Promise(function (r) { resolveCard = r; });    // the card is appearing
+
+// animateCard: show the card with motion (true) or as it already is (false)
+function openStage(animateCard) {
+  if (stageOpened) return;
+  stageOpened = true;
+  resolveStage();
+  if (!animateCard) { resolveCard(); return; }
+  // Let the first drawings get going before the card arrives
+  setTimeout(function () {
+    window.gsap.to('.rt-card', { opacity: 1, y: 0, duration: 1.4, ease: 'power3.out' });
+    setTimeout(resolveCard, 350);
+  }, 1300);
 }
 
-function initHero(gsap, ScrollTrigger) {
-  var section = document.querySelector('.rt-hero');
-  if (!section) return;
-  // Portrait: pin the film together with the invitation beneath it, so the
-  // start of the next section stays visible under the square film.
-  var pinEl = IS_PORTRAIT ? document.querySelector('.rt-opening') : section;
+function initStage(gsap, ScrollTrigger) {
+  var hero = document.querySelector('.rt-hero');
+  var opening = document.querySelector('.rt-opening');
+  if (!hero || !opening || REDUCED) { openStage(false); return; }
 
-  if (REDUCED || HERO.mode === 'still') {
-    if (!REDUCED) {
-      // Stand-in for a frame sequence: a slow, scroll-driven drift over the still.
-      gsap.fromTo(section.querySelector('.rt-hero__still'),
-        { scale: 1.02, yPercent: 0 },
-        { scale: 1.1, yPercent: 2, ease: 'none',
-          scrollTrigger: { trigger: pinEl, start: 'top top', end: function () { return '+=' + window.innerHeight * HERO.viewports; }, pin: true, scrub: HERO.scrub } });
-      html.classList.add('rt-pinned');
-    }
-    return;
-  }
+  // The film now lies over the top of the invitation; the card waits unseen.
+  html.classList.add('rt-stage');
+  gsap.set('.rt-card', { opacity: 0, y: 40 });
 
-  var scrub = createHeroScrub(section);
+  var scrub = HERO.mode === 'frames' ? createHeroScrub(hero) : null;
   var state = { p: 0 };
-  var church = IS_PORTRAIT && document.querySelector('.rt-church');
-  gsap.to(state, {
-    p: 1,
-    ease: 'none',
-    onUpdate: function () {
-      scrub.set(state.p);
-      // Portrait: ink the church beneath the film as the glass is taken away
-      if (church && state.p > 0.7) {
-        var el = church; church = null;
-        if (window.ChalkDraw) window.ChalkDraw.play(el, 2600);
-      }
-    },
+  var tl = gsap.timeline({
     scrollTrigger: {
-      trigger: pinEl,
+      trigger: opening,
       start: 'top top',
-      end: function () { return '+=' + window.innerHeight * HERO.viewports; },
+      // the film, then one more screen for it to fade
+      end: function () { return '+=' + window.innerHeight * (HERO.viewports + 1); },
       pin: true,
       scrub: HERO.scrub,
       invalidateOnRefresh: true,
-      onRefresh: function () { scrub.resize(); }
+      onRefresh: function () { if (scrub) scrub.resize(); }
     }
   });
-  html.classList.add('rt-pinned');
+  if (scrub) {
+    tl.to(state, { p: 1, duration: HERO.viewports, ease: 'none', onUpdate: function () { scrub.set(state.p); } });
+  } else {
+    // Stand-in for a frame sequence: a slow, scroll-driven drift over the still
+    tl.fromTo(hero.querySelector('.rt-hero__still'), { scale: 1.02 }, { scale: 1.1, duration: HERO.viewports, ease: 'none' });
+  }
+  tl.to(hero, { opacity: 0, duration: 0.6, ease: 'none' })
+    .call(function () { openStage(true); })
+    .to({}, { duration: 0.4 });
+}
+
+// Border drawings wait until the film has gone, then each draws once it is
+// entirely on screen (tall flourishes: once their top is near the top of the
+// screen). Several arriving together draw one after another.
+function initBorder(chalkReady) {
+  var items = [].slice.call(document.querySelectorAll('.rt-border .chalk')).filter(function (el) {
+    return el.getClientRects().length;   // skip drawings hidden at this screen size
+  });
+  if (!items.length) return;
+  var lastStart = 0, ticking = false;
+
+  function play(el, delay) {
+    var ms = el.hasAttribute('data-swirl') ? 3200 : 2400;
+    setTimeout(function () {
+      chalkReady.then(function () { window.ChalkDraw.play(el, ms); });
+    }, delay);
+  }
+  function check() {
+    ticking = false;
+    var vh = window.innerHeight, now = performance.now();
+    items = items.filter(function (el) {
+      var r = el.getBoundingClientRect();
+      // whole drawing on screen (or already scrolled up past); taller-than-
+      // screen flourishes start once their top reaches the top of the screen
+      var whole = r.bottom <= vh;
+      var tall = r.height > vh * 0.85 && r.top <= vh * 0.15;
+      if (!whole && !tall) return true;
+      var start = Math.max(now, lastStart + 350);
+      lastStart = start;
+      play(el, start - now);
+      return false;
+    });
+    if (!items.length) {
+      window.removeEventListener('scroll', queue);
+      window.removeEventListener('resize', queue);
+    }
+  }
+  function queue() { if (!ticking) { ticking = true; requestAnimationFrame(check); } }
+
+  stageOpen.then(function () {
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    check();
+  });
+}
+
+// The church is drawn into the card once it has appeared.
+function initChurch(chalkReady) {
+  var el = document.querySelector('.rt-church');
+  if (!el) return;
+  cardShown.then(function () {
+    setTimeout(function () {
+      chalkReady.then(function () { window.ChalkDraw.play(el, 2600); });
+    }, 450);
+  });
 }
 
 // ─────────────────────────────────────────────────────────────────
 //  REVEALS: headings and key lines slide up line by line behind a mask
 // ─────────────────────────────────────────────────────────────────
 
-// Plays a reveal once its trigger enters view, but never while the intro
-// is still covering the page.
+// Plays a reveal once its trigger enters view, but never before the card
+// itself has appeared.
 function onEnter(ScrollTrigger, trigger, start, play) {
   ScrollTrigger.create({
     trigger: trigger,
     start: start,
     once: true,
-    pinnedContainer: IS_PORTRAIT && trigger.closest('.rt-opening') ? '.rt-opening' : undefined,
-    onEnter: function () { introDone.then(play); }
+    pinnedContainer: trigger.closest('.rt-opening') ? '.rt-opening' : undefined,
+    onEnter: function () { cardShown.then(play); }
   });
 }
 
@@ -594,6 +649,8 @@ function boot() {
   chalkReady.catch(function (err) { console.error('[invite]', err); });
   runIntro(chalkReady);
   initCue();
+  initBorder(chalkReady);
+  initChurch(chalkReady);
   if (window.jQuery) {
     $ = window.jQuery;
     initGuestName();
@@ -615,15 +672,14 @@ function boot() {
     gsap.registerPlugin(ScrollTrigger, window.SplitText);
     ScrollTrigger.config({ ignoreMobileResize: true });
     html.classList.add('rt-motion');
-    initHero(gsap, ScrollTrigger);
-    if (REDUCED || HERO.mode === 'still') drawChurchOnView(chalkReady);
+    initStage(gsap, ScrollTrigger);
     initReveals(gsap, ScrollTrigger, window.SplitText);
     // Webfonts and images change layout; recompute trigger positions once settled.
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { ScrollTrigger.refresh(); });
     window.addEventListener('load', function () { ScrollTrigger.refresh(); });
   }).catch(function (err) {
     console.error('[invite] Motion disabled:', err);
-    drawChurchOnView(chalkReady);
+    openStage(false);
   });
 }
 
