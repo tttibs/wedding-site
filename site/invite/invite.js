@@ -74,19 +74,20 @@ var GUIDE = {
         { name: 'Nenu the Artisan Baker', area: 'Valletta', map: 'Nenu the Artisan Baker, Valletta, Malta',
           text: 'Traditional Maltese baking, from proper ftira to timpana. A good, unhurried lunch in Valletta.' }
       ] },
-    { id: 'playlist', label: 'Our playlist', spotify: '' }
+    { id: 'playlist', label: 'Our playlist', spotify: 'https://open.spotify.com/playlist/6jhHR55oOa3c3RA2HxtGhK' }
   ]
 };
 
 // ─────────────────────────────────────────────────────────────────
-//  BACKGROUND MUSIC: put the track in site/invite/music/ and set src to
-//  its file name, e.g. 'music/piano.mp3'. '' hides the music toggle.
-//  Off by default; guests turn it on from the navigation.
+//  BACKGROUND MUSIC: the track lives in site/invite/music/. src '' turns
+//  music off entirely. autoplay: start after the page loads (or on the
+//  guest's first tap, where the browser requires one); the Menu has a toggle.
+//  Track: "Calm Reading" by adiiswanto (Pixabay), trimmed to loop cleanly.
 // ─────────────────────────────────────────────────────────────────
-var MUSIC = { src: '', volume: 0.3 };
+var MUSIC = { src: 'music/piano.mp3', volume: 0.3, autoplay: true };
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261008b';
+var RT_VERSION = '20261009b';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -102,17 +103,18 @@ var LIBS = {
 
 // Hero scroll-scrub. Frames come from scripts/hero-frames.sh.
 // mode 'frames' scrubs the image sequence; 'still' shows the still with a slow zoom.
-// Landscape screens get the full-bleed film; portrait screens get a square crop
-// (holding the tray and the glass) with the next section showing beneath it.
+// Landscape screens get the full film; portrait screens a tall centred crop,
+// both filling the screen.
 var HERO = {
   mode: 'frames',
   desktop: { dir: 'hero/d/', count: 145, still: 'hero/still.jpg' },
-  square:  { dir: 'hero/m/', count: 73,  still: 'hero/still-square.jpg' },
+  portrait: { dir: 'hero/m/', count: 73, still: 'hero/still-portrait.jpg' },
   viewports: 3,   // pinned scroll distance
   scrub: 0.6      // seconds of catch-up: gives the scrub a little weight
 };
 var PORTRAIT_MQ = '(orientation: portrait)';   // keep in step with invite.css
 var IS_PORTRAIT = !!(window.matchMedia && window.matchMedia(PORTRAIT_MQ).matches);
+var TOUCH = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
 
 // Chalk border: large illustrations and flourishes down both edges of the
 // page, partly off-screen. They scroll with the page; each draws itself once,
@@ -202,13 +204,13 @@ var EVENTS = [
     text: 'Before the big day, join us for a relaxed welcome drink as the sun sets over Malta. Whether you\u2019ve just landed or have been exploring for days, it\u2019s the perfect chance to catch up, meet the people you\u2019ll be dancing with on Saturday, and raise a glass to the weekend ahead. Venue details to follow.' },
   { part: 'Part I', title: 'The ceremony', date: 'Saturday 10th July 2027', time: '4pm \u2013 5pm',
     art: { name: 'candlestick', w: 216, h: 374 },
-    text: 'Guests to arrive from 3.30pm for the ceremony commencing promptly at 4pm. Following the ceremony guests will be transported to the reception venue.' },
+    text: 'Guests to arrive from 3.30pm for the ceremony commencing promptly at 4pm. Following the ceremony guests will be transported to the reception venue. St. Paul\u2019s Cathedral sits at the heart of Mdina, Malta\u2019s walled Silent City, and an Uber or taxi is the easiest way to get there. As it\u2019s a church, we kindly ask that shoulders are covered.' },
   { part: 'Part II', title: 'The party', date: 'Saturday 10th July 2027', time: 'Till 2am',
     art: { name: 'corkscrew', w: 236, h: 298 },
-    text: 'Cocktail hour, a sit down dinner and lots of dancing to follow.' },
+    text: 'Cocktail hour, a sit down dinner and lots of dancing to follow. Drinks will be served partly on the grass as the evening light softens, so choose your shoes with care, before we sit down together for dinner. Then the dancing begins and carries on until 2am, with Ubers and taxis to take you home.' },
   { part: 'Epilogue', title: 'The debrief', date: 'Sunday 11th July', time: '12pm \u2013 4pm',
     art: { name: 'lemon', w: 186, h: 277 },
-    text: 'Join us for a relaxing afternoon with aperols by our favourite beach shack in Malta.' }
+    text: 'Join us for a relaxing afternoon with aperols by our favourite beach shack in Malta. Come as you are, bring your swimmers if you fancy a dip, and stay as long as you like. The perfect way to slow down and share the stories from the night before. Venue details to follow.' }
 ];
 
 // ─────────────────────────────────────────────────────────────────
@@ -281,12 +283,13 @@ function heroMarkup() {
     '<h1 class="rt-sr" id="rt-title">Rebecca Bonavia &amp; Thomas Bowers. Saturday 10 July 2027, Mdina, Malta.</h1>' +
     '<div class="rt-hero__media">' +
       '<picture>' +
-        '<source media="' + PORTRAIT_MQ + '" srcset="' + v(BASE + HERO.square.still) + '">' +
+        '<source media="' + PORTRAIT_MQ + '" srcset="' + v(BASE + HERO.portrait.still) + '">' +
         '<img class="rt-hero__still" src="' + v(BASE + HERO.desktop.still) + '" alt="A candlelit dinner table from above. On a silver tray, a lace card reads Rebecca and Thomas, 10th July 2027, Malta." fetchpriority="high" decoding="async">' +
       '</picture>' +
       '<canvas class="rt-hero__canvas" aria-hidden="true"></canvas>' +
     '</div>' +
-    '<div class="rt-cue" aria-hidden="true">' + CUE_SVG + '</div>' +
+    '<div class="rt-cue" aria-hidden="true">' + CUE_SVG +
+      '<span class="rt-cue__label">' + (TOUCH ? 'Swipe' : 'Scroll') + '</span></div>' +
   '</section>';
 }
 
@@ -390,6 +393,7 @@ var SEAL_SVG = '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" ar
 function rsvpMarkup() {
   return '<section class="rt-rsvp" id="rt-rsvp" aria-labelledby="rt-rsvp-title">' +
     borderMarkup('#rt-rsvp') +
+    '<div class="rt-doily rt-doily--rsvp" aria-hidden="true"></div>' +
     '<div class="rt-rsvp__card">' +
       '<h2 class="rt-heading" id="rt-rsvp-title" data-reveal="lines">Please RSVP</h2>' +
       '<p class="rt-rsvp__by">Kindly respond by 17th December 2026</p>' +
@@ -583,7 +587,6 @@ function render(mount) {
     '</main>' +
     footerMarkup() +
     navMarkup() +
-    '<div class="rt-arbor" aria-hidden="true"></div>' +
     promptMarkup();
   if (showIntro) html.classList.add('rt-lock');
 }
@@ -652,7 +655,7 @@ function createHeroScrub(section) {
   var canvas = section.querySelector('.rt-hero__canvas');
   var ctx = canvas.getContext('2d');
   var portrait = window.matchMedia(PORTRAIT_MQ).matches;
-  var set = portrait ? HERO.square : HERO.desktop;
+  var set = portrait ? HERO.portrait : HERO.desktop;
   var n = set.count;
   var frames = new Array(n);
   var cur = 0, drawn = null;
@@ -900,26 +903,33 @@ function initEvents(gsap, ScrollTrigger) {
   section.classList.add('rt-events--h');
   var track = section.querySelector('.rt-events__track');
   function travel() { return Math.max(0, track.scrollWidth - window.innerWidth); }
-  var pan = gsap.to(track, {
-    x: function () { return -travel(); },
-    ease: 'none',
+  // A short rest after the last card lands, so the section doesn't let go abruptly
+  function rest() { return window.innerHeight * 0.25; }
+  var heading = section.querySelector('.rt-heading');
+  var tl = gsap.timeline({
     scrollTrigger: {
       trigger: section,
       start: 'top top',
-      end: function () { return '+=' + travel(); },
+      end: function () { return '+=' + (travel() + rest()); },
       pin: true,
-      scrub: 0.8,
+      anticipatePin: 1,   // engage the pin a frame early so it doesn't jolt
+      scrub: 1,
       invalidateOnRefresh: true
     }
   });
+  var pan = gsap.to(track, { x: function () { return -travel(); }, ease: 'none', duration: 1 });
+  tl.add(pan, 0)
+    .to({}, { duration: function () { return rest() / Math.max(1, travel()); } });
+  // The heading keeps drifting gently while pinned, so it never stops dead
+  if (heading) tl.fromTo(heading, { y: 0 }, { y: -28, ease: 'none', duration: tl.duration() }, 0);
   cards.forEach(function (card) {
     // Each card is slid across the table: a slight turn that settles as it lands
     gsap.fromTo(card, { rotation: 3.5, y: 18 }, {
       rotation: 0, y: 0, ease: 'none',
-      scrollTrigger: { trigger: card, containerAnimation: pan, start: 'left right', end: 'left 55%', scrub: true }
+      scrollTrigger: { trigger: card, containerAnimation: tl, start: 'left right', end: 'left 55%', scrub: true }
     });
     ScrollTrigger.create({
-      trigger: card, containerAnimation: pan, start: 'left 70%', once: true,
+      trigger: card, containerAnimation: tl, start: 'left 70%', once: true,
       onEnter: function () { cardShown.then(function () { drawArt(card, 150); }); }
     });
   });
@@ -1048,68 +1058,66 @@ function initMusic() {
       if (t >= 1) { clearInterval(fadeTimer); if (done) done(); }
     }, 40);
   }
+  function ensureAudio() {
+    if (audio) return;
+    audio = new Audio(v(BASE + MUSIC.src));
+    audio.loop = true;
+    audio.preload = 'auto';
+  }
+  // Returns a promise: rejects if the browser wants a tap first
   function play() {
-    if (!audio) {
-      audio = new Audio(v(BASE + MUSIC.src));
-      audio.loop = true;
-      audio.preload = 'auto';
-    }
+    ensureAudio();
     audio.volume = 0;
     var p = audio.play();
-    if (p && p.catch) p.catch(function () { setState(false); });
-    fade(MUSIC.volume, 2500);
+    return (p && p.then ? p : Promise.resolve()).then(function () { fade(MUSIC.volume, 2500); });
   }
   function pause() {
     if (!audio) return;
     fade(0, 800, function () { audio.pause(); });
   }
-  function setState(next) {
+  function setState(next, remember) {
     on = next;
     btn.setAttribute('aria-pressed', on ? 'true' : 'false');
     btn.classList.toggle('is-on', on);
-    try { window.sessionStorage.setItem(MUSIC_KEY, on ? '1' : '0'); } catch (e) {}
+    if (remember) { try { window.sessionStorage.setItem(MUSIC_KEY, on ? '1' : '0'); } catch (e) {} }
   }
   btn.addEventListener('click', function () {
-    if (on) { setState(false); pause(); } else { setState(true); play(); }
+    disarm();
+    if (on) { setState(false, true); pause(); }
+    else { setState(true, true); play().catch(function () { setState(false, true); }); }
   });
   document.addEventListener('visibilitychange', function () {
     if (!audio || !on) return;
     if (document.hidden) audio.pause();
-    else play();
+    else play().catch(function () {});
   });
-  // Turned on earlier in this visit: resume on the guest's next tap
-  var wasOn = false;
-  try { wasOn = window.sessionStorage.getItem(MUSIC_KEY) === '1'; } catch (e) {}
-  if (wasOn) {
-    var resume = function (e) {
-      if (btn.contains(e.target)) return;
-      window.removeEventListener('pointerdown', resume);
-      setState(true); play();
-    };
-    window.addEventListener('pointerdown', resume);
-  }
-}
 
-// The arbor shadow falls across the paper sections, not the film.
-function initArbor() {
-  var arbor = document.querySelector('.rt-arbor');
-  var media = document.querySelector('.rt-hero__media');
-  if (!arbor) return;
-  var ticking = false;
-  function check() {
-    ticking = false;
-    var r = media && media.getClientRects().length ? media.getBoundingClientRect() : null;
-    arbor.classList.toggle('is-on', !r || r.bottom <= window.innerHeight * 0.35);
+  // Start on its own after load; where the browser blocks sound until the
+  // guest interacts, start on their first tap, click or key press instead.
+  function onFirstGesture(e) {
+    if (btn.contains(e.target)) return;
+    disarm();
+    setState(true, false);
+    play().catch(function () { setState(false, false); });
   }
-  function queue() { if (!ticking) { ticking = true; requestAnimationFrame(check); } }
-  window.addEventListener('scroll', queue, { passive: true });
-  window.addEventListener('resize', queue);
-  // In the opening, the film stays pinned at the top until it has faded
-  stageOpen.then(function () {
-    if (html.classList.contains('rt-stage')) arbor.classList.add('is-on');
-    queue();
+  function arm() {
+    ['pointerdown', 'keydown', 'touchend'].forEach(function (t) { window.addEventListener(t, onFirstGesture, true); });
+  }
+  function disarm() {
+    ['pointerdown', 'keydown', 'touchend'].forEach(function (t) { window.removeEventListener(t, onFirstGesture, true); });
+  }
+  var pref = null;
+  try { pref = window.sessionStorage.getItem(MUSIC_KEY); } catch (e) {}
+  if (pref === '0' || !MUSIC.autoplay) return;   // the guest turned it off this visit
+  function start() {
+    setState(true, false);
+    play().catch(function () { setState(false, false); arm(); });
+  }
+  // after the intro, so the music doesn't compete with the first frames loading
+  introDone.then(function () {
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start);
   });
-  check();
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -1233,21 +1241,12 @@ function initReveals(gsap, ScrollTrigger, SplitText) {
   }
 }
 
-// The scroll cue fades in once the hero is showing, and out once scrolling starts.
+// The scroll cue fades in once the intro has gone and stays, bobbing, until
+// the film itself fades away (it lives in the film, so it goes with it).
 function initCue() {
   var cue = document.querySelector('.rt-cue');
   if (!cue) return;
-  function hide() {
-    if (window.pageYOffset > 40) {
-      cue.classList.remove('is-visible');
-      window.removeEventListener('scroll', hide);
-    }
-  }
-  introDone.then(function () {
-    if (window.pageYOffset > 40) return;
-    cue.classList.add('is-visible');
-    window.addEventListener('scroll', hide, { passive: true });
-  });
+  introDone.then(function () { cue.classList.add('is-visible'); });
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -1722,7 +1721,6 @@ function boot() {
   initChurch(chalkReady);
   initFaq();
   initNav();
-  initArbor();
   initMusic();
   initGuide();
   updateCountdown();

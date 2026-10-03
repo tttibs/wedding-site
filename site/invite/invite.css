@@ -155,22 +155,6 @@ html.rt-lock body {
   opacity: 1;
 }
 
-/* Portrait: a square film, with the invitation (pinned with it) beneath */
-@media (orientation: portrait) {
-  .rt-hero {
-    height: auto;
-    background: var(--rt-paper);
-  }
-  .rt-hero__media {
-    position: relative;
-    inset: auto;
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    max-height: 70vh;
-    max-height: 70svh;
-  }
-}
-
 /* Scroll cue: the save-the-date chevron, fades in after the intro */
 .rt-cue {
   position: absolute;
@@ -196,11 +180,21 @@ html.rt-lock body {
   filter: drop-shadow(0 1px 4px rgba(26, 10, 10, 0.6));
   animation: rtCueBob 2s ease-in-out infinite;
 }
-@media (orientation: portrait) {
-  /* sit on the foot of the square film rather than the foot of the screen */
-  .rt-cue {
-    bottom: 14px;
-  }
+/* "Scroll" (desktop) or "Swipe" (touch), under the chevron */
+.rt-cue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.rt-cue__label {
+  margin-top: -6px;
+  font-family: var(--rt-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  padding-left: 0.32em;   /* balance the tracking so the word sits centred */
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(26, 10, 10, 0.6);
 }
 @keyframes rtCueBob {
   0%, 100% { transform: translateY(0); }
@@ -1757,7 +1751,18 @@ html.rt-stage .rt-hero {
   .rt-music.is-on .rt-music__bars i { animation: none; height: 8px; }
 }
 
-/* ── The lace doily under the invitation card: stacked stationery ── */
+/* ── A canvas texture under everything after the film: one fine, seamless
+   weave in the page's beige (site/invite/canvas.png), scrolling with the
+   page and its drawings ── */
+#rt-invite .rt-main {
+  position: relative;
+  background-color: var(--rt-paper);
+  background-image: url("canvas.png");
+  background-repeat: repeat;
+  background-size: 320px 320px;
+}
+
+/* ── Lace doilies under the invitation and RSVP cards: stacked stationery ── */
 .rt-doily {
   position: absolute;
   z-index: 0;
@@ -1773,15 +1778,13 @@ html.rt-stage .rt-hero {
 @media (orientation: portrait) {
   .rt-doily { top: 8px; width: 118vw; }
 }
-
-/* ── Dappled arbor shadow over the paper sections (as on the save-the-date) ── */
-.rt-arbor {
-  position: fixed;
-  inset: 0;
-  z-index: 700;
-  background: url("https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a3630df5f90f2681150a99_shadow_arbor-06.png") no-repeat center / cover;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 900ms ease;
+.rt-rsvp { isolation: isolate; }
+.rt-doily--rsvp {
+  top: 40px;
+  width: min(780px, 124vw);
+  transform: translateX(-50%) rotate(6deg);
 }
-.rt-arbor.is-on { opacity: 0.45; }
+@media (orientation: portrait) {
+  .rt-doily--rsvp { top: 20px; width: 118vw; }
+}
+
