@@ -15,7 +15,7 @@
   --rt-blue: #5b7d96;
   --rt-blue-ink: #3f6079;   /* the text shade: 6:1 on the beige */
   --rt-focus: var(--rt-blue-ink);
-  --rt-tex-cloth: url("https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a1c1eb3d0433641a8578c7_AdobeStock_284123015.jpeg");
+  --rt-rule: rgba(91, 125, 150, 0.42);   /* luzzu blue hairlines */
   --rt-serif: "Playfair Display", Georgia, "Times New Roman", serif;
   --rt-sans: "Montserrat", Helvetica, Arial, sans-serif;
   --rt-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -483,7 +483,7 @@ html.rt-stage .rt-hero {
 .rt-chapter__text {
   margin-top: 18px;
   padding-top: 18px;
-  border-top: 1px solid rgba(26, 10, 10, 0.12);
+  border-top: 1px solid var(--rt-rule);
   font-size: 0.94em;
   line-height: 1.7;
   text-wrap: pretty;
@@ -611,7 +611,7 @@ html.rt-stage .rt-hero {
   .rt-faq__list { padding: 4px 18px; }
 }
 .rt-faq__item + .rt-faq__item {
-  border-top: 1px solid rgba(26, 10, 10, 0.12);
+  border-top: 1px solid var(--rt-rule);
 }
 .rt-faq__q {
   margin: 0;
@@ -759,6 +759,7 @@ html.rt-stage .rt-hero {
   isolation: isolate;
 }
 #rt-invite .button {
+  --btn: var(--rt-blue-ink);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -766,10 +767,10 @@ html.rt-stage .rt-hero {
   min-height: 46px;
   margin: 6px;
   padding: 10px 26px;
-  border: 1px solid var(--rt-ink);
+  border: 1px solid var(--btn);
   border-radius: 999px;
   background: transparent;
-  color: var(--rt-ink);
+  color: var(--btn);
   font-family: var(--rt-sans);
   font-size: 13px;
   font-weight: 500;
@@ -784,7 +785,7 @@ html.rt-stage .rt-hero {
 #rt-invite .button:focus-visible { outline: 2px solid var(--rt-focus); outline-offset: 3px; }
 #rt-invite .button.fill { background: var(--rt-red); border-color: var(--rt-red); color: var(--rt-paper); }
 @media (hover: hover) and (pointer: fine) {
-  #rt-invite .button:hover { background: var(--rt-ink); color: var(--rt-paper); }
+  #rt-invite .button:hover { background: var(--btn); color: var(--rt-paper); }
   #rt-invite .button.fill:hover { background: #5a1515; border-color: #5a1515; }
 }
 #rt-invite .button.disabled { opacity: 0.7; pointer-events: none; cursor: progress; }
@@ -810,6 +811,17 @@ html.rt-stage .rt-hero {
 .rt-rsvp__card::before,
 .rt-notes .commentForm::before,
 .rt-note::before,
+.rt-tabs__sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: var(--rt-tex-fibre);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.45;
+  pointer-events: none;
+}
 .rt-rsvp__by {
   margin-top: 14px;
   font-family: var(--rt-serif);
@@ -931,7 +943,7 @@ html.rt-stage .rt-hero {
 }
 .calGroup {
   padding: 12px 0;
-  border-top: 1px solid rgba(26, 10, 10, 0.12);
+  border-top: 1px solid var(--rt-rule);
 }
 .calGroup__title {
   margin: 0 0 6px;
@@ -1288,31 +1300,6 @@ html.rt-stage .rt-hero {
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   The table: one tablecloth, fixed behind every section after the film,
-   so it never tiles or breaks. Cards and chalk sit on top of it.
-   ───────────────────────────────────────────────────────────────── */
-.rt-cloth {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background-color: #ece6da;
-  background-image: var(--rt-tex-cloth);
-  background-size: cover;
-  background-position: center;
-  pointer-events: none;
-}
-#rt-invite .rt-main,
-#rt-invite .rt-footer {
-  position: relative;
-  z-index: 1;
-}
-
-/* The border drawings float just above the cloth */
-.rt-border__item .chalk svg {
-  filter: drop-shadow(0 9px 6px rgba(26, 10, 10, 0.26));
-}
-
-/* ─────────────────────────────────────────────────────────────────
    Ox blood stationery: the invitation and the reply card, as on the
    save-the-date (#761d1d with the fibre texture), in beige ink.
    ───────────────────────────────────────────────────────────────── */
@@ -1330,8 +1317,7 @@ html.rt-stage .rt-hero {
 }
 .rt-invitation .rt-card::before,
 .rt-rsvp__card::before {
-  opacity: 0.3;
-  mix-blend-mode: multiply;
+  opacity: 0.35;
 }
 .rt-invitation .rt-card :focus-visible,
 .rt-rsvp__card :focus-visible {
@@ -1457,15 +1443,6 @@ html.rt-stage .rt-hero {
   outline: 2px solid var(--rt-focus);
   outline-offset: 2px;
 }
-.rt-nav__kicker {
-  grid-column: 1;
-  font-family: var(--rt-sans);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--rt-blue-ink);
-}
 .rt-nav__title {
   grid-column: 1;
   margin-top: 2px;
@@ -1515,7 +1492,7 @@ html.rt-stage .rt-hero {
   list-style: none;
   margin: 0;
   padding: 2px 16px 14px;
-  border-top: 1px solid rgba(26, 10, 10, 0.12);
+  border-top: 1px solid var(--rt-rule);
   opacity: 0;
   transform: translateY(-6px);
   transition: opacity 160ms ease, transform 220ms var(--rt-ease-out);
@@ -1568,7 +1545,6 @@ html.rt-stage .rt-hero {
     height: 46px;
     padding: 0 15px;
   }
-  .rt-nav__kicker,
   .rt-nav__title {
     display: none;
   }
@@ -1650,7 +1626,7 @@ html.rt-stage .rt-hero {
   gap: 8px 32px;
   padding: 24px 0;
 }
-.rt-guide__place + .rt-guide__place { border-top: 1px solid rgba(26, 10, 10, 0.12); }
+.rt-guide__place + .rt-guide__place { border-top: 1px solid var(--rt-rule); }
 .rt-guide__place-name {
   margin: 0;
   font-family: var(--rt-serif);
@@ -1780,3 +1756,32 @@ html.rt-stage .rt-hero {
 @media (prefers-reduced-motion: reduce) {
   .rt-music.is-on .rt-music__bars i { animation: none; height: 8px; }
 }
+
+/* ── The lace doily under the invitation card: stacked stationery ── */
+.rt-doily {
+  position: absolute;
+  z-index: 0;
+  top: 34px;
+  left: 50%;
+  width: min(820px, 128vw);
+  aspect-ratio: 1 / 1;
+  background: url("https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a033a33b6a94b44004f54d_obj_lace_vintage-lace-handkerchief-19.png") no-repeat center / contain;
+  transform: translateX(-50%) rotate(-7deg);
+  filter: drop-shadow(0 6px 10px rgba(26, 10, 10, 0.18));
+  pointer-events: none;
+}
+@media (orientation: portrait) {
+  .rt-doily { top: 8px; width: 118vw; }
+}
+
+/* ── Dappled arbor shadow over the paper sections (as on the save-the-date) ── */
+.rt-arbor {
+  position: fixed;
+  inset: 0;
+  z-index: 700;
+  background: url("https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a3630df5f90f2681150a99_shadow_arbor-06.png") no-repeat center / cover;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 900ms ease;
+}
+.rt-arbor.is-on { opacity: 0.45; }

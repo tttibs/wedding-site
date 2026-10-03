@@ -86,7 +86,7 @@ var GUIDE = {
 var MUSIC = { src: '', volume: 0.3 };
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261008a';
+var RT_VERSION = '20261008b';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -295,6 +295,7 @@ function heroMarkup() {
 function invitationMarkup() {
   return '<section class="rt-invitation" id="rt-invitation" aria-labelledby="rt-invitation-names">' +
     borderMarkup('#rt-invitation') +
+    '<div class="rt-doily" aria-hidden="true"></div>' +
     '<div class="rt-card">' +
       '<div class="rt-greet">' +
         '<p class="rt-greet__to"><i>to</i></p>' +
@@ -544,8 +545,7 @@ function navMarkup() {
   return '<nav class="rt-nav" aria-label="Sections">' +
     '<div class="rt-nav__card">' +
       '<button type="button" class="rt-nav__toggle" aria-expanded="false" aria-controls="rt-nav-panel">' +
-        '<span class="rt-nav__kicker" aria-hidden="true">Contents</span>' +
-        '<span class="rt-nav__title">The weekend</span>' +
+        '<span class="rt-nav__title">Menu</span>' +
         '<span class="rt-nav__icon" aria-hidden="true"><i></i><i></i><i></i></span>' +
         '<span class="rt-sr">: open the list of sections</span>' +
       '</button>' +
@@ -572,7 +572,7 @@ function promptMarkup() {
 
 function render(mount) {
   mount.innerHTML = introMarkup() +
-    '<div class="rt-cloth" aria-hidden="true"></div>' +
+
     '<main class="rt-main">' +
       '<div class="rt-opening">' + heroMarkup() + invitationMarkup() + '</div>' +
       eventsMarkup() +
@@ -583,6 +583,7 @@ function render(mount) {
     '</main>' +
     footerMarkup() +
     navMarkup() +
+    '<div class="rt-arbor" aria-hidden="true"></div>' +
     promptMarkup();
   if (showIntro) html.classList.add('rt-lock');
 }
@@ -1087,6 +1088,28 @@ function initMusic() {
     };
     window.addEventListener('pointerdown', resume);
   }
+}
+
+// The arbor shadow falls across the paper sections, not the film.
+function initArbor() {
+  var arbor = document.querySelector('.rt-arbor');
+  var media = document.querySelector('.rt-hero__media');
+  if (!arbor) return;
+  var ticking = false;
+  function check() {
+    ticking = false;
+    var r = media && media.getClientRects().length ? media.getBoundingClientRect() : null;
+    arbor.classList.toggle('is-on', !r || r.bottom <= window.innerHeight * 0.35);
+  }
+  function queue() { if (!ticking) { ticking = true; requestAnimationFrame(check); } }
+  window.addEventListener('scroll', queue, { passive: true });
+  window.addEventListener('resize', queue);
+  // In the opening, the film stays pinned at the top until it has faded
+  stageOpen.then(function () {
+    if (html.classList.contains('rt-stage')) arbor.classList.add('is-on');
+    queue();
+  });
+  check();
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -1699,6 +1722,7 @@ function boot() {
   initChurch(chalkReady);
   initFaq();
   initNav();
+  initArbor();
   initMusic();
   initGuide();
   updateCountdown();
