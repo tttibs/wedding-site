@@ -14,6 +14,7 @@
   --rt-sans: "Montserrat", Helvetica, Arial, sans-serif;
   --rt-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --rt-tex-cotton: url("https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a31ae67aacd01f62852319_tx_bg_heavy-cotton.png");
+  --rt-tex-cloth: url("https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a1c1eb3d0433641a8578c7_AdobeStock_284123015.jpeg");
   --rt-tex-fibre: url("https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a038bf6dc4a990a9424663_tx_card_fiber-02%20(1).png");
 }
 
@@ -204,20 +205,12 @@ html.rt-lock body {
 .rt-invitation {
   position: relative;
   z-index: 3;
-  padding: 72px 16px 96px;
+  padding: 88px 16px 112px;
   background-color: var(--rt-paper);
-  isolation: isolate;
-}
-.rt-invitation::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image: var(--rt-tex-cotton);
+  background-image: var(--rt-tex-cloth);
   background-size: cover;
   background-position: center;
-  opacity: 0.22;
-  pointer-events: none;
+  isolation: isolate;
 }
 /* Landscape, once the film is pinned: the paper is laid over the end of the
    film, rising from below like a sheet set down on the table */
@@ -235,13 +228,15 @@ html.rt-lock body {
 
 .rt-card {
   position: relative;
+  z-index: 1;
   max-width: 600px;
   margin: 0 auto;
   padding: 56px 28px 48px;
   background-color: #fbf8f0;
   box-shadow:
-    0 1px 2px rgba(26, 10, 10, 0.06),
-    0 22px 44px -18px rgba(26, 10, 10, 0.22);
+    0 2px 4px rgba(26, 10, 10, 0.16),
+    0 14px 28px -10px rgba(26, 10, 10, 0.32),
+    0 38px 70px -24px rgba(26, 10, 10, 0.5);
   isolation: isolate;
 }
 .rt-card::before {
@@ -376,46 +371,48 @@ html.rt-lock body {
   margin-bottom: -0.08em;
 }
 
-/* ── Fixed chalk frame ── */
-.rt-frame {
-  position: fixed;
+/* ── Chalk border: drawings and flourishes down the page margins ── */
+.rt-border {
+  position: absolute;
   inset: 0;
-  z-index: 50;
+  z-index: 0;
+  overflow: hidden;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 900ms cubic-bezier(0.45, 0, 0.2, 1);
 }
-.rt-frame.is-visible {
-  opacity: 1;
-}
-.rt-frame__line {
+.rt-border__item {
   position: absolute;
-  inset: 14px;
-  border: 1px solid rgba(26, 10, 10, 0.22);
-  /* paper margin outside the line, like a mount: content slides beneath it */
-  box-shadow: 0 0 0 15px var(--rt-paper);
+  /* native width x size factor x a scale that shrinks with the margin */
+  width: calc(var(--w) * var(--f) * min(0.85px, (100vw - 640px) / 760));
+  transform: rotate(var(--rot));
 }
-.rt-frame__item {
-  position: absolute;
-}
-.rt-frame__item .chalk {
-  width: calc(var(--w) * 0.36px);
-}
-.rt-frame__item--tl { top: 34px; left: 34px; }
-.rt-frame__item--tr { top: 34px; right: 34px; }
-.rt-frame__item--bl { bottom: 34px; left: 34px; }
-.rt-frame__item--br { bottom: 34px; right: 34px; }
-.rt-frame__item--l  { top: 50%; left: 34px; transform: translateY(-50%); }
-.rt-frame__item--r  { top: 50%; right: 34px; transform: translateY(-50%); }
-/* Phones and narrow screens: just thin bands at the top and bottom */
-@media not all and (min-width: 1100px) and (orientation: landscape) {
-  .rt-frame__line {
-    inset: 10px 10px auto 10px;
-    height: calc(100% - 20px);
-    border-left: 0;
-    border-right: 0;
+.rt-border__item--l { left: calc(var(--x) * 1%); }
+.rt-border__item--r { right: calc(var(--x) * 1%); }
+
+/* Phones and portrait tablets: no margin. Swirls weave in and out of the
+   edges; the larger drawings sit below the card, peeking in from the sides. */
+@media (orientation: portrait), (max-width: 1023px) {
+  .rt-border__item {
+    display: none;
+    width: calc(var(--w) * var(--f) * 0.6px);
   }
-  .rt-frame__item { display: none; }
+  .rt-border__item--phone-edge,
+  .rt-border__item--phone-foot { display: block; }
+  .rt-border__item--phone-foot {
+    top: auto !important;
+    bottom: calc(var(--pb) * 1px);
+    width: calc(var(--w) * var(--f) * 0.5px);
+  }
+  .rt-border__item--l {
+    left: 0;
+    transform: translateX(calc(var(--peek) * -1%)) rotate(var(--prot));
+  }
+  .rt-border__item--r {
+    right: 0;
+    transform: translateX(calc(var(--peek) * 1%)) rotate(var(--prot));
+  }
+  .rt-invitation {
+    padding-bottom: 290px;
+  }
 }
 
 /* ── Guest name prompt (no ?name= in the link) ── */

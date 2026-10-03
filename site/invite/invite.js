@@ -23,7 +23,7 @@ var $ = window.jQuery;
 // ─────────────────────────────────────────────────────────────────
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261003e';
+var RT_VERSION = '20261004a';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -51,13 +51,25 @@ var HERO = {
 var PORTRAIT_MQ = '(orientation: portrait)';   // keep in step with invite.css
 var IS_PORTRAIT = !!(window.matchMedia && window.matchMedia(PORTRAIT_MQ).matches);
 
-// Fixed chalk frame: one illustration draws into the frame as each section is
-// reached, then stays. Desktop only (wide landscape screens); phones get the
-// thin top and bottom bands. Add a row here as each section is built.
-var FRAME_MQ = '(min-width: 1100px) and (orientation: landscape)';   // keep in step with invite.css
-var FRAME_ITEMS = [
-  { section: '#rt-invitation', slot: 'tl', name: 'candelabra', w: 306, h: 432 }
-];
+// Chalk border: illustrations and flourishes scattered down the page margins.
+// They scroll with the page and each draws itself once as it comes into view.
+// Per item: side 'l' or 'r'; top as a % of the section; x = distance in from
+// the page edge (% of the page width); f = size factor; rot in degrees.
+// phone: shown on phones too, where there's no margin. A swirl peeks in from
+// the edge ({ peek: % hidden off-screen }); a drawing sits in the space below
+// the card ({ bottom: px from the section's foot, peek, rot }).
+// Add a block here as each section is built.
+var BORDER = {
+  '#rt-invitation': [
+    { name: 'candelabra',  w: 306, h: 432, side: 'l', top: 3,  x: 4,  f: 1.15, rot: -5, phone: { bottom: 18, peek: 24, rot: -8 } },
+    { name: 'swirl-tall',  w: 220, h: 920, side: 'l', top: 38, x: 9,  f: 0.62, phone: { peek: 55 } },
+    { name: 'olive-sprig', w: 234, h: 236, side: 'l', top: 77, x: 4,  f: 1.0,  rot: 14 },
+    { name: 'swirl-short', w: 200, h: 600, side: 'r', top: 1,  x: 12, f: 0.6,  rot: 4, phone: { peek: 55 } },
+    { name: 'wine-bottle', w: 166, h: 408, side: 'r', top: 25, x: 6,  f: 1.1,  rot: 7, phone: { bottom: 34, peek: 22, rot: 14 } },
+    { name: 'swirl-curl',  w: 280, h: 180, side: 'r', top: 56, x: 9,  f: 0.8,  rot: -8 },
+    { name: 'carafe',      w: 274, h: 494, side: 'r', top: 65, x: 6,  f: 0.95, rot: -6 }
+  ]
+};
 
 // ─────────────────────────────────────────────────────────────────
 //  DATA: copied verbatim from site/main.js (save-the-date)
@@ -135,6 +147,7 @@ function heroMarkup() {
 // is pinned with it, so the greeting shows beneath the film while it plays.
 function invitationMarkup() {
   return '<section class="rt-invitation" id="rt-invitation" aria-labelledby="rt-invitation-names">' +
+    borderMarkup('#rt-invitation') +
     '<div class="rt-card">' +
       '<div class="rt-greet">' +
         '<p class="rt-greet__to"><i>to</i></p>' +
@@ -166,16 +179,23 @@ function nextMarkup() {
   return '<section class="rt-next"><p class="rt-next__label">Sections 3-8 to follow</p></section>';
 }
 
-function frameMarkup() {
-  var items = '';
-  if (window.matchMedia && window.matchMedia(FRAME_MQ).matches) {
-    FRAME_ITEMS.forEach(function (it, i) {
-      items += '<div class="rt-frame__item rt-frame__item--' + it.slot + '" data-frame-item="' + i + '">' +
-        chalkDiv(it.name, it.w + '/' + it.h, { extra: ' data-chalk-mode="manual"', style: '--w:' + it.w }) +
-      '</div>';
-    });
-  }
-  return '<div class="rt-frame" aria-hidden="true"><div class="rt-frame__line"></div>' + items + '</div>';
+// The chalk border layer for one section (sits behind the section's content).
+function borderMarkup(selector) {
+  var items = BORDER[selector];
+  if (!items) return '';
+  return '<div class="rt-border" aria-hidden="true">' + items.map(function (it) {
+    // Width is relative to the drawing's native width, so line weights match
+    // across all the illustrations (as chalk-draw's README recommends).
+    var ph = it.phone, cls = '';
+    var style = 'top:' + it.top + '%;--x:' + it.x + ';--w:' + it.w + ';--f:' + it.f + ';--rot:' + (it.rot || 0) + 'deg';
+    if (ph) {
+      cls = ph.bottom != null ? ' rt-border__item--phone-foot' : ' rt-border__item--phone-edge';
+      style += ';--peek:' + (ph.peek || 50) + ';--prot:' + (ph.rot || 0) + 'deg' + (ph.bottom != null ? ';--pb:' + ph.bottom : '');
+    }
+    return '<div class="rt-border__item rt-border__item--' + it.side + cls + '" style="' + style + '">' +
+      chalkDiv(it.name, it.w + '/' + it.h, { extra: ' data-chalk-start="0.95" data-chalk-end="0.55"' }) +
+    '</div>';
+  }).join('') + '</div>';
 }
 
 // Shown when there is no ?name= (logic in initGuestName, from main.js).
@@ -193,7 +213,7 @@ function render(mount) {
       '<div class="rt-opening">' + heroMarkup() + invitationMarkup() + '</div>' +
       nextMarkup() +
     '</main>' +
-    frameMarkup() + promptMarkup();
+    promptMarkup();
   if (showIntro) html.classList.add('rt-lock');
 }
 
@@ -445,45 +465,6 @@ function initReveals(gsap, ScrollTrigger, SplitText) {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────
-//  FRAME: fixed chalk border; illustrations draw in as sections are reached
-// ─────────────────────────────────────────────────────────────────
-
-function initFrame(chalkReady) {
-  var frame = document.querySelector('.rt-frame');
-  var media = document.querySelector('.rt-hero__media');
-  if (!frame || !('IntersectionObserver' in window)) return;
-
-  // The frame belongs to the paper, not the film: show it once the film has
-  // scrolled away. (A direct check: IntersectionObserver misreports the film
-  // while it is inside the pinned container on portrait screens.)
-  var ticking = false;
-  function check() {
-    ticking = false;
-    frame.classList.toggle('is-visible', !media || media.getBoundingClientRect().bottom <= 0);
-  }
-  function queue() { if (!ticking) { ticking = true; requestAnimationFrame(check); } }
-  window.addEventListener('scroll', queue, { passive: true });
-  window.addEventListener('resize', queue);
-  check();
-
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      io.unobserve(e.target);
-      var item = frame.querySelector('[data-frame-item="' + e.target.__rtFrameItem + '"] .chalk');
-      if (item) chalkReady.then(function () { window.ChalkDraw.play(item, 2200); });
-    });
-  }, { rootMargin: '0px 0px -40% 0px' });
-
-  FRAME_ITEMS.forEach(function (it, i) {
-    var section = document.querySelector(it.section);
-    if (!section || !frame.querySelector('[data-frame-item="' + i + '"]')) return;
-    section.__rtFrameItem = i;
-    io.observe(section);
-  });
-}
-
 // The scroll cue fades in once the hero is showing, and out once scrolling starts.
 function initCue() {
   var cue = document.querySelector('.rt-cue');
@@ -613,7 +594,6 @@ function boot() {
   chalkReady.catch(function (err) { console.error('[invite]', err); });
   runIntro(chalkReady);
   initCue();
-  initFrame(chalkReady);
   if (window.jQuery) {
     $ = window.jQuery;
     initGuestName();

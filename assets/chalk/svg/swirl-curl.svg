@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 180" width="280" height="180" data-chalk="1" data-step="4" data-minw="5" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.5,0.5,0.8" data-speed="2.2" data-overlap="0.8">
+  <title>Chalk flourish</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="7" d="M14 140 C56 58,138 34,176 84 C198 114,170 146,146 126 C124 108,148 74,182 78 C220 82,250 116,264 156"/>
+    <path stroke-width="5" d="M96 62 C92 36,108 18,128 22 C142 26,138 44,126 40"/>
+  </g>
+</svg>
