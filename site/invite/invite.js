@@ -23,7 +23,7 @@ var $ = window.jQuery;
 // ─────────────────────────────────────────────────────────────────
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261005b';
+var RT_VERSION = '20261005c';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -266,6 +266,8 @@ function faqMarkup() {
           '</div>' +
         '</div>';
       }).join('') + '</div>' +
+      // Both answers end "please don't hesitate to reach out": give them the way
+      '<p class="rt-faq__contact">Questions? <a href="mailto:hello@rebeccaandthomas.net">hello@rebeccaandthomas.net</a></p>' +
     '</div>' +
   '</section>';
 }
@@ -667,6 +669,10 @@ function initFaq() {
       // Closed panels are inert: out of the tab order and the accessibility tree
       if (open) panel.removeAttribute('inert');
       else panel.setAttribute('inert', '');
+    });
+    // The page below has moved: recompute scroll-driven positions
+    panel.addEventListener('transitionend', function (e) {
+      if (e.target === panel && e.propertyName === 'grid-template-rows' && window.ScrollTrigger) window.ScrollTrigger.refresh();
     });
     // Arrow keys, Home and End move between the questions
     btn.addEventListener('keydown', function (e) {
