@@ -87,7 +87,7 @@ var GUIDE = {
 var MUSIC = { src: 'music/piano.mp3', volume: 0.3, autoplay: true };
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261010a';
+var RT_VERSION = '20261010b';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -275,6 +275,7 @@ function introMarkup() {
     '<div class="chalk rt-intro__mark" data-chalk-inline data-chalk-mode="manual" data-chalk-color="#1a0a0a" style="aspect-ratio:1066/1061">' +
       MONOGRAM_SVG +
     '</div>' +
+    '<p class="rt-intro__note">Just a moment while we set the table\u2026</p>' +
   '</div>';
 }
 
@@ -599,8 +600,16 @@ var introDone = showIntro ? null : Promise.resolve();
 
 // Everything the opening needs before the paper lifts: page images and fonts,
 // every film frame, and scroll positions measured. Resolved in boot().
-var resolveSiteReady;
-var siteReady = new Promise(function (r) { resolveSiteReady = r; });
+var resolveSiteReady, siteIsReady = false;
+var siteReady = new Promise(function (r) { resolveSiteReady = r; }).then(function () { siteIsReady = true; });
+
+// How much of that has arrived (each part 0 to 1), for the intro's drawing
+var LOAD = { frames: 0, motion: 0, page: 0, fonts: 0 };
+function loadProgress() {
+  if (siteIsReady) return 1;
+  var p = LOAD.frames * 0.7 + LOAD.motion * 0.15 + LOAD.page * 0.1 + LOAD.fonts * 0.05;
+  return Math.min(0.95, p);   // the last stroke waits for everything
+}
 
 function runIntro(chalkReady) {
   if (!showIntro) return;
@@ -625,9 +634,10 @@ function runIntro(chalkReady) {
   }
   function skip() { finish(true); }
 
-  // The paper lifts once the monogram has drawn AND the site has loaded, so
-  // the first scroll out of the film is smooth rather than catching up.
-  var drawn = false, ready = false;
+  // The monogram draws as the site loads (a loading indicator), and the paper
+  // lifts once it is complete AND the site is ready, so the first scroll out
+  // of the film is smooth rather than catching up.
+  var drawn = false, ready = false, hurry = false;
   function maybeFinish() { if (drawn && ready) finish(false); }
 
   // Input can only skip the wait for the drawing, never the loading. Ignore
@@ -643,9 +653,11 @@ function runIntro(chalkReady) {
     }, Math.max(0, armAt - performance.now()));
   });
 
-  // Never hold the page hostage: fade out after 15s even if loading stalls
-  // (anything still missing carries on loading behind it).
-  setTimeout(function () { finish(false); }, 15000);
+  // Never hold the page hostage: after 15s the drawing finishes quickly and
+  // the paper lifts even if loading stalls (anything still missing carries on
+  // loading behind it).
+  setTimeout(function () { hurry = true; ready = true; maybeFinish(); }, 15000);
+  setTimeout(function () { finish(false); }, 17500);
 
   // The drawing is inline, so it only waits for chalk-draw.js. If that can't
   // arrive promptly (very slow connection), stop waiting on the drawing.
@@ -655,7 +667,7 @@ function runIntro(chalkReady) {
   chalkReady.then(function () {
     if (finished) return;
     started = true;
-    return window.ChalkDraw.play(mark, 2800);
+    return window.ChalkDraw.follow(mark, function () { return hurry ? 1 : loadProgress(); }, 2400);
   }).then(function () {
     setTimeout(function () { drawn = true; maybeFinish(); }, 800);
   }).catch(function () { drawn = true; maybeFinish(); });
@@ -716,7 +728,7 @@ function createHeroScrub(section) {
   });
   var settled = 0, resolveReady;
   var ready = new Promise(function (r) { resolveReady = r; });
-  function done() { if (++settled === n) resolveReady(); }
+  function done() { LOAD.frames = ++settled / n; if (settled === n) resolveReady(); }
   var active = 0;
   function pump() {
     while (active < 6 && queue.length) {
@@ -780,6 +792,7 @@ function initStage(gsap, ScrollTrigger) {
 
   var scrub = HERO.mode === 'frames' ? createHeroScrub(hero) : null;
   if (scrub) heroReady = scrub.ready;
+  else LOAD.frames = 1;
   var state = { p: 0 };
   var tl = gsap.timeline({
     scrollTrigger: {
@@ -1802,8 +1815,10 @@ function boot() {
     initStage(gsap, ScrollTrigger);
     initEvents(gsap, ScrollTrigger);
     initReveals(gsap, ScrollTrigger, window.SplitText);
+    LOAD.motion = 1;
     return heroReady;
   }).catch(function (err) {
+    LOAD.motion = LOAD.frames = 1;
     console.error('[invite] Motion disabled:', err);
     openStage(false);
     watchDrawings(chalkReady, '.rt-chapter__art .chalk');
@@ -1814,8 +1829,9 @@ function boot() {
   var pageLoaded = new Promise(function (r) {
     if (document.readyState === 'complete') r();
     else window.addEventListener('load', function () { r(); });
-  });
-  var fontsLoaded = document.fonts && document.fonts.ready ? document.fonts.ready.catch(function () {}) : null;
+  }).then(function () { LOAD.page = 1; });
+  var fontsLoaded = (document.fonts && document.fonts.ready ? document.fonts.ready.catch(function () {}) : Promise.resolve())
+    .then(function () { LOAD.fonts = 1; });
   Promise.all([pageLoaded, fontsLoaded, motion]).then(function () {
     if (window.ScrollTrigger && html.classList.contains('rt-motion')) window.ScrollTrigger.refresh();
     resolveSiteReady();

@@ -185,8 +185,25 @@
       var it = items[i];
       if (!it.segs || it.done) continue;
       if (it.manual) {
-        // time-driven: playAt is set by ChalkDraw.play()
         if (it.playAt == null) continue;
+        if (it.goal) {
+          // progress-driven (ChalkDraw.follow): ease toward the caller's
+          // progress, but never faster than playDur from start to finish
+          var cap = Math.min(1, (now - it.playAt) / it.playDur);
+          var goal = Math.max(0, Math.min(cap, it.goal()));
+          if (goal > it.shown) {
+            it.shown += Math.max(0.002, (goal - it.shown) * Math.min(1, dt / 220));
+            if (goal - it.shown < 0.002) it.shown = goal;
+            it.target = it.shown;
+            // progress is measured in ink laid down, not drawing time, so
+            // half loaded looks half drawn
+            var idx = Math.min(it.segs.length, Math.ceil(it.shown * it.segs.length));
+            reveal(it, idx ? it.segs[idx - 1].t / it.total : 0);
+          }
+          if (!it.done) busy = true;   // keep watching the progress
+          continue;
+        }
+        // time-driven: playAt is set by ChalkDraw.play()
         var tp = Math.max(0, Math.min(1, (now - it.playAt) / it.playDur));
         if (tp > it.shown) { it.shown = it.target = tp; reveal(it, tp); }
         if (tp < 1) busy = true;
@@ -273,6 +290,13 @@
         if (item.segs) { if (item.playAt == null) startPlay(item); }
         else prepare(item);
       });
+    },
+    // Draw a manual-mode container as progress() (0 to 1) rises, taking at
+    // least ms overall. Resolves when fully drawn.
+    follow: function (el, progress, ms) {
+      var item = itemFor(el);
+      item.goal = progress;
+      return this.play(el, ms);
     },
     // Instantly finish one container (or all if omitted)
     complete: function (el) {
