@@ -20,6 +20,9 @@
   --rt-sans: "Montserrat", Helvetica, Arial, sans-serif;
   --rt-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --rt-tex-cotton: url("https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a31ae67aacd01f62852319_tx_bg_heavy-cotton.png");
+  /* White paper cards with a laid texture over them at 15% */
+  --rt-card: #ffffff;
+  --rt-tex-laid: url("https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/6ad3ec769d17c4e6b78fac7c_tx_laid.webp");
   --rt-tex-fibre: url("https://cdn.prod.website-files.com/69a032f3f3d37a0b3745556f/69a038bf6dc4a990a9424663_tx_card_fiber-02%20(1).png");
 }
 
@@ -263,7 +266,7 @@ html.rt-stage .rt-hero {
   max-width: 600px;
   margin: 0 auto;
   padding: 56px 28px 48px;
-  background-color: #fbf8f0;
+  background-color: var(--rt-card);
   box-shadow:
     0 2px 4px rgba(26, 10, 10, 0.16),
     0 14px 28px -10px rgba(26, 10, 10, 0.32),
@@ -275,10 +278,10 @@ html.rt-stage .rt-hero {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image: var(--rt-tex-fibre);
+  background-image: var(--rt-tex-laid);
   background-size: cover;
   background-position: center;
-  opacity: 0.45;
+  opacity: 0.15;
   pointer-events: none;
 }
 @media (min-width: 640px) {
@@ -438,7 +441,7 @@ html.rt-stage .rt-hero {
 .rt-chapter {
   position: relative;
   padding: 36px 30px 34px;
-  background-color: #fbf8f0;
+  background-color: var(--rt-card);
   box-shadow:
     0 2px 4px rgba(26, 10, 10, 0.14),
     0 12px 24px -10px rgba(26, 10, 10, 0.26),
@@ -451,10 +454,10 @@ html.rt-stage .rt-hero {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image: var(--rt-tex-fibre);
+  background-image: var(--rt-tex-laid);
   background-size: cover;
   background-position: center;
-  opacity: 0.45;
+  opacity: 0.15;
   pointer-events: none;
 }
 .rt-chapter__art {
@@ -564,6 +567,37 @@ html.rt-stage .rt-hero {
     padding-top: 14px;
   }
 }
+/* The cards can also be swiped or dragged sideways (initEventsDrag); vertical
+   swipes stay with the browser */
+.rt-events--h { touch-action: pan-y; }
+@media (hover: hover) and (pointer: fine) {
+  .rt-events--h .rt-events__track { cursor: grab; }
+  .rt-events--h.is-dragging .rt-events__track { cursor: grabbing; }
+}
+.rt-events--h.is-dragging { user-select: none; -webkit-user-select: none; }
+
+/* Short landscape screens (tablets with browser bars): a more compact card,
+   a little wider so the text wraps into fewer lines */
+@media (orientation: landscape) and (max-height: 799px) {
+  .rt-events--h .rt-events__inner { padding: 3vh 0 2vh; }
+  .rt-events--h .rt-events__track { margin-top: 2vh; }
+  .rt-events--h .rt-chapter {
+    width: clamp(340px, 36vw, 440px);
+    padding: 22px 26px 20px;
+  }
+  .rt-events--h .rt-chapter__art {
+    height: 72px;
+    margin-bottom: 10px;
+  }
+  .rt-events--h .rt-chapter__title { font-size: 1.6rem; }
+  .rt-events--h .rt-chapter__when { margin-top: 8px; }
+  .rt-events--h .rt-chapter__text {
+    font-size: 0.86em;
+    line-height: 1.55;
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+}
 @media (orientation: portrait) {
   .rt-events:not(.rt-events--h) {
     padding-left: 10vw;
@@ -605,7 +639,7 @@ html.rt-stage .rt-hero {
 .rt-faq__list {
   margin-top: 44px;
   padding: 8px 32px 12px;
-  background-color: #fbf8f0;
+  background-color: var(--rt-card);
   box-shadow:
     0 2px 4px rgba(26, 10, 10, 0.14),
     0 12px 24px -10px rgba(26, 10, 10, 0.26),
@@ -619,10 +653,10 @@ html.rt-stage .rt-hero {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image: var(--rt-tex-fibre);
+  background-image: var(--rt-tex-laid);
   background-size: cover;
   background-position: center;
-  opacity: 0.45;
+  opacity: 0.15;
   pointer-events: none;
 }
 @media (max-width: 480px) {
@@ -738,24 +772,6 @@ html.rt-stage .rt-hero {
   margin-top: 0.9em;
 }
 /* Contact line under the card */
-.rt-faq__contact {
-  margin-top: 28px;
-  text-align: center;
-  font-size: max(0.78em, 13px);
-  letter-spacing: 0.06em;
-  color: var(--rt-ink-soft);
-}
-.rt-faq__contact a {
-  color: var(--rt-blue-ink);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  overflow-wrap: anywhere;
-}
-.rt-faq__contact a:focus-visible {
-  outline: 2px solid var(--rt-focus);
-  outline-offset: 3px;
-}
 @media (prefers-reduced-motion: reduce) {
   /* gentler, not none: the text still fades in */
   .rt-faq__panel,
@@ -769,7 +785,7 @@ html.rt-stage .rt-hero {
 /* ── Shared paper card + buttons for sections 5-7 ── */
 .rt-paper {
   position: relative;
-  background-color: #fbf8f0;
+  background-color: var(--rt-card);
   box-shadow:
     0 2px 4px rgba(26, 10, 10, 0.14),
     0 12px 24px -10px rgba(26, 10, 10, 0.26),
@@ -819,7 +835,7 @@ html.rt-stage .rt-hero {
   max-width: 600px;
   margin: 0 auto;
   padding: 56px 28px 52px;
-  background-color: #fbf8f0;
+  background-color: var(--rt-card);
   box-shadow:
     0 2px 4px rgba(26, 10, 10, 0.16),
     0 14px 28px -10px rgba(26, 10, 10, 0.32),
@@ -834,10 +850,10 @@ html.rt-stage .rt-hero {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image: var(--rt-tex-fibre);
+  background-image: var(--rt-tex-laid);
   background-size: cover;
   background-position: center;
-  opacity: 0.45;
+  opacity: 0.15;
   pointer-events: none;
 }
 .rt-rsvp__by {
@@ -1025,7 +1041,7 @@ html.rt-stage .rt-hero {
   max-width: 560px;
   margin: 0 auto;
   padding: 48px 28px 40px;
-  background-color: #fbf8f0;
+  background-color: var(--rt-card);
   box-shadow:
     0 2px 4px rgba(26, 10, 10, 0.14),
     0 12px 24px -10px rgba(26, 10, 10, 0.26),
@@ -1054,7 +1070,7 @@ html.rt-stage .rt-hero {
 .rt-note {
   position: relative;
   padding: 26px 24px 20px;
-  background-color: #fbf8f0;
+  background-color: var(--rt-card);
   box-shadow:
     0 1px 2px rgba(26, 10, 10, 0.12),
     0 10px 20px -10px rgba(26, 10, 10, 0.3);
@@ -1078,11 +1094,6 @@ html.rt-stage .rt-hero {
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.04em;
-}
-.rt-note__date {
-  margin-top: 4px;
-  font-size: 12px;
-  color: var(--rt-ink-soft);
 }
 /* Settle-in, set only by JS (initNotesSettle) */
 .rt-note.is-waiting {
@@ -1231,7 +1242,7 @@ html.rt-stage .rt-hero {
   width: min(320px, calc(100vw - 32px));
   padding: 18px 22px 20px;
   transform: translateX(-50%);
-  background: rgba(251, 248, 240, 0.98);
+  background: rgba(255, 255, 255, 0.98);
   box-shadow: 0 1px 2px rgba(26, 10, 10, 0.08), 0 18px 40px -12px rgba(26, 10, 10, 0.3);
   font-family: var(--rt-sans);
   text-align: center;
@@ -1333,6 +1344,7 @@ html.rt-stage .rt-hero {
 }
 .rt-invitation .rt-card::before,
 .rt-rsvp__card::before {
+  background-image: var(--rt-tex-fibre);
   opacity: 0.35;
 }
 .rt-invitation .rt-card :focus-visible,
@@ -1427,7 +1439,7 @@ html.rt-stage .rt-hero {
 .rt-nav__card {
   position: relative;
   width: 176px;
-  background-color: #fbf8f0;
+  background-color: var(--rt-card);
   box-shadow:
     0 1px 2px rgba(26, 10, 10, 0.14),
     0 10px 22px -8px rgba(26, 10, 10, 0.34);
@@ -1438,9 +1450,9 @@ html.rt-stage .rt-hero {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image: var(--rt-tex-fibre);
+  background-image: var(--rt-tex-laid);
   background-size: cover;
-  opacity: 0.45;
+  opacity: 0.15;
   pointer-events: none;
 }
 .rt-nav__toggle {
@@ -1538,8 +1550,8 @@ html.rt-stage .rt-hero {
 }
 .rt-nav__extra:empty { display: none; }
 
-/* Phones and portrait tablets: a round button bottom-right; the list opens
-   as a card above it */
+/* Phones and portrait tablets: a round button bottom-right that opens
+   upwards into a card: Menu at the top, the sections, then music */
 @media (orientation: portrait), (max-width: 1023px) {
   .rt-nav {
     top: auto;
@@ -1550,8 +1562,6 @@ html.rt-stage .rt-hero {
   }
   .rt-nav.is-visible { transform: none; }
   .rt-nav__card {
-    display: flex;
-    flex-direction: column-reverse;   /* button at the foot, list above */
     width: 46px;
     border-radius: 23px;
     transition: width 280ms var(--rt-ease-out), border-radius 280ms var(--rt-ease-out);
@@ -1575,12 +1585,8 @@ html.rt-stage .rt-hero {
   }
   .rt-nav__list {
     min-width: 240px;
-    padding: 14px 16px 2px;
-    border-top: 0;
-    border-bottom: 1px solid var(--rt-rule);
-    transform: translateY(6px);
+    padding: 2px 16px 8px;
   }
-  .rt-nav.is-open .rt-nav__list { transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .rt-nav, .rt-nav__panel, .rt-nav__list, .rt-nav__card, .rt-nav__icon i { transition: none !important; }
@@ -1633,7 +1639,7 @@ html.rt-stage .rt-hero {
   max-width: 780px;
   margin: 18px auto 0;
   padding: 18px 40px 26px;
-  background-color: #fbf8f0;
+  background-color: var(--rt-card);
   box-shadow:
     0 2px 4px rgba(26, 10, 10, 0.14),
     0 12px 24px -10px rgba(26, 10, 10, 0.26),
@@ -1716,7 +1722,7 @@ html.rt-stage .rt-hero {
     padding: 12px 8px;
     border: 1px solid rgba(26, 10, 10, 0.18);
     border-radius: 999px;
-    background: rgba(251, 248, 240, 0.7);
+    background: rgba(255, 255, 255, 0.7);
     font-size: 12px;
     letter-spacing: 0.1em;
   }

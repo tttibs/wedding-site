@@ -87,7 +87,7 @@ var GUIDE = {
 var MUSIC = { src: 'music/piano.mp3', volume: 0.3, autoplay: true };
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261010b';
+var RT_VERSION = '20261017a';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -371,8 +371,6 @@ function faqMarkup() {
           '</div>' +
         '</div>';
       }).join('') + '</div>' +
-      // Both answers end "please don't hesitate to reach out": give them the way
-      '<p class="rt-faq__contact">Questions? <a href="mailto:hello@rebeccaandthomas.net">hello@rebeccaandthomas.net</a></p>' +
     '</div>' +
   '</section>';
 }
@@ -416,6 +414,8 @@ function rsvpMarkup() {
                 '<option value="1">1</option><option value="2" selected="">2</option><option value="3">3</option>' +
               '</select>' +
             '</div>' +
+            '<label class="rt-rsvp__note-label" for="rsvpDietary">Dietary requirements (optional)</label>' +
+            '<textarea name="dietary" id="rsvpDietary" placeholder="e.g. vegetarian, coeliac, nut allergy" rows="1"></textarea>' +
             '<label class="rt-rsvp__note-label" for="noteToHost">A private note to us (optional)</label>' +
             '<textarea name="note_to_host" id="noteToHost" placeholder="Leave a private message..." rows="2"></textarea>' +
           '</div>' +
@@ -807,7 +807,7 @@ function initStage(gsap, ScrollTrigger) {
       // Once the guest has scrolled on past the opening, it is done: the film
       // shouldn't play back over the invitation when they scroll up again.
       // (The scrub lags the scroll slightly, so the stage may not have opened yet.)
-      onLeave: function (self) { openStage(true); collapseStage(self, tl, hero, ScrollTrigger); }
+      onLeave: function (self) { openStage(true); collapseWhenStill(self, tl, hero, ScrollTrigger); }
     }
   });
   if (scrub) {
@@ -825,7 +825,42 @@ function initStage(gsap, ScrollTrigger) {
 // Removes the opening's pinned scroll distance and the film, keeping the page
 // exactly where it is on screen.
 var stageControl = null;   // set by initStage; lets navigation collapse it first
+var stageCollapsed = false;
+
+// The film is hidden at once, but the scroll distance is only taken away once
+// the page is at rest: mid-flick (iOS momentum, trackpad glide) the browser
+// ignores the corrective scrollTo, so the page would leap down by the whole
+// film's length, to the end of the order of events.
+var collapseWaiting = false;
+function collapseWhenStill(st, tl, hero, ScrollTrigger) {
+  if (collapseWaiting || stageCollapsed) return;
+  collapseWaiting = true;
+  hero.style.display = 'none';
+  var touching = 0, timer;
+  var opts = { passive: true };
+  function wait() {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      if (touching) return;
+      ['scroll', 'wheel'].forEach(function (t) { window.removeEventListener(t, wait, opts); });
+      window.removeEventListener('touchstart', down, opts);
+      window.removeEventListener('touchend', up, opts);
+      window.removeEventListener('touchcancel', up, opts);
+      collapseStage(st, tl, hero, ScrollTrigger);
+    }, 200);
+  }
+  function down(e) { touching = e.touches.length; clearTimeout(timer); }
+  function up(e) { touching = e.touches.length; wait(); }
+  ['scroll', 'wheel'].forEach(function (t) { window.addEventListener(t, wait, opts); });
+  window.addEventListener('touchstart', down, opts);
+  window.addEventListener('touchend', up, opts);
+  window.addEventListener('touchcancel', up, opts);
+  wait();
+}
+
 function collapseStage(st, tl, hero, ScrollTrigger) {
+  if (stageCollapsed) return;
+  stageCollapsed = true;
   stageControl = null;
   var distance = st.end - st.start;
   var y = window.pageYOffset;
@@ -908,9 +943,11 @@ function drawArt(card, delay) {
 
 // The chapters slide in sideways on wide landscape screens and on phones
 // tall enough to hold a card; otherwise they stack.
+// Cards slide in sideways everywhere except screens too short to hold them
+// (a phone turned sideways); tablets in landscape with browser bars count.
 function eventsHorizontal() {
   if (IS_PORTRAIT) return window.innerHeight >= 640;
-  return window.innerWidth >= 1024 && window.innerHeight >= 720;
+  return window.innerWidth >= 900 && window.innerHeight >= 560;
 }
 
 function initEvents(gsap, ScrollTrigger) {
@@ -982,6 +1019,10 @@ function initEvents(gsap, ScrollTrigger) {
       invalidateOnRefresh: true
     }
   });
+  initEventsDrag(gsap, section, function () {
+    // the scroll range over which the cards pan, as scrollY values
+    return { from: pin.start, to: pin.start + land() + travel(), ratio: (land() * 0.5 + travel()) / Math.max(1, travel()) };
+  });
   cards.forEach(function (card) {
     // Each card is slid across the table: a slight turn that settles as it lands
     gsap.fromTo(card, { rotation: 3.5, y: 18 }, {
@@ -993,6 +1034,73 @@ function initEvents(gsap, ScrollTrigger) {
       onEnter: function () { cardShown.then(function () { drawArt(card, 150); }); }
     });
   });
+}
+
+// A sideways swipe (touch) or click-and-drag (mouse) on the order of events
+// moves the cards too. It is turned into page scroll, so it drives exactly the
+// same pan as scrolling and the two never disagree. touch-action: pan-y (CSS)
+// leaves vertical swipes to the browser. A flick carries on with a short glide.
+function initEventsDrag(gsap, section, range) {
+  var drag = null, glide = null, moved = false;
+  function within() { var r = range(); return window.pageYOffset >= r.from - 2 && window.pageYOffset <= r.to + 2; }
+  function scrollFor(dx) {
+    var r = range();
+    return Math.max(r.from, Math.min(r.to, drag.startY - dx * r.ratio));
+  }
+  function stopGlide() { if (glide) { glide.kill(); glide = null; } }
+
+  section.addEventListener('pointerdown', function (e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    stopGlide();
+    if (!within()) return;
+    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, startY: window.pageYOffset, on: false, samples: [] };
+    moved = false;
+  });
+  section.addEventListener('pointermove', function (e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!drag.on) {
+      if (Math.abs(dx) < 6 || Math.abs(dx) < Math.abs(dy)) {
+        if (Math.abs(dy) > 10) drag = null;   // a vertical gesture: leave it be
+        return;
+      }
+      drag.on = true;
+      drag.x = e.clientX;   // start from here, so the cards don't jump by the threshold
+      dx = 0;
+      section.classList.add('is-dragging');
+      try { section.setPointerCapture(e.pointerId); } catch (err) {}
+    }
+    moved = true;
+    var now = performance.now();
+    drag.samples.push([now, e.clientX]);
+    while (drag.samples.length > 2 && now - drag.samples[0][0] > 100) drag.samples.shift();
+    window.scrollTo(0, scrollFor(dx));
+    e.preventDefault();
+  });
+  function end(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    var d = drag;
+    drag = null;
+    section.classList.remove('is-dragging');
+    if (!d.on) return;
+    // Glide on in the direction of the flick
+    var s = d.samples, v = 0;
+    if (s.length > 1) {
+      var a = s[0], b = s[s.length - 1];
+      if (b[0] - a[0] > 0 && performance.now() - b[0] < 80) v = (b[1] - a[1]) / (b[0] - a[0]);   // px per ms
+    }
+    if (Math.abs(v) < 0.2) return;
+    var r = range();
+    var target = Math.max(r.from, Math.min(r.to, window.pageYOffset - v * 280 * r.ratio));
+    var proxy = { y: window.pageYOffset };
+    glide = gsap.to(proxy, { y: target, duration: 0.7, ease: 'power3.out', onUpdate: function () { window.scrollTo(0, proxy.y); } });
+  }
+  section.addEventListener('pointerup', end);
+  section.addEventListener('pointercancel', end);
+  // Any other scrolling input takes over from a glide
+  ['wheel', 'touchstart', 'keydown'].forEach(function (t) { window.addEventListener(t, stopGlide, { passive: true }); });
+  // A drag isn't a click
+  section.addEventListener('click', function (e) { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -1480,6 +1588,7 @@ function initForms() {
       attending:  attending === '1' ? 'Yes' : 'No',
       total:      $form.find('select[name="rsvp_total"]').val() || '1',
       note:       $form.find('textarea[name="note_to_host"]').val() || '',
+      dietary:    attending === '1' ? ($form.find('textarea[name="dietary"]').val() || '') : '',
       timestamp:  new Date().toISOString()
     };
 
@@ -1630,17 +1739,13 @@ function seeded(str, salt) {
 
 var noteObserver = null;
 function appendComment(c) {
-  var date = c.timestamp ? new Date(c.timestamp).toLocaleDateString('en-GB', {
-    day: 'numeric', month: 'long', year: 'numeric'
-  }) : '';
-
+  // No dates on the wall: guests shouldn't think their invitation came late
   var nameStr = (c.name && c.name !== 'Guest') ? $('<div>').text(c.name).html() : '';
 
   var key = (c.timestamp || '') + (c.comment || '');
   var $card = $('<article class="rt-note">').html(
     '<p class="rt-note__text">' + $('<div>').text(c.comment).html() + '</p>' +
-    (nameStr ? '<p class="rt-note__name">' + nameStr + '</p>' : '') +
-    (date ? '<p class="rt-note__date">' + date + '</p>' : '')
+    (nameStr ? '<p class="rt-note__name">' + nameStr + '</p>' : '')
   ).css({
     '--r': ((seeded(key, 1) * 6) - 3).toFixed(2) + 'deg',
     '--dx': ((seeded(key, 2) * 20) - 10).toFixed(1) + 'px',
