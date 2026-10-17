@@ -48,14 +48,15 @@ function doGet(e) {
 
 function saveRSVP(data) {
   var sheet = getOrCreateSheet(RSVP_SHEET_NAME, [
-    'Timestamp', 'Name', 'Attending', 'Total Guests', 'Note to Host'
+    'Timestamp', 'Name', 'Attending', 'Total Guests', 'Note to Host', 'Dietary Requirements'
   ]);
   sheet.appendRow([
     data.timestamp || new Date().toISOString(),
     data.name      || '',
     data.attending || '',
     data.total     || '',
-    data.note      || ''
+    data.note      || '',
+    data.dietary   || ''   // new last column, so existing columns don't move
   ]);
 }
 
