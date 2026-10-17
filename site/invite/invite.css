@@ -856,6 +856,18 @@ html.rt-stage .rt-hero {
   opacity: 0.15;
   pointer-events: none;
 }
+/* "We have you down as..." for a guest who has already replied */
+.rt-rsvp__prior {
+  max-width: 34ch;
+  margin: 18px auto 0;
+  font-family: var(--rt-serif);
+  font-style: italic;
+  font-size: 1.02em;
+  line-height: 1.55;
+  text-align: center;
+  text-wrap: balance;
+}
+.rt-rsvp__card .rt-rsvp__prior { color: var(--ink); }
 .rt-rsvp__by {
   margin-top: 14px;
   font-family: var(--rt-serif);

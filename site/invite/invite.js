@@ -1438,6 +1438,7 @@ function initGuestName() {
     $('#guestNameDisplay').html(escapeHtml(guestName));
     $('#commentGuestName').val(guestName);
     loadGuestAllowance(guestName);
+    loadPriorRSVP(guestName);
   } else {
     // No name in URL — show Guest and display soft prompt once the intro has gone
     guestName = 'Guest';
@@ -1506,17 +1507,52 @@ function applyGuestAllowance(max) {
   var selectEl = document.querySelector('.rsvpTotal');
   if (!selectEl) return;
   selectEl.innerHTML = '';
+  // keep a guest's earlier answer if they've already replied (loadPriorRSVP)
+  var pick = priorTotal && priorTotal <= max ? priorTotal : Math.min(max, 2);
   for (var i = 1; i <= max; i++) {
     var opt = document.createElement('option');
     opt.value = i;
     opt.text = i;
-    if (i === Math.min(max, 2)) opt.selected = true;
+    if (i === pick) opt.selected = true;
     selectEl.appendChild(opt);
   }
   if (max === 1) {
     var box = selectEl.closest('.rsvpTotalBox');
     if (box) box.style.display = 'none';
   }
+}
+
+// A guest who has already replied is told so, with their earlier answer
+// filled in, ready to confirm or change. The Apps Script returns only
+// attending and the guest count from their latest reply. If the lookup
+// fails or is slow, the card simply works as it always has.
+var priorTotal = null;
+function loadPriorRSVP(name) {
+  if (!name || name === 'Guest') return;
+  var ctrl = window.AbortController ? new AbortController() : null;
+  if (ctrl) setTimeout(function () { ctrl.abort(); }, 8000);
+  fetch(APPS_SCRIPT_URL + '?rsvp=' + encodeURIComponent(name), ctrl ? { signal: ctrl.signal } : {})
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (!d || !d.found) return;
+      var $form = $('.rsvpForm');
+      var $btn = $form.find('.button[type="submit"]');
+      // Don't disturb a guest who is already mid-reply or has just sent one
+      if ($btn.hasClass('disabled') || $btn.hasClass('success') || $form.find('input[name="rsvp_status"]:checked').length) return;
+      var yes = d.attending === 'Yes';
+      var n = Math.max(1, parseInt(d.total, 10) || 1);
+      var msg = yes
+        ? 'We have you down as joining us' + (n > 1 ? ', a party of ' + n : '') + '. If anything has changed, just update your reply below.'
+        : 'We have you down as unable to join us. If your plans change, just update your reply below.';
+      $('<p class="rt-rsvp__prior" role="status">').text(msg).hide().insertAfter('.rt-rsvp__by').fadeIn(500);
+      if (yes) {
+        priorTotal = n;
+        var sel = document.querySelector('.rsvpTotal');
+        if (sel && sel.querySelector('option[value="' + n + '"]')) sel.value = String(n);
+      }
+      $(yes ? '#attendYes' : '#attendNo').prop('checked', true).trigger('change');
+    })
+    .catch(function (err) { console.log('[PriorRSVP] lookup unavailable:', err && err.name); });
 }
 
 // ─────────────────────────────────────────────────────────────────
