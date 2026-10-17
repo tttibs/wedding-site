@@ -1019,6 +1019,10 @@ function initEvents(gsap, ScrollTrigger) {
       invalidateOnRefresh: true
     }
   });
+  initEventsDrag(gsap, section, function () {
+    // the scroll range over which the cards pan, as scrollY values
+    return { from: pin.start, to: pin.start + land() + travel(), ratio: (land() * 0.5 + travel()) / Math.max(1, travel()) };
+  });
   cards.forEach(function (card) {
     // Each card is slid across the table: a slight turn that settles as it lands
     gsap.fromTo(card, { rotation: 3.5, y: 18 }, {
@@ -1030,6 +1034,73 @@ function initEvents(gsap, ScrollTrigger) {
       onEnter: function () { cardShown.then(function () { drawArt(card, 150); }); }
     });
   });
+}
+
+// A sideways swipe (touch) or click-and-drag (mouse) on the order of events
+// moves the cards too. It is turned into page scroll, so it drives exactly the
+// same pan as scrolling and the two never disagree. touch-action: pan-y (CSS)
+// leaves vertical swipes to the browser. A flick carries on with a short glide.
+function initEventsDrag(gsap, section, range) {
+  var drag = null, glide = null, moved = false;
+  function within() { var r = range(); return window.pageYOffset >= r.from - 2 && window.pageYOffset <= r.to + 2; }
+  function scrollFor(dx) {
+    var r = range();
+    return Math.max(r.from, Math.min(r.to, drag.startY - dx * r.ratio));
+  }
+  function stopGlide() { if (glide) { glide.kill(); glide = null; } }
+
+  section.addEventListener('pointerdown', function (e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    stopGlide();
+    if (!within()) return;
+    drag = { id: e.pointerId, x: e.clientX, y: e.clientY, startY: window.pageYOffset, on: false, samples: [] };
+    moved = false;
+  });
+  section.addEventListener('pointermove', function (e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!drag.on) {
+      if (Math.abs(dx) < 6 || Math.abs(dx) < Math.abs(dy)) {
+        if (Math.abs(dy) > 10) drag = null;   // a vertical gesture: leave it be
+        return;
+      }
+      drag.on = true;
+      drag.x = e.clientX;   // start from here, so the cards don't jump by the threshold
+      dx = 0;
+      section.classList.add('is-dragging');
+      try { section.setPointerCapture(e.pointerId); } catch (err) {}
+    }
+    moved = true;
+    var now = performance.now();
+    drag.samples.push([now, e.clientX]);
+    while (drag.samples.length > 2 && now - drag.samples[0][0] > 100) drag.samples.shift();
+    window.scrollTo(0, scrollFor(dx));
+    e.preventDefault();
+  });
+  function end(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    var d = drag;
+    drag = null;
+    section.classList.remove('is-dragging');
+    if (!d.on) return;
+    // Glide on in the direction of the flick
+    var s = d.samples, v = 0;
+    if (s.length > 1) {
+      var a = s[0], b = s[s.length - 1];
+      if (b[0] - a[0] > 0 && performance.now() - b[0] < 80) v = (b[1] - a[1]) / (b[0] - a[0]);   // px per ms
+    }
+    if (Math.abs(v) < 0.2) return;
+    var r = range();
+    var target = Math.max(r.from, Math.min(r.to, window.pageYOffset - v * 280 * r.ratio));
+    var proxy = { y: window.pageYOffset };
+    glide = gsap.to(proxy, { y: target, duration: 0.7, ease: 'power3.out', onUpdate: function () { window.scrollTo(0, proxy.y); } });
+  }
+  section.addEventListener('pointerup', end);
+  section.addEventListener('pointercancel', end);
+  // Any other scrolling input takes over from a glide
+  ['wheel', 'touchstart', 'keydown'].forEach(function (t) { window.addEventListener(t, stopGlide, { passive: true }); });
+  // A drag isn't a click
+  section.addEventListener('click', function (e) { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
 }
 
 // ─────────────────────────────────────────────────────────────────

@@ -564,6 +564,15 @@ html.rt-stage .rt-hero {
     padding-top: 14px;
   }
 }
+/* The cards can also be swiped or dragged sideways (initEventsDrag); vertical
+   swipes stay with the browser */
+.rt-events--h { touch-action: pan-y; }
+@media (hover: hover) and (pointer: fine) {
+  .rt-events--h .rt-events__track { cursor: grab; }
+  .rt-events--h.is-dragging .rt-events__track { cursor: grabbing; }
+}
+.rt-events--h.is-dragging { user-select: none; -webkit-user-select: none; }
+
 /* Short landscape screens (tablets with browser bars): a more compact card,
    a little wider so the text wraps into fewer lines */
 @media (orientation: landscape) and (max-height: 799px) {
