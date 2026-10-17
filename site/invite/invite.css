@@ -1569,8 +1569,8 @@ html.rt-stage .rt-hero {
 }
 .rt-nav__extra:empty { display: none; }
 
-/* Phones and portrait tablets: a round button bottom-right; the list opens
-   as a card above it */
+/* Phones and portrait tablets: a round button bottom-right that opens
+   upwards into a card: Menu at the top, the sections, then music */
 @media (orientation: portrait), (max-width: 1023px) {
   .rt-nav {
     top: auto;
@@ -1581,8 +1581,6 @@ html.rt-stage .rt-hero {
   }
   .rt-nav.is-visible { transform: none; }
   .rt-nav__card {
-    display: flex;
-    flex-direction: column-reverse;   /* button at the foot, list above */
     width: 46px;
     border-radius: 23px;
     transition: width 280ms var(--rt-ease-out), border-radius 280ms var(--rt-ease-out);
@@ -1606,12 +1604,8 @@ html.rt-stage .rt-hero {
   }
   .rt-nav__list {
     min-width: 240px;
-    padding: 14px 16px 2px;
-    border-top: 0;
-    border-bottom: 1px solid var(--rt-rule);
-    transform: translateY(6px);
+    padding: 2px 16px 8px;
   }
-  .rt-nav.is-open .rt-nav__list { transform: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .rt-nav, .rt-nav__panel, .rt-nav__list, .rt-nav__card, .rt-nav__icon i { transition: none !important; }
