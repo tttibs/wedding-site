@@ -87,7 +87,7 @@ var GUIDE = {
 var MUSIC = { src: 'music/piano.mp3', volume: 0.3, autoplay: true };
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261010b';
+var RT_VERSION = '20261017a';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
