@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="16 26 368 349.1" width="368" height="349.1" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Maltese gallarija balcony</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="8" d="M48 70 L352 70"/>
+    <path stroke-width="7" d="M58 58 L342 58 L352 70"/>
+    <path stroke-width="7" d="M58 58 L48 70"/>
+    <path stroke-width="7" d="M60 70 L60 84 L340 84 L340 70"/>
+    <path stroke-width="8" d="M64 84 L64 252"/>
+    <path stroke-width="8" d="M154 84 L154 252"/>
+    <path stroke-width="8" d="M246 84 L246 252"/>
+    <path stroke-width="8" d="M336 84 L336 252"/>
+    <path stroke-width="6" d="M64 112 L336 112"/>
+    <path stroke-width="6" d="M109 112 L109 212"/>
+    <path stroke-width="6" d="M200 112 L200 212"/>
+    <path stroke-width="6" d="M291 112 L291 212"/>
+    <path stroke-width="6" d="M64 212 L336 212"/>
+    <path stroke-width="6" d="M80 222 L138 222 L138 242 L80 242 L80 222"/>
+    <path stroke-width="6" d="M170 222 L230 222 L230 242 L170 242 L170 222"/>
+    <path stroke-width="6" d="M262 222 L320 222 L320 242 L262 242 L262 222"/>
+    <path stroke-width="8" d="M48 252 L352 252 L344 264 L56 264 L48 252"/>
+    <path stroke-width="8" d="M72 264 C70 292,76 304,86 314 C96 326,94 342,83 343 C73 344,72 333,80 331"/>
+    <path stroke-width="8" d="M100 264 C101 284,99 298,93 308"/>
+    <path stroke-width="8" d="M186 264 C184 292,190 304,200 314 C210 326,208 342,197 343 C187 344,186 333,194 331"/>
+    <path stroke-width="8" d="M214 264 C215 284,213 298,207 308"/>
+    <path stroke-width="8" d="M300 264 C298 292,304 304,314 314 C324 326,322 342,311 343 C301 344,300 333,308 331"/>
+    <path stroke-width="8" d="M328 264 C329 284,327 298,321 308"/>
+  </g>
+</svg>

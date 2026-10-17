@@ -33,7 +33,9 @@ var $ = window.jQuery;
 var GUIDE = {
   intro: 'For those visiting Malta for the first time, we\u2019ve put together a little guide to some of our favourite places, things to do and spots to eat across the island. Malta is very special to us, and we hope you\u2019ll have some time to explore beyond the wedding celebrations - whether that\u2019s wandering through the old streets of Valletta, swimming in the sea, discovering a little village or lingering over a long lunch. These are a few of the places we love and the things we\u2019d recommend making time for while you\u2019re here. We hope you enjoy discovering Malta as much as we do.',
   tabs: [
-    { id: 'history', label: 'History & culture', places: [
+    { id: 'history', label: 'History & culture',
+      art: [{ name: 'gallarija', w: 368, h: 349 }],
+      places: [
       { name: 'St John\u2019s Co-Cathedral', area: 'Valletta', map: 'St John\'s Co-Cathedral, Valletta, Malta',
         text: 'Plain from the outside and astonishing within: every surface is gilded and carved, and Caravaggio\u2019s The Beheading of Saint John the Baptist hangs in the oratory.' },
       { name: '\u0126al Saflieni Hypogeum', area: 'Paola', map: 'Hal Saflieni Hypogeum, Paola, Malta',
@@ -45,7 +47,9 @@ var GUIDE = {
       { name: '\u0120gantija Temples', area: 'Xag\u0127ra, Gozo', map: 'Ggantija Temples, Xaghra, Gozo, Malta',
         text: 'Among the oldest free-standing buildings in the world, and a good reason to take the ferry over to Gozo for the day.' }
     ] },
-    { id: 'beaches', label: 'Beach hopping', places: [
+    { id: 'beaches', label: 'Beach hopping',
+      art: [{ name: 'beach', w: 306, h: 398 }],
+      places: [
       { name: 'G\u0127ajn Tuffie\u0127a', area: 'North-west Malta', map: 'Ghajn Tuffieha Bay, Malta',
         text: 'A long flight of steps keeps the crowds away from this sandy bay beneath the cliffs. Our favourite for a swim.' },
       { name: 'Golden Bay', area: 'North-west Malta', map: 'Golden Bay, Malta',
@@ -58,10 +62,7 @@ var GUIDE = {
         text: 'Gozo\u2019s wide red-gold beach, unspoilt beneath the hills. Pair it with the \u0120gantija Temples for a day on Gozo.' }
     ] },
     { id: 'food', label: 'Food, wine & music',
-      art: [
-        { name: 'bread-loaf', w: 457, h: 206 }, { name: 'cheese-wheel', w: 346, h: 226 },
-        { name: 'fig', w: 177, h: 222 }, { name: 'tomato', w: 205, h: 188 }, { name: 'garlic', w: 204, h: 258 }
-      ],
+      art: [{ name: 'wine-bottle-glass', w: 288, h: 410 }],
       places: [
         { name: 'Diar il-Bniet', area: 'Dingli', map: 'Diar il-Bniet, Dingli, Malta',
           text: 'Farm-to-table Maltese cooking from the family\u2019s own fields, a short drive from the Dingli Cliffs at sunset.' },
@@ -481,7 +482,7 @@ function guideMarkup() {
         : '<p class="rt-guide__placeholder">[Placeholder] Our Spotify playlist is coming soon.</p>';
     }
     var art = (t.art || []).map(function (a) {
-      return '<div class="rt-guide__art-item" style="--w:' + a.w + '">' +
+      return '<div class="rt-guide__art-item" style="--w:' + a.w + ';--h:' + a.h + '">' +
         chalkDiv(a.name, a.w + '/' + a.h, { extra: ' data-chalk-mode="manual"' }) + '</div>';
     }).join('');
     return '<div class="rt-tabs__panel" role="tabpanel" id="rt-tabpanel-' + t.id + '" aria-labelledby="rt-tab-' + t.id + '" tabindex="0"' + (i === 0 ? '' : ' hidden') + '>' +

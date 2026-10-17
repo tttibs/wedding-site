@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="27 19 306 398" width="306" height="398" data-chalk="1" data-step="4" data-minw="6" data-wave="34,12,85,46,17,6" data-taper="0.6,40,0.5,50" data-alpha="0.55,0.5,0.8" data-speed="1.8" data-overlap="0.7">
+  <title>Beach umbrella</title>
+  <g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="9" d="M60 150 C80 95,140 70,180 70 C220 70,280 95,300 150"/>
+    <path stroke-width="8" d="M60 150 Q90 134,120 150 Q150 134,180 150 Q210 134,240 150 Q270 134,300 150"/>
+    <path stroke-width="7" d="M180 70 C162 95,132 125,120 150"/>
+    <path stroke-width="7" d="M180 70 C198 95,228 125,240 150"/>
+    <path stroke-width="7" d="M180 72 L180 52"/>
+    <path stroke-width="9" d="M180 150 C179 230,176 300,172 384"/>
+  </g>
+</svg>
