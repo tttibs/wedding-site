@@ -564,6 +564,28 @@ html.rt-stage .rt-hero {
     padding-top: 14px;
   }
 }
+/* Short landscape screens (tablets with browser bars): a more compact card,
+   a little wider so the text wraps into fewer lines */
+@media (orientation: landscape) and (max-height: 799px) {
+  .rt-events--h .rt-events__inner { padding: 3vh 0 2vh; }
+  .rt-events--h .rt-events__track { margin-top: 2vh; }
+  .rt-events--h .rt-chapter {
+    width: clamp(340px, 36vw, 440px);
+    padding: 22px 26px 20px;
+  }
+  .rt-events--h .rt-chapter__art {
+    height: 72px;
+    margin-bottom: 10px;
+  }
+  .rt-events--h .rt-chapter__title { font-size: 1.6rem; }
+  .rt-events--h .rt-chapter__when { margin-top: 8px; }
+  .rt-events--h .rt-chapter__text {
+    font-size: 0.86em;
+    line-height: 1.55;
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+}
 @media (orientation: portrait) {
   .rt-events:not(.rt-events--h) {
     padding-left: 10vw;

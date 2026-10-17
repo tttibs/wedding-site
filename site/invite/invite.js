@@ -943,9 +943,11 @@ function drawArt(card, delay) {
 
 // The chapters slide in sideways on wide landscape screens and on phones
 // tall enough to hold a card; otherwise they stack.
+// Cards slide in sideways everywhere except screens too short to hold them
+// (a phone turned sideways); tablets in landscape with browser bars count.
 function eventsHorizontal() {
   if (IS_PORTRAIT) return window.innerHeight >= 640;
-  return window.innerWidth >= 1024 && window.innerHeight >= 720;
+  return window.innerWidth >= 900 && window.innerHeight >= 560;
 }
 
 function initEvents(gsap, ScrollTrigger) {
