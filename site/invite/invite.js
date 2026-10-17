@@ -414,8 +414,10 @@ function rsvpMarkup() {
                 '<option value="1">1</option><option value="2" selected="">2</option><option value="3">3</option>' +
               '</select>' +
             '</div>' +
-            '<label class="rt-rsvp__note-label" for="rsvpDietary">Dietary requirements (optional)</label>' +
-            '<textarea name="dietary" id="rsvpDietary" placeholder="e.g. vegetarian, coeliac, nut allergy" rows="1"></textarea>' +
+            '<div class="rt-rsvp__dietary">' +
+              '<label class="rt-rsvp__note-label" for="rsvpDietary">Dietary requirements (optional)</label>' +
+              '<textarea name="dietary" id="rsvpDietary" placeholder="e.g. vegetarian, coeliac, nut allergy" rows="1"></textarea>' +
+            '</div>' +
             '<label class="rt-rsvp__note-label" for="noteToHost">A private note to us (optional)</label>' +
             '<textarea name="note_to_host" id="noteToHost" placeholder="Leave a private message..." rows="2"></textarea>' +
           '</div>' +
@@ -1558,10 +1560,11 @@ function initForms() {
 
   // ── RSVP form: show/hide guest count ──
   $('.rsvpForm .attend').on('change', function() {
+    // Not attending: no guest count or dietary requirements to ask about
     if ($(this).hasClass('no')) {
-      $('.rsvpForm .rsvpTotalBox').slideUp(400);
+      $('.rsvpForm .rsvpTotalBox, .rsvpForm .rt-rsvp__dietary').slideUp(400);
     } else {
-      $('.rsvpForm .rsvpTotalBox').slideDown(400);
+      $('.rsvpForm .rsvpTotalBox, .rsvpForm .rt-rsvp__dietary').slideDown(400);
     }
     $('.rsvpForm .addTotal').slideDown(400);
     $('.rsvpForm .button[type="submit"]').slideDown(400);
