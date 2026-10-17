@@ -807,7 +807,7 @@ function initStage(gsap, ScrollTrigger) {
       // Once the guest has scrolled on past the opening, it is done: the film
       // shouldn't play back over the invitation when they scroll up again.
       // (The scrub lags the scroll slightly, so the stage may not have opened yet.)
-      onLeave: function (self) { openStage(true); collapseStage(self, tl, hero, ScrollTrigger); }
+      onLeave: function (self) { openStage(true); collapseWhenStill(self, tl, hero, ScrollTrigger); }
     }
   });
   if (scrub) {
@@ -825,7 +825,42 @@ function initStage(gsap, ScrollTrigger) {
 // Removes the opening's pinned scroll distance and the film, keeping the page
 // exactly where it is on screen.
 var stageControl = null;   // set by initStage; lets navigation collapse it first
+var stageCollapsed = false;
+
+// The film is hidden at once, but the scroll distance is only taken away once
+// the page is at rest: mid-flick (iOS momentum, trackpad glide) the browser
+// ignores the corrective scrollTo, so the page would leap down by the whole
+// film's length, to the end of the order of events.
+var collapseWaiting = false;
+function collapseWhenStill(st, tl, hero, ScrollTrigger) {
+  if (collapseWaiting || stageCollapsed) return;
+  collapseWaiting = true;
+  hero.style.display = 'none';
+  var touching = 0, timer;
+  var opts = { passive: true };
+  function wait() {
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      if (touching) return;
+      ['scroll', 'wheel'].forEach(function (t) { window.removeEventListener(t, wait, opts); });
+      window.removeEventListener('touchstart', down, opts);
+      window.removeEventListener('touchend', up, opts);
+      window.removeEventListener('touchcancel', up, opts);
+      collapseStage(st, tl, hero, ScrollTrigger);
+    }, 200);
+  }
+  function down(e) { touching = e.touches.length; clearTimeout(timer); }
+  function up(e) { touching = e.touches.length; wait(); }
+  ['scroll', 'wheel'].forEach(function (t) { window.addEventListener(t, wait, opts); });
+  window.addEventListener('touchstart', down, opts);
+  window.addEventListener('touchend', up, opts);
+  window.addEventListener('touchcancel', up, opts);
+  wait();
+}
+
 function collapseStage(st, tl, hero, ScrollTrigger) {
+  if (stageCollapsed) return;
+  stageCollapsed = true;
   stageControl = null;
   var distance = st.end - st.start;
   var y = window.pageYOffset;
