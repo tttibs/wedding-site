@@ -1738,17 +1738,13 @@ function seeded(str, salt) {
 
 var noteObserver = null;
 function appendComment(c) {
-  var date = c.timestamp ? new Date(c.timestamp).toLocaleDateString('en-GB', {
-    day: 'numeric', month: 'long', year: 'numeric'
-  }) : '';
-
+  // No dates on the wall: guests shouldn't think their invitation came late
   var nameStr = (c.name && c.name !== 'Guest') ? $('<div>').text(c.name).html() : '';
 
   var key = (c.timestamp || '') + (c.comment || '');
   var $card = $('<article class="rt-note">').html(
     '<p class="rt-note__text">' + $('<div>').text(c.comment).html() + '</p>' +
-    (nameStr ? '<p class="rt-note__name">' + nameStr + '</p>' : '') +
-    (date ? '<p class="rt-note__date">' + date + '</p>' : '')
+    (nameStr ? '<p class="rt-note__name">' + nameStr + '</p>' : '')
   ).css({
     '--r': ((seeded(key, 1) * 6) - 3).toFixed(2) + 'deg',
     '--dx': ((seeded(key, 2) * 20) - 10).toFixed(1) + 'px',

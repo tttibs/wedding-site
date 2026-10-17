@@ -1110,11 +1110,6 @@ html.rt-stage .rt-hero {
   font-weight: 600;
   letter-spacing: 0.04em;
 }
-.rt-note__date {
-  margin-top: 4px;
-  font-size: 12px;
-  color: var(--rt-ink-soft);
-}
 /* Settle-in, set only by JS (initNotesSettle) */
 .rt-note.is-waiting {
   opacity: 0;
