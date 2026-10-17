@@ -769,24 +769,6 @@ html.rt-stage .rt-hero {
   margin-top: 0.9em;
 }
 /* Contact line under the card */
-.rt-faq__contact {
-  margin-top: 28px;
-  text-align: center;
-  font-size: max(0.78em, 13px);
-  letter-spacing: 0.06em;
-  color: var(--rt-ink-soft);
-}
-.rt-faq__contact a {
-  color: var(--rt-blue-ink);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
-  overflow-wrap: anywhere;
-}
-.rt-faq__contact a:focus-visible {
-  outline: 2px solid var(--rt-focus);
-  outline-offset: 3px;
-}
 @media (prefers-reduced-motion: reduce) {
   /* gentler, not none: the text still fades in */
   .rt-faq__panel,
