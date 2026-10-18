@@ -88,7 +88,7 @@ var GUIDE = {
 var MUSIC = { src: 'music/piano.mp3', volume: 0.3, autoplay: true };
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261018a';
+var RT_VERSION = '20261018b';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -1198,6 +1198,11 @@ function initGuide() {
     });
   });
   function current() { return tabs.filter(function (t) { return t.getAttribute('aria-selected') === 'true'; })[0]; }
+  // The tab that is open from the start is never clicked, so its drawing
+  // plays like the border drawings: once it is fully on screen
+  var first = document.getElementById(current().getAttribute('aria-controls'));
+  drawn[first.id] = true;
+  watchDrawings(CHALK_READY, '#' + first.id + ' .rt-guide__art .chalk');
   moveInk(current());
   window.addEventListener('resize', function () { moveInk(current()); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { moveInk(current()); });
