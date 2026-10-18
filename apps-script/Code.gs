@@ -1,9 +1,10 @@
 // ─────────────────────────────────────────────────────────────────
 //  Save The Date — Google Apps Script Backend  (v7 — final)
 //
-//  Reading comments is now handled by Google Sheets CSV export
-//  directly in the browser — no doGet needed.
-//  This script only handles WRITING (RSVP + comments via POST).
+//  Reading comments is handled by Google Sheets CSV export directly in
+//  the browser. This script handles WRITING (RSVP + comments via POST),
+//  plus one narrow read: GET ?rsvp=<name> returns that guest's latest
+//  reply (attending + total only; never notes or dietaries).
 //
 //  Deploy: Execute as Me, Who has access: Anyone
 // ─────────────────────────────────────────────────────────────────
@@ -39,10 +40,36 @@ function doPost(e) {
 
 
 // ─────────────────────────────────────────────────────────────────
-//  GET — kept minimal; reading is done via CSV in the browser
+//  GET — ?rsvp=<name>: has this guest already replied? Returns only
+//  whether they're attending and how many, from their latest reply,
+//  so the invitation can say "we have you down as...". Names match
+//  case-insensitively, as the guest-allowance lookup does.
 // ─────────────────────────────────────────────────────────────────
 function doGet(e) {
-  return buildResponse({ success: true, message: 'Write-only endpoint. Comments are read via CSV.' });
+  var name = e && e.parameter && e.parameter.rsvp;
+  if (!name) {
+    return buildResponse({ success: true, message: 'Comments are read via CSV.' });
+  }
+  return buildResponse(lookupRSVP(name));
+}
+
+function lookupRSVP(name) {
+  var want = String(name).trim().toLowerCase();
+  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(RSVP_SHEET_NAME);
+  if (!want || !sheet || sheet.getLastRow() < 2) return { success: true, found: false };
+  // Columns: Timestamp, Name, Attending, Total Guests, ...
+  var rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 4).getValues();
+  for (var i = rows.length - 1; i >= 0; i--) {   // newest last, so search upwards
+    if (String(rows[i][1]).trim().toLowerCase() === want) {
+      return {
+        success:   true,
+        found:     true,
+        attending: String(rows[i][2]) === 'Yes' ? 'Yes' : 'No',
+        total:     Number(rows[i][3]) || 1
+      };
+    }
+  }
+  return { success: true, found: false };
 }
 
 
@@ -84,6 +111,10 @@ function buildResponse(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function testLookup() {
+  Logger.log(JSON.stringify(lookupRSVP('Test Guest')));
 }
 
 function testWrite() {

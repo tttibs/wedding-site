@@ -33,7 +33,9 @@ var $ = window.jQuery;
 var GUIDE = {
   intro: 'For those visiting Malta for the first time, we\u2019ve put together a little guide to some of our favourite places, things to do and spots to eat across the island. Malta is very special to us, and we hope you\u2019ll have some time to explore beyond the wedding celebrations - whether that\u2019s wandering through the old streets of Valletta, swimming in the sea, discovering a little village or lingering over a long lunch. These are a few of the places we love and the things we\u2019d recommend making time for while you\u2019re here. We hope you enjoy discovering Malta as much as we do.',
   tabs: [
-    { id: 'history', label: 'History & culture', places: [
+    { id: 'history', label: 'History & culture',
+      art: [{ name: 'gallarija', w: 368, h: 349 }],
+      places: [
       { name: 'St John\u2019s Co-Cathedral', area: 'Valletta', map: 'St John\'s Co-Cathedral, Valletta, Malta',
         text: 'Plain from the outside and astonishing within: every surface is gilded and carved, and Caravaggio\u2019s The Beheading of Saint John the Baptist hangs in the oratory.' },
       { name: '\u0126al Saflieni Hypogeum', area: 'Paola', map: 'Hal Saflieni Hypogeum, Paola, Malta',
@@ -45,7 +47,9 @@ var GUIDE = {
       { name: '\u0120gantija Temples', area: 'Xag\u0127ra, Gozo', map: 'Ggantija Temples, Xaghra, Gozo, Malta',
         text: 'Among the oldest free-standing buildings in the world, and a good reason to take the ferry over to Gozo for the day.' }
     ] },
-    { id: 'beaches', label: 'Beach hopping', places: [
+    { id: 'beaches', label: 'Beach hopping',
+      art: [{ name: 'beach', w: 306, h: 398 }],
+      places: [
       { name: 'G\u0127ajn Tuffie\u0127a', area: 'North-west Malta', map: 'Ghajn Tuffieha Bay, Malta',
         text: 'A long flight of steps keeps the crowds away from this sandy bay beneath the cliffs. Our favourite for a swim.' },
       { name: 'Golden Bay', area: 'North-west Malta', map: 'Golden Bay, Malta',
@@ -58,10 +62,7 @@ var GUIDE = {
         text: 'Gozo\u2019s wide red-gold beach, unspoilt beneath the hills. Pair it with the \u0120gantija Temples for a day on Gozo.' }
     ] },
     { id: 'food', label: 'Food, wine & music',
-      art: [
-        { name: 'bread-loaf', w: 457, h: 206 }, { name: 'cheese-wheel', w: 346, h: 226 },
-        { name: 'fig', w: 177, h: 222 }, { name: 'tomato', w: 205, h: 188 }, { name: 'garlic', w: 204, h: 258 }
-      ],
+      art: [{ name: 'wine-bottle-glass', w: 288, h: 410 }],
       places: [
         { name: 'Diar il-Bniet', area: 'Dingli', map: 'Diar il-Bniet, Dingli, Malta',
           text: 'Farm-to-table Maltese cooking from the family\u2019s own fields, a short drive from the Dingli Cliffs at sunset.' },
@@ -87,7 +88,7 @@ var GUIDE = {
 var MUSIC = { src: 'music/piano.mp3', volume: 0.3, autoplay: true };
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261017a';
+var RT_VERSION = '20261018a';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -414,8 +415,10 @@ function rsvpMarkup() {
                 '<option value="1">1</option><option value="2" selected="">2</option><option value="3">3</option>' +
               '</select>' +
             '</div>' +
-            '<label class="rt-rsvp__note-label" for="rsvpDietary">Dietary requirements (optional)</label>' +
-            '<textarea name="dietary" id="rsvpDietary" placeholder="e.g. vegetarian, coeliac, nut allergy" rows="1"></textarea>' +
+            '<div class="rt-rsvp__dietary">' +
+              '<label class="rt-rsvp__note-label" for="rsvpDietary">Dietary requirements (optional)</label>' +
+              '<textarea name="dietary" id="rsvpDietary" placeholder="e.g. vegetarian, coeliac, nut allergy" rows="1"></textarea>' +
+            '</div>' +
             '<label class="rt-rsvp__note-label" for="noteToHost">A private note to us (optional)</label>' +
             '<textarea name="note_to_host" id="noteToHost" placeholder="Leave a private message..." rows="2"></textarea>' +
           '</div>' +
@@ -479,7 +482,7 @@ function guideMarkup() {
         : '<p class="rt-guide__placeholder">[Placeholder] Our Spotify playlist is coming soon.</p>';
     }
     var art = (t.art || []).map(function (a) {
-      return '<div class="rt-guide__art-item" style="--w:' + a.w + '">' +
+      return '<div class="rt-guide__art-item" style="--w:' + a.w + ';--h:' + a.h + '">' +
         chalkDiv(a.name, a.w + '/' + a.h, { extra: ' data-chalk-mode="manual"' }) + '</div>';
     }).join('');
     return '<div class="rt-tabs__panel" role="tabpanel" id="rt-tabpanel-' + t.id + '" aria-labelledby="rt-tab-' + t.id + '" tabindex="0"' + (i === 0 ? '' : ' hidden') + '>' +
@@ -1435,6 +1438,7 @@ function initGuestName() {
     $('#guestNameDisplay').html(escapeHtml(guestName));
     $('#commentGuestName').val(guestName);
     loadGuestAllowance(guestName);
+    loadPriorRSVP(guestName);
   } else {
     // No name in URL — show Guest and display soft prompt once the intro has gone
     guestName = 'Guest';
@@ -1503,17 +1507,52 @@ function applyGuestAllowance(max) {
   var selectEl = document.querySelector('.rsvpTotal');
   if (!selectEl) return;
   selectEl.innerHTML = '';
+  // keep a guest's earlier answer if they've already replied (loadPriorRSVP)
+  var pick = priorTotal && priorTotal <= max ? priorTotal : Math.min(max, 2);
   for (var i = 1; i <= max; i++) {
     var opt = document.createElement('option');
     opt.value = i;
     opt.text = i;
-    if (i === Math.min(max, 2)) opt.selected = true;
+    if (i === pick) opt.selected = true;
     selectEl.appendChild(opt);
   }
   if (max === 1) {
     var box = selectEl.closest('.rsvpTotalBox');
     if (box) box.style.display = 'none';
   }
+}
+
+// A guest who has already replied is told so, with their earlier answer
+// filled in, ready to confirm or change. The Apps Script returns only
+// attending and the guest count from their latest reply. If the lookup
+// fails or is slow, the card simply works as it always has.
+var priorTotal = null;
+function loadPriorRSVP(name) {
+  if (!name || name === 'Guest') return;
+  var ctrl = window.AbortController ? new AbortController() : null;
+  if (ctrl) setTimeout(function () { ctrl.abort(); }, 8000);
+  fetch(APPS_SCRIPT_URL + '?rsvp=' + encodeURIComponent(name), ctrl ? { signal: ctrl.signal } : {})
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (!d || !d.found) return;
+      var $form = $('.rsvpForm');
+      var $btn = $form.find('.button[type="submit"]');
+      // Don't disturb a guest who is already mid-reply or has just sent one
+      if ($btn.hasClass('disabled') || $btn.hasClass('success') || $form.find('input[name="rsvp_status"]:checked').length) return;
+      var yes = d.attending === 'Yes';
+      var n = Math.max(1, parseInt(d.total, 10) || 1);
+      var msg = yes
+        ? 'We have you down as joining us' + (n > 1 ? ', a party of ' + n : '') + '. If anything has changed, just update your reply below.'
+        : 'We have you down as unable to join us. If your plans change, just update your reply below.';
+      $('<p class="rt-rsvp__prior" role="status">').text(msg).hide().insertAfter('.rt-rsvp__by').fadeIn(500);
+      if (yes) {
+        priorTotal = n;
+        var sel = document.querySelector('.rsvpTotal');
+        if (sel && sel.querySelector('option[value="' + n + '"]')) sel.value = String(n);
+      }
+      $(yes ? '#attendYes' : '#attendNo').prop('checked', true).trigger('change');
+    })
+    .catch(function (err) { console.log('[PriorRSVP] lookup unavailable:', err && err.name); });
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -1558,10 +1597,11 @@ function initForms() {
 
   // ── RSVP form: show/hide guest count ──
   $('.rsvpForm .attend').on('change', function() {
+    // Not attending: no guest count or dietary requirements to ask about
     if ($(this).hasClass('no')) {
-      $('.rsvpForm .rsvpTotalBox').slideUp(400);
+      $('.rsvpForm .rsvpTotalBox, .rsvpForm .rt-rsvp__dietary').slideUp(400);
     } else {
-      $('.rsvpForm .rsvpTotalBox').slideDown(400);
+      $('.rsvpForm .rsvpTotalBox, .rsvpForm .rt-rsvp__dietary').slideDown(400);
     }
     $('.rsvpForm .addTotal').slideDown(400);
     $('.rsvpForm .button[type="submit"]').slideDown(400);

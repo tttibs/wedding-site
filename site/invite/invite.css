@@ -856,6 +856,18 @@ html.rt-stage .rt-hero {
   opacity: 0.15;
   pointer-events: none;
 }
+/* "We have you down as..." for a guest who has already replied */
+.rt-rsvp__prior {
+  max-width: 34ch;
+  margin: 18px auto 0;
+  font-family: var(--rt-serif);
+  font-style: italic;
+  font-size: 1.02em;
+  line-height: 1.55;
+  text-align: center;
+  text-wrap: balance;
+}
+.rt-rsvp__card .rt-rsvp__prior { color: var(--ink); }
 .rt-rsvp__by {
   margin-top: 14px;
   font-family: var(--rt-serif);
@@ -1134,8 +1146,9 @@ html.rt-stage .rt-hero {
   gap: 18px 30px;
   margin: 30px auto 0;
 }
+/* One drawing per tab, all drawn to the same height */
 .rt-guide__art-item {
-  width: calc(var(--w) * 0.36px);
+  width: calc(150px * var(--w) / var(--h));
 }
 /* Placeholders: visibly unfinished until real places are supplied */
 .rt-guide__spotify-frame {
