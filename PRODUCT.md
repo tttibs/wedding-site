@@ -14,11 +14,11 @@ Their jobs, in order: feel invited (this is the formal invitation), learn the wh
 
 ## Product Purpose
 
-The formal invitation for the wedding on Saturday 10 July 2027 at St. Paul's Cathedral, Mdina, Malta, replacing the live save-the-date at https://rebeccaandthomas.net. Success: every invited party RSVPs by 17 December 2026 through the site, arrives knowing the schedule, dress code and logistics, and feels the occasion before they land.
+The formal invitation for the wedding on Saturday 10 July 2027 at St. Paul's Cathedral, Mdina, Malta, replacing the live save-the-date at https://rebeccaandthomas.net. Success: every invited party RSVPs by 4 January 2027 through the site, arrives knowing the schedule, dress code and logistics, and feels the occasion before they land.
 
 ## Positioning
 
-A personal, tactile stationery experience rather than a template wedding site: each guest is addressed by name, the page behaves like paper, ink and candlelight (real paper textures, hand-drawn chalk illustrations that draw themselves, an overhead film of the couple's own tablescape), and it is built around their real weekend in Malta.
+A personal, tactile stationery experience rather than a template wedding site: each guest is addressed by name, the page behaves like paper, ink and candlelight (real paper textures, hand-drawn chalk illustrations that draw themselves, a monogram that draws as the page loads), and it is built around their real weekend in Malta.
 
 ## Operating Context
 
@@ -29,11 +29,11 @@ A personal, tactile stationery experience rather than a template wedding site: e
 
 ## Capabilities and Constraints
 
-- Sections, in order: hero, invitation, order of events, the details (FAQ), RSVP, public notes wall, a little guide to Malta, footer.
-- RSVP must work with no animation, no JS animation library, and on slow mobile connections. RSVP note is private (to the hosts); comments are public.
-- Add-to-calendar covers three events: welcome drinks (Thu 8 Jul 2027, 3–5pm, venue TBC), the wedding (Sat 10 Jul, 3.30pm–2am, St. Paul's Cathedral, Mdina), the debrief (Sun 11 Jul, 12–4pm, venue TBC).
+- Sections, in order: invitation, order of events, the details (FAQ), RSVP, a little guide to Malta, public notes wall, footer.
+- RSVP must work with no animation, no JS animation library, and on slow mobile connections. RSVP note, dietary requirements and phone number (required for attending guests) are private to the hosts; comments are public. A guest's later reply is marked Confirmed in the sheet.
+- Add-to-calendar covers three events: welcome drinks (Thu 8 Jul 2027, 3–6pm, venue TBC), the wedding (Sat 10 Jul, 3.30pm–2am, St. Paul's Cathedral, Mdina), the debrief (Sun 11 Jul, 12–4pm, venue TBC).
 - Adults-only celebration. Black tie dress code.
-- Undecided: welcome-drinks and debrief venues, Malta guide place cards, Spotify playlist URL.
+- Undecided: welcome-drinks and debrief venues.
 
 ## Brand Commitments
 
@@ -43,9 +43,8 @@ A personal, tactile stationery experience rather than a template wedding site: e
 
 ## Evidence on Hand
 
-- Hero film: `assets/hero/source/Romantic Candlelit Wedding Table Setting.mp4` (overhead tablescape, lace card on a silver tray reading "Rebecca & Thomas, 10th July 2027, Malta"; a wine glass is drawn away at the end).
 - Chalk illustrations: `assets/chalk/svg/` (monogram, church, 19 dinner-table objects).
-- All page copy comes from the couple's brief. Malta guide places are placeholders and must stay visibly marked until supplied; never invent venues, places or reviews.
+- All page copy comes from the couple's brief. Malta guide places are the couple's own picks; describe them only from what they supply plus well-known facts, and never invent venues, places or reviews.
 
 ## Product Principles
 
