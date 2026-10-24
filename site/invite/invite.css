@@ -730,7 +730,7 @@ html.rt-lock body {
 .rt-rsvp__card::before,
 .rt-notes .commentForm::before,
 .rt-note::before,
-.rt-tabs__sheet::before {
+.rt-guide__card::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -753,15 +753,6 @@ html.rt-lock body {
   text-wrap: balance;
 }
 .rt-rsvp__card .rt-rsvp__prior { color: var(--ink); }
-/* Tall cards (the guide's long lists, the details opened up): stretching the
-   texture to cover their full height blows it up until it pixelates, so it
-   keeps the card's width and repeats down the card instead */
-.rt-tabs__sheet::before,
-.rt-faq__list::before {
-  background-size: 100% auto;
-  background-repeat: repeat-y;
-  background-position: center top;
-}
 .rt-rsvp__by {
   margin-top: 14px;
   font-family: var(--rt-serif);
@@ -1569,15 +1560,22 @@ html.rt-lock body {
   position: relative;
   max-width: 780px;
   margin: 18px auto 0;
+  text-align: left;
+}
+/* Each tab's places sit on a few short paper cards rather than one tall one
+   (guideCardSizes), a small gap apart, so each card's texture shows whole.
+   They stay straight: even a slight turn makes the hairline rules jagged. */
+.rt-guide__card {
+  position: relative;
   padding: 18px 40px 26px;
   background-color: var(--rt-card);
   box-shadow:
     0 2px 4px rgba(26, 10, 10, 0.14),
     0 12px 24px -10px rgba(26, 10, 10, 0.26),
     0 30px 56px -24px rgba(26, 10, 10, 0.4);
-  text-align: left;
   isolation: isolate;
 }
+.rt-guide__card + .rt-guide__card { margin-top: 14px; }
 .rt-tabs__panel:focus-visible { outline: 2px solid var(--rt-focus); outline-offset: 6px; }
 .rt-guide__list {
   list-style: none;
@@ -1663,7 +1661,8 @@ html.rt-lock body {
     color: var(--rt-paper);
   }
   .rt-tabs__ink { display: none; }
-  .rt-tabs__sheet { padding: 6px 20px 16px; }
+  .rt-guide__card { padding: 6px 20px 16px; }
+  .rt-guide__card + .rt-guide__card { margin-top: 12px; }
   .rt-guide__place { grid-template-columns: 1fr; gap: 6px; padding: 20px 0; }
 }
 @media (prefers-reduced-motion: reduce) {

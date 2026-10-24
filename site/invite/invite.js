@@ -478,6 +478,43 @@ function notesMarkup() {
   '</section>';
 }
 
+// The guide's long lists are split into several shorter paper cards, so each
+// card's texture shows whole (one tall card had to stretch or repeat it).
+// At most five places a card, or three on narrow screens where places stack,
+// shared out evenly: 14 places at five a card make 5 + 5 + 4.
+var GUIDE_NARROW = '(max-width: 700px)';   // keep in step with invite.css
+function guidePerCard() { return window.matchMedia && window.matchMedia(GUIDE_NARROW).matches ? 3 : 5; }
+function guideCardSizes(n, per) {
+  var cards = Math.max(1, Math.ceil(n / per)), base = Math.floor(n / cards), extra = n % cards, sizes = [];
+  for (var c = 0; c < cards; c++) sizes.push(base + (c < extra ? 1 : 0));
+  return sizes;
+}
+// Regroup the places when the screen crosses the narrow width (a phone turned
+// sideways), moving the existing elements so drawings keep their state
+function regroupGuideCards() {
+  var per = guidePerCard();
+  [].slice.call(document.querySelectorAll('.rt-tabs__panel')).forEach(function (panel) {
+    var items = [].slice.call(panel.querySelectorAll('.rt-guide__place'));
+    if (!items.length) return;
+    var sizes = guideCardSizes(items.length, per);
+    var cards = [].slice.call(panel.querySelectorAll('.rt-guide__card'));
+    if (cards.length === sizes.length) return;
+    var art = panel.querySelector('.rt-guide__art');
+    var k = 0;
+    sizes.forEach(function (size, c) {
+      var card = document.createElement('div');
+      card.className = 'rt-guide__card';
+      if (c === 0 && art) card.appendChild(art);
+      var ul = document.createElement('ul');
+      ul.className = 'rt-guide__list';
+      for (var x = 0; x < size; x++) ul.appendChild(items[k++]);
+      card.appendChild(ul);
+      panel.appendChild(card);
+    });
+    cards.forEach(function (old) { old.parentNode.removeChild(old); });
+  });
+}
+
 // Section 6: a tabbed guide (behaviour in initGuide). Content from GUIDE.
 function guideMarkup() {
   function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
@@ -488,8 +525,13 @@ function guideMarkup() {
   }).join('');
   var panels = GUIDE.tabs.map(function (t, i) {
     var body = '';
+    var art = (t.art || []).map(function (a) {
+      return '<div class="rt-guide__art-item" style="--w:' + a.w + ';--h:' + a.h + '">' +
+        chalkDiv(a.name, a.w + '/' + a.h, { extra: ' data-chalk-mode="manual"' }) + '</div>';
+    }).join('');
+    art = art ? '<div class="rt-guide__art" aria-hidden="true">' + art + '</div>' : '';
     if (t.places) {
-      body = '<ul class="rt-guide__list">' + t.places.map(function (pl, k) {
+      var items = t.places.map(function (pl, k) {
         return '<li class="rt-guide__place" style="--i:' + k + '">' +
           '<div class="rt-guide__place-head">' +
             '<h3 class="rt-guide__place-name">' + esc(pl.name) + '</h3>' +
@@ -500,19 +542,21 @@ function guideMarkup() {
             (pl.map ? '<a class="rt-guide__map" href="https://www.google.com/maps/search/?api=1&amp;query=' + encodeURIComponent(pl.map) + '" target="_blank" rel="noopener">View on Google Maps<span class="rt-sr">: ' + esc(pl.name) + ' (opens in a new tab)</span></a>' : '') +
           '</div>' +
         '</li>';
-      }).join('') + '</ul>';
+      });
+      // Split into several shorter cards (see guideCardSizes)
+      var k = 0;
+      body = guideCardSizes(items.length, guidePerCard()).map(function (size, c) {
+        var chunk = items.slice(k, k + size); k += size;
+        return '<div class="rt-guide__card">' + (c === 0 ? art : '') + '<ul class="rt-guide__list">' + chunk.join('') + '</ul></div>';
+      }).join('');
     } else {
       var m = /open\.spotify\.com\/(playlist|album)\/([A-Za-z0-9]+)/.exec(t.spotify || '');
       body = m
         ? '<iframe class="rt-guide__spotify-frame" title="Our playlist on Spotify" loading="lazy" src="https://open.spotify.com/embed/' + m[1] + '/' + m[2] + '" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>'
         : '<p class="rt-guide__placeholder">[Placeholder] Our Spotify playlist is coming soon.</p>';
+      body = '<div class="rt-guide__card">' + art + body + '</div>';
     }
-    var art = (t.art || []).map(function (a) {
-      return '<div class="rt-guide__art-item" style="--w:' + a.w + ';--h:' + a.h + '">' +
-        chalkDiv(a.name, a.w + '/' + a.h, { extra: ' data-chalk-mode="manual"' }) + '</div>';
-    }).join('');
     return '<div class="rt-tabs__panel" role="tabpanel" id="rt-tabpanel-' + t.id + '" aria-labelledby="rt-tab-' + t.id + '" tabindex="0"' + (i === 0 ? '' : ' hidden') + '>' +
-      (art ? '<div class="rt-guide__art" aria-hidden="true">' + art + '</div>' : '') +
       body +
     '</div>';
   }).join('');
@@ -1065,6 +1109,11 @@ function initGuide() {
   watchDrawings(CHALK_READY, '#' + first.id + ' .rt-guide__art .chalk');
   moveInk(current());
   window.addEventListener('resize', function () { moveInk(current()); });
+  var narrow = window.matchMedia && window.matchMedia(GUIDE_NARROW);
+  if (narrow) {
+    var onNarrow = function () { regroupGuideCards(); moveInk(current()); };
+    if (narrow.addEventListener) narrow.addEventListener('change', onNarrow); else if (narrow.addListener) narrow.addListener(onNarrow);
+  }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { moveInk(current()); });
 }
 
