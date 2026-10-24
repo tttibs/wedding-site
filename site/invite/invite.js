@@ -38,28 +38,40 @@ var GUIDE = {
       places: [
       { name: 'St John\u2019s Co-Cathedral', area: 'Valletta', map: 'St John\'s Co-Cathedral, Valletta, Malta',
         text: 'Plain from the outside and astonishing within: every surface is gilded and carved, and Caravaggio\u2019s The Beheading of Saint John the Baptist hangs in the oratory.' },
-      { name: '\u0126al Saflieni Hypogeum', area: 'Paola', map: 'Hal Saflieni Hypogeum, Paola, Malta',
-        text: 'A 5,000-year-old underground burial site carved out of the rock. Only a few small groups go down each day, so book weeks ahead.' },
+      { name: 'Upper Barrakka Gardens', area: 'Valletta', map: 'Upper Barrakka Gardens, Valletta, Malta',
+        text: 'Arched gardens high above the Grand Harbour, with the best view in Valletta. Be there for 12pm, when the cannons of the Saluting Battery below are fired.' },
+      { name: 'MICAS', area: 'Floriana, by Valletta', map: 'MICAS, Floriana, Malta',
+        text: 'Malta\u2019s contemporary art space, set in the old fortifications just outside Valletta\u2019s city gate. A change of pace from all the baroque.' },
       { name: 'Birgu and the Three Cities', area: 'Across the Grand Harbour', map: 'Fort St Angelo, Birgu, Malta',
-        text: 'Take a traditional d\u0121\u0127ajsa boat across the harbour from Valletta, wander the quiet lanes and finish at Fort St Angelo.' },
-      { name: '\u0126a\u0121ar Qim and Mnajdra', area: 'Qrendi', map: 'Hagar Qim Temples, Qrendi, Malta',
-        text: 'Two prehistoric temples on the cliffs above the sea, older than Stonehenge and lined up with the sunrise. Lovely late in the afternoon.' },
-      { name: '\u0120gantija Temples', area: 'Xag\u0127ra, Gozo', map: 'Ggantija Temples, Xaghra, Gozo, Malta',
-        text: 'Among the oldest free-standing buildings in the world, and a good reason to take the ferry over to Gozo for the day.' }
+        text: 'Take a traditional dg\u0127ajsa boat across the harbour from Valletta, wander the quiet lanes and finish at Fort St Angelo.' },
+      { name: 'Mdina, the Silent City', area: 'Mdina', map: 'Mdina, Malta',
+        text: 'Malta\u2019s old walled capital and home to St. Paul\u2019s Cathedral. Wander its quiet golden lanes, ideally early in the day or towards sunset when it\u2019s at its most peaceful.' },
+      { name: 'Marsaxlokk', area: 'South-east Malta', map: 'Marsaxlokk, Malta',
+        text: 'A fishing village of brightly painted luzzu boats. Come on a Sunday morning to wander the market along the harbour.' },
+      { name: 'The Citadel', area: 'Victoria, Gozo', map: 'Cittadella, Victoria, Gozo, Malta',
+        text: 'Take the ferry over to Gozo and explore the Citadel, the island\u2019s fortified hilltop town, with views right across Gozo from its walls.' },
+      { name: 'Ta\u2019 Pinu Basilica', area: 'G\u0127arb, Gozo', map: 'Basilica of Ta\' Pinu, Gharb, Gozo, Malta',
+        text: 'Ba\u017cilika tal-Madonna Ta\u2019 Pinu: a striking basilica standing on its own in the Gozitan countryside, and one of the most loved churches in the islands.' }
     ] },
     { id: 'beaches', label: 'Beach hopping',
       art: [{ name: 'beach', w: 306, h: 398 }],
       places: [
-      { name: 'G\u0127ajn Tuffie\u0127a', area: 'North-west Malta', map: 'Ghajn Tuffieha Bay, Malta',
-        text: 'A long flight of steps keeps the crowds away from this sandy bay beneath the cliffs. Our favourite for a swim.' },
       { name: 'Golden Bay', area: 'North-west Malta', map: 'Golden Bay, Malta',
         text: 'Easy, sandy and sheltered, with sunbeds and caf\u00e9s, and some of the best sunsets on the island.' },
+      { name: 'Riviera Beach', area: 'G\u0127ajn Tuffie\u0127a, north-west Malta', map: 'Riviera Beach, Ghajn Tuffieha, Malta',
+        text: 'A long flight of steps keeps the crowds away from this sandy bay beneath the cliffs. Our favourite for a swim.' },
+      { name: 'Gnejna Bay', area: 'North-west Malta', map: 'Gnejna Bay, Malta',
+        text: 'Just round the headland from Riviera: a quieter sandy bay with clear water and old boathouses cut into the rock.' },
       { name: 'St Peter\u2019s Pool', area: 'Delimara', map: 'St Peter\'s Pool, Delimara, Malta',
         text: 'Flat rock shelves and deep, clear water for jumping in. Go on a Sunday morning and stop at the Marsaxlokk fish market on the way.' },
+      { name: 'G\u0127ar Lapsi', area: 'South of Malta', map: 'Ghar Lapsi, Malta',
+        text: 'An amazing little cove in the south of Malta with shallow, sheltered water, so it\u2019s lovely for families with children.' },
       { name: 'Blue Lagoon', area: 'Comino', map: 'Blue Lagoon, Comino, Malta',
         text: 'The famous turquoise water between Comino and its islet. You now need a free booked pass to land, so plan ahead and go early.' },
-      { name: 'Ramla Bay', area: 'Gozo', map: 'Ramla Bay, Gozo, Malta',
-        text: 'Gozo\u2019s wide red-gold beach, unspoilt beneath the hills. Pair it with the \u0120gantija Temples for a day on Gozo.' }
+      { name: 'Xwejni Bay', area: 'Gozo', map: 'Xwejni Bay, Gozo, Malta',
+        text: 'A rocky stretch of coast beside the old salt pans near Marsalforn, and a very special spot for us: it\u2019s where Rebecca and Thomas got engaged in 2025.' },
+      { name: 'Wied il-G\u0127asri', area: 'Gozo', map: 'Wied il-Ghasri, Gozo, Malta',
+        text: 'A narrow sea inlet between tall cliffs, reached by steps down the gorge, with calm, clear water for a swim.' }
     ] },
     { id: 'food', label: 'Food, wine & music',
       art: [{ name: 'wine-bottle-glass', w: 288, h: 410 }],
@@ -73,7 +85,31 @@ var GUIDE = {
         { name: 'The Bridge Bar', area: 'Valletta', map: 'The Bridge Bar, Valletta, Malta',
           text: 'Live jazz on the steps of Valletta with the Grand Harbour below, on its weekly music nights.' },
         { name: 'Nenu the Artisan Baker', area: 'Valletta', map: 'Nenu the Artisan Baker, Valletta, Malta',
-          text: 'Traditional Maltese baking, from proper ftira to timpana. A good, unhurried lunch in Valletta.' }
+          text: 'Traditional Maltese baking, from proper ftira to timpana. A good, unhurried lunch in Valletta.' },
+      { name: 'Is-Serkin (Crystal Palace Bar)', area: 'Rabat', map: 'Crystal Palace Bar, Rabat, Malta',
+        text: 'The place for pastizzi: flaky, piping hot and the island\u2019s favourite snack, just outside the gates of Mdina.' },
+      { name: 'Villa Bologna Restaurant', area: 'Attard', map: 'Villa Bologna Restaurant, Attard, Malta',
+        text: 'Lunch in the gardens of a grand old villa. Sit outside in the garden, then browse the pottery shop next door.' },
+      { name: 'Offbeat', area: 'Valletta', map: 'Offbeat, Valletta, Malta',
+        text: 'A little music bar in Valletta for a late drink.' },
+      { name: 'Grano', area: 'Valletta', map: 'Grano, Valletta, Malta',
+        text: 'Our go-to for sandwiches in Valletta.' },
+      { name: '97 Notes', area: 'Valletta', map: '97 Notes, Valletta, Malta',
+        text: 'One of our Valletta favourites.' },
+      { name: 'Big Ron\u2019s Records', map: 'Big Ron\'s Records, Malta',
+        text: 'Live music among the records, with a burger from Bulubeef afterwards.' },
+      { name: 'Damiano\u2019s Pizza & Pasta House', area: 'St Paul\u2019s Bay', map: 'Damiano\'s Pizza & Pasta House, St Paul\'s Bay, Malta',
+        text: 'Pizza and pasta in St Paul\u2019s Bay.' },
+      { name: 'N Japanese Bistrot', area: 'Valletta', map: 'N Japanese Bistrot, Valletta, Malta',
+        text: 'Japanese food in Valletta. Book in for the sake tasting.' },
+      { name: 'The Boathouse', area: 'Xlendi Bay, Gozo', map: 'The Boathouse, Xlendi, Gozo, Malta',
+        text: 'Lunch by the water in Xlendi Bay, the perfect stop on a day in Gozo.' },
+      { name: 'Fontanella Wine Bar & Bistro', area: 'Mdina', map: 'Fontanella, Mdina, Malta',
+        text: 'A glass of wine on Mdina\u2019s walls with the whole of Malta below you, best at sunset.' },
+      { name: 'Trattoria AD 1530', area: 'Mdina', map: 'Trattoria AD 1530, Mdina, Malta',
+        text: 'Relaxed Maltese and Italian cooking on a quiet square in Mdina.' },
+      { name: 'Bacchus Restaurant', area: 'Mdina', map: 'Bacchus Restaurant, Mdina, Malta',
+        text: 'Dinner under the vaulted stone ceilings of old Mdina, inside the city walls.' }
       ] },
     { id: 'playlist', label: 'Our playlist', spotify: 'https://open.spotify.com/playlist/6jhHR55oOa3c3RA2HxtGhK' }
   ]
@@ -462,7 +498,7 @@ function guideMarkup() {
         return '<li class="rt-guide__place" style="--i:' + k + '">' +
           '<div class="rt-guide__place-head">' +
             '<h3 class="rt-guide__place-name">' + esc(pl.name) + '</h3>' +
-            '<p class="rt-guide__place-area">' + esc(pl.area) + '</p>' +
+            (pl.area ? '<p class="rt-guide__place-area">' + esc(pl.area) + '</p>' : '') +
           '</div>' +
           '<div class="rt-guide__place-body">' +
             '<p class="rt-guide__place-text">' + esc(pl.text) + '</p>' +

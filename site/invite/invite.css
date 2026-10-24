@@ -1632,7 +1632,7 @@ html.rt-lock body {
 .rt-tabs__panel.is-entering .rt-guide__placeholder,
 .rt-tabs__panel.is-entering .rt-guide__spotify-frame {
   animation: rtSettle 420ms var(--rt-ease-out) both;
-  animation-delay: calc(var(--i, 0) * 45ms);
+  animation-delay: calc(min(var(--i, 0), 6) * 45ms);   /* long lists: only the first few stagger */
 }
 @keyframes rtSettle {
   from { opacity: 0; transform: translateY(10px); }
