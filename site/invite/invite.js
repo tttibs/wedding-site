@@ -169,14 +169,14 @@ var CAL_EVENTS = [
 // Section 4: the details. Each answer is a list of paragraphs.
 var FAQ = [
   { q: 'Getting to & from the wedding', a: [
-    'As many of our guests will be travelling to Malta for the wedding, we recommend making your way to the ceremony by Uber or taxi, which will be the easiest way to get to Mdina. Following the ceremony, transport will be provided from Mdina to our reception venue. At the end of the evening, guests are welcome to make their own way home from the venue by Uber or taxi.'
+    'As many of our guests will be travelling to Malta for the wedding, we recommend making your way to the ceremony by Uber, Bolt or taxi, which will be the easiest way to get to Mdina. Following the ceremony, transport will be provided from Mdina to our reception venue. At the end of the evening, guests are welcome to make their own way home from the venue by Uber, Bolt or taxi.'
   ] },
   { q: 'The little details', a: [
     'Once we have received your final RSVP, we\u2019ll be in touch with a link to a dedicated wedding guide with all the finer details for the day - including everything you\u2019ll need to know to make the most of our celebrations in Malta.'
   ] },
   { q: 'Dress code', a: [
-    'Our dress code is black tie. Tuxedos or formal suits are encouraged for gentlemen, while ladies are invited to wear floor-length gowns in any colour.',
-    'As our ceremony will take place in a church, we kindly ask that shoulders are covered during this part of the day. If your chosen outfit does not cover the shoulders, a shawl or sheer cover-up is perfectly welcome.',
+    'Our dress code is black tie. Tuxedos or formal suits are encouraged for gentlemen, while ladies are invited to wear floor-length gowns.',
+    'As our ceremony will take place in St. Paul\u2019s Cathedral, we kindly ask that shoulders are covered during this part of the day. If your chosen outfit does not cover the shoulders, a shawl or sheer cover-up is perfectly welcome.',
     'Our cocktail hour will take place partly on grass, so please keep this in mind when choosing your footwear.',
     'Most importantly, we want you to feel your very best and enjoy the day with us. If you have any questions about the dress code, please don\u2019t hesitate to reach out.'
   ] },
