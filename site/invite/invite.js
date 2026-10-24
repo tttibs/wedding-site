@@ -124,7 +124,7 @@ var GUIDE = {
 var MUSIC = { src: 'music/piano.mp3', volume: 0.3, autoplay: true };
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261024a';
+var RT_VERSION = '20261024b';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -209,7 +209,7 @@ var FAQ = [
   ] },
   { q: 'The little details', a: [
     'Once we have received your final RSVP, we\u2019ll be in touch with a link to a dedicated wedding guide with all the finer details for the day - including everything you\u2019ll need to know to make the most of our celebrations in Malta.'
-  ] },
+  ], gifts: true },
   { q: 'Dress code', a: [
     'Our dress code is black tie. Tuxedos or formal suits are encouraged for gentlemen, while ladies are invited to wear floor-length gowns.',
     'As our ceremony will take place in St. Paul\u2019s Cathedral, we kindly ask that shoulders are covered during this part of the day. If your chosen outfit does not cover the shoulders, a shawl or sheer cover-up is perfectly welcome.',
@@ -375,12 +375,35 @@ function faqMarkup() {
           '<div class="rt-faq__panel" id="rt-faq-panel-' + i + '" role="region" aria-labelledby="rt-faq-btn-' + i + '" inert>' +
             '<div class="rt-faq__clip"><div class="rt-faq__body">' +
               item.a.map(function (p) { return '<p>' + p + '</p>'; }).join('') +
+              (item.gifts ? giftsMarkup() : '') +
             '</div></div>' +
           '</div>' +
         '</div>';
       }).join('') + '</div>' +
     '</div>' +
   '</section>';
+}
+
+// A note on gifts, inside The little details. The registry button unfolds
+// the PayID with a copy button (behaviour in initGifts); the address itself is
+// filled in by script, so it isn't sitting in the page for scrapers.
+var PAYID = ['thomasbowers.au', 'gmail.com'].join('@');
+function giftsMarkup() {
+  return '<div class="rt-gifts">' +
+    '<h4 class="rt-gifts__title">A note on gifts</h4>' +
+    '<p>Your presence really is present enough, especially as so many of you are making the journey to Malta to celebrate with us. If you would like to mark the occasion, a contribution towards our future together would be very warmly appreciated.</p>' +
+    '<p>There will be a wishing well on the day, or if you\u2019d prefer, you\u2019re welcome to contribute to our registry below.</p>' +
+    '<button type="button" class="button rt-gifts__btn" aria-expanded="false" aria-controls="rt-registry">Our registry</button>' +
+    '<div class="rt-gifts__panel" id="rt-registry" role="region" aria-label="Our registry" inert>' +
+      '<div class="rt-gifts__clip"><div class="rt-registry">' +
+        '<p class="rt-registry__label">PayID</p>' +
+        '<p class="rt-registry__id"><span class="rt-registry__value"></span></p>' +
+        '<button type="button" class="rt-registry__copy">Copy</button>' +
+        '<p class="rt-registry__note">Pay from your banking app using this PayID.</p>' +
+        '<p class="rt-sr" role="status" aria-live="polite"></p>' +
+      '</div></div>' +
+    '</div>' +
+  '</div>';
 }
 
 // The stamp set onto the RSVP card once a reply is sent: a perforated
@@ -969,6 +992,49 @@ function initEventsDrag(gsap, section, range) {
   ['wheel', 'touchstart', 'keydown'].forEach(function (t) { window.addEventListener(t, stopGlide, { passive: true }); });
   // A drag isn't a click
   section.addEventListener('click', function (e) { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
+}
+
+// The registry: the button unfolds the PayID; Copy puts it on the clipboard
+function initGifts() {
+  var btn = document.querySelector('.rt-gifts__btn');
+  var panel = document.getElementById('rt-registry');
+  if (!btn || !panel) return;
+  var value = panel.querySelector('.rt-registry__value');
+  var copy = panel.querySelector('.rt-registry__copy');
+  var status = panel.querySelector('[role="status"]');
+  // if it has to wrap on a narrow phone, it wraps after the @
+  var at = PAYID.indexOf('@');
+  value.append(PAYID.slice(0, at + 1), document.createElement('wbr'), PAYID.slice(at + 1));
+  btn.addEventListener('click', function () {
+    var open = btn.getAttribute('aria-expanded') !== 'true';
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    panel.classList.toggle('is-open', open);
+    if (open) panel.removeAttribute('inert'); else panel.setAttribute('inert', '');
+  });
+  panel.addEventListener('transitionend', function (e) {
+    if (e.target === panel && window.ScrollTrigger) window.ScrollTrigger.refresh();
+  });
+  var timer;
+  function done(ok) {
+    copy.textContent = ok ? 'Copied' : 'Select and copy';
+    status.textContent = ok ? 'PayID copied' : '';
+    if (!ok) { var r = document.createRange(); r.selectNodeContents(value); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); }
+    clearTimeout(timer);
+    timer = setTimeout(function () { copy.textContent = 'Copy'; status.textContent = ''; }, 2000);
+  }
+  copy.addEventListener('click', function () {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(PAYID).then(function () { done(true); }, fallback);
+    } else fallback();
+  });
+  function fallback() {
+    var t = document.createElement('textarea');
+    t.value = PAYID; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0';
+    document.body.appendChild(t); t.select();
+    var ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(t);
+    done(ok);
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -1810,6 +1876,7 @@ function boot() {
   watchDrawings(chalkReady, '.rt-border .chalk');
   initChurch(chalkReady);
   initFaq();
+  initGifts();
   initNav();
   initMusic();
   initGuide();
