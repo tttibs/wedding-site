@@ -56,12 +56,10 @@ var GUIDE = {
     { id: 'beaches', label: 'Beach hopping',
       art: [{ name: 'beach', w: 306, h: 398 }],
       places: [
-      { name: 'Golden Bay', area: 'North-west Malta', map: 'Golden Bay, Malta',
-        text: 'Easy, sandy and sheltered, with sunbeds and caf\u00e9s, and some of the best sunsets on the island.' },
-      { name: 'Riviera Beach', area: 'G\u0127ajn Tuffie\u0127a, north-west Malta', map: 'Riviera Beach, Ghajn Tuffieha, Malta',
-        text: 'A long flight of steps keeps the crowds away from this sandy bay beneath the cliffs. Our favourite for a swim.' },
       { name: 'Gnejna Bay', area: 'North-west Malta', map: 'Gnejna Bay, Malta',
         text: 'Just round the headland from Riviera: a quieter sandy bay with clear water and old boathouses cut into the rock.' },
+      { name: 'Riviera Beach', area: 'G\u0127ajn Tuffie\u0127a, north-west Malta', map: 'Riviera Beach, Ghajn Tuffieha, Malta',
+        text: 'A long flight of steps keeps the crowds away from this sandy bay beneath the cliffs. Our favourite for a swim.' },
       { name: 'St Peter\u2019s Pool', area: 'Delimara', map: 'St Peter\'s Pool, Delimara, Malta',
         text: 'Flat rock shelves and deep, clear water for jumping in. Go on a Sunday morning and stop at the Marsaxlokk fish market on the way.' },
       { name: 'G\u0127ar Lapsi', area: 'South of Malta', map: 'Ghar Lapsi, Malta',
@@ -76,18 +74,8 @@ var GUIDE = {
     { id: 'food', label: 'Food, wine & music',
       art: [{ name: 'wine-bottle-glass', w: 288, h: 410 }],
       places: [
-        { name: 'Diar il-Bniet', area: 'Dingli', map: 'Diar il-Bniet, Dingli, Malta',
-          text: 'Farm-to-table Maltese cooking from the family\u2019s own fields, a short drive from the Dingli Cliffs at sunset.' },
-        { name: 'Trabuxu Wine Bar', area: 'Valletta', map: 'Trabuxu Wine Bar, Valletta, Malta',
-          text: 'Maltese wines and small plates in a centuries-old stone cellar. Perfect for a slow evening.' },
-        { name: 'Meridiana Wine Estate', area: 'Ta\u2019 Qali', map: 'Meridiana Wine Estate, Ta\' Qali, Malta',
-          text: 'A boutique vineyard in the middle of the island. Book a tasting with a platter of local cheese and bread (weekdays).' },
-        { name: 'The Bridge Bar', area: 'Valletta', map: 'The Bridge Bar, Valletta, Malta',
-          text: 'Live jazz on the steps of Valletta with the Grand Harbour below, on its weekly music nights.' },
-        { name: 'Nenu the Artisan Baker', area: 'Valletta', map: 'Nenu the Artisan Baker, Valletta, Malta',
-          text: 'Traditional Maltese baking, from proper ftira to timpana. A good, unhurried lunch in Valletta.' },
-      { name: 'Is-Serkin (Crystal Palace Bar)', area: 'Rabat', map: 'Crystal Palace Bar, Rabat, Malta',
-        text: 'The place for pastizzi: flaky, piping hot and the island\u2019s favourite snack, just outside the gates of Mdina.' },
+                { name: 'Is-Serkin', area: 'Rabat', map: 'Is-Serkin, Rabat, Malta',
+        text: 'The best place for pastizzi, the island\u2019s favourite snack, just outside the gates of Mdina. Our favourite is a ricotta pastizz (pastizz tal-irkotta).' },
       { name: 'Villa Bologna Restaurant', area: 'Attard', map: 'Villa Bologna Restaurant, Attard, Malta',
         text: 'Lunch in the gardens of a grand old villa. Sit outside in the garden, then browse the pottery shop next door.' },
       { name: 'Offbeat', area: 'Valletta', map: 'Offbeat, Valletta, Malta',
@@ -104,12 +92,16 @@ var GUIDE = {
         text: 'Japanese food in Valletta. Book in for the sake tasting.' },
       { name: 'The Boathouse', area: 'Xlendi Bay, Gozo', map: 'The Boathouse, Xlendi, Gozo, Malta',
         text: 'Lunch by the water in Xlendi Bay, the perfect stop on a day in Gozo.' },
-      { name: 'Fontanella Wine Bar & Bistro', area: 'Mdina', map: 'Fontanella, Mdina, Malta',
-        text: 'A glass of wine on Mdina\u2019s walls with the whole of Malta below you, best at sunset.' },
       { name: 'Trattoria AD 1530', area: 'Mdina', map: 'Trattoria AD 1530, Mdina, Malta',
         text: 'Relaxed Maltese and Italian cooking on a quiet square in Mdina.' },
       { name: 'Bacchus Restaurant', area: 'Mdina', map: 'Bacchus Restaurant, Mdina, Malta',
-        text: 'Dinner under the vaulted stone ceilings of old Mdina, inside the city walls.' }
+        text: 'Dinner under the vaulted stone ceilings of old Mdina, inside the city walls.' },
+      { name: 'Fontanella Wine Bar & Bistro', area: 'Mdina', map: 'Fontanella, Mdina, Malta',
+        text: 'A glass of wine on Mdina\u2019s walls with the whole of Malta below you, best at sunset.' },
+      { name: 'Trabuxu Wine Bar', area: 'Valletta', map: 'Trabuxu Wine Bar, Valletta, Malta',
+          text: 'Maltese wines and small plates in a centuries-old stone cellar. Perfect for a slow evening.' },
+      { name: 'The Bridge Bar', area: 'Valletta', map: 'The Bridge Bar, Valletta, Malta',
+          text: 'Live jazz on the steps of Valletta with the Grand Harbour below, on its weekly music nights.' }
       ] },
     { id: 'playlist', label: 'Our playlist', spotify: 'https://open.spotify.com/playlist/6jhHR55oOa3c3RA2HxtGhK' }
   ]
@@ -124,7 +116,7 @@ var GUIDE = {
 var MUSIC = { src: 'music/piano.mp3', volume: 0.3, autoplay: true };
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261024b';
+var RT_VERSION = '20261025a';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -209,7 +201,7 @@ var FAQ = [
   ] },
   { q: 'The little details', a: [
     'Once we have received your final RSVP, we\u2019ll be in touch with a link to a dedicated wedding guide with all the finer details for the day - including everything you\u2019ll need to know to make the most of our celebrations in Malta.'
-  ], gifts: true },
+  ] },
   { q: 'Dress code', a: [
     'Our dress code is black tie. Tuxedos or formal suits are encouraged for gentlemen, while ladies are invited to wear floor-length gowns.',
     'As our ceremony will take place in St. Paul\u2019s Cathedral, we kindly ask that shoulders are covered during this part of the day. If your chosen outfit does not cover the shoulders, a shawl or sheer cover-up is perfectly welcome.',
@@ -219,7 +211,9 @@ var FAQ = [
   { q: 'A note on children', a: [
     'While we adore the little ones in our lives, our wedding will be an adults-only celebration. We hope this gives you the rare gift of a late night, a slow morning, and an evening entirely your own.',
     'If you have any concerns about childcare for the wedding date, please don\u2019t hesitate to reach out to us. We\u2019ll be more than happy to help where we can.'
-  ] }
+  ] },
+  // Its own question: the wording and the registry button are in giftsMarkup
+  { q: 'A note on gifts', a: [], gifts: true }
 ];
 
 // Section 3: the chapters of the weekend. Each has a small chalk drawing.
@@ -384,13 +378,12 @@ function faqMarkup() {
   '</section>';
 }
 
-// A note on gifts, inside The little details. The registry button unfolds
+// A note on gifts, its own question in the details. The registry button unfolds
 // the PayID with a copy button (behaviour in initGifts); the address itself is
 // filled in by script, so it isn't sitting in the page for scrapers.
 var PAYID = ['thomasbowers.au', 'gmail.com'].join('@');
 function giftsMarkup() {
   return '<div class="rt-gifts">' +
-    '<h4 class="rt-gifts__title">A note on gifts</h4>' +
     '<p>Your presence really is present enough, especially as so many of you are making the journey to Malta to celebrate with us. If you would like to mark the occasion, a contribution towards our future together would be very warmly appreciated.</p>' +
     '<p>There will be a wishing well on the day, or if you\u2019d prefer, you\u2019re welcome to contribute to our registry below.</p>' +
     '<button type="button" class="button rt-gifts__btn" aria-expanded="false" aria-controls="rt-registry">Our registry</button>' +
@@ -420,7 +413,7 @@ var STAMP_SVG = (function () {
     '</defs>' +
     '<g mask="url(#rtPerf)"><rect width="' + W + '" height="' + H + '" fill="#5b7d96"/><rect width="' + W + '" height="' + H + '" fill="url(#rtStampLight)"/></g>' +
     '<rect x="8" y="8" width="' + (W - 16) + '" height="' + (H - 16) + '" fill="none" stroke="#f7f3e9" stroke-width="0.8" opacity="0.55"/>' +
-    '<text x="50" y="108" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-size="5.6" letter-spacing="1.3" fill="#f7f3e9" opacity="0.85">MALTA · MMXXVII</text>' +
+    '<text x="50" y="108" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-size="5.6" letter-spacing="1.3" fill="#f7f3e9" opacity="0.85">MALTA 2027</text>' +
   '</svg>';
 })();
 
