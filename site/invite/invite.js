@@ -116,7 +116,7 @@ var GUIDE = {
 var MUSIC = { src: 'music/piano.mp3', volume: 0.3, autoplay: true };
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261025a';
+var RT_VERSION = '20261025b';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -202,6 +202,9 @@ var FAQ = [
   { q: 'The little details', a: [
     'Once we have received your final RSVP, we\u2019ll be in touch with a link to a dedicated wedding guide with all the finer details for the day - including everything you\u2019ll need to know to make the most of our celebrations in Malta.'
   ] },
+  { q: 'A note on gifts', a: [
+    'Your presence really is present enough, especially as so many of you are making the journey to Malta to celebrate with us. If you would like to mark the occasion, there will be a wishing well on the day, and a contribution towards our future together would be very warmly appreciated.'
+  ] },
   { q: 'Dress code', a: [
     'Our dress code is black tie. Tuxedos or formal suits are encouraged for gentlemen, while ladies are invited to wear floor-length gowns.',
     'As our ceremony will take place in St. Paul\u2019s Cathedral, we kindly ask that shoulders are covered during this part of the day. If your chosen outfit does not cover the shoulders, a shawl or sheer cover-up is perfectly welcome.',
@@ -211,9 +214,7 @@ var FAQ = [
   { q: 'A note on children', a: [
     'While we adore the little ones in our lives, our wedding will be an adults-only celebration. We hope this gives you the rare gift of a late night, a slow morning, and an evening entirely your own.',
     'If you have any concerns about childcare for the wedding date, please don\u2019t hesitate to reach out to us. We\u2019ll be more than happy to help where we can.'
-  ] },
-  // Its own question: the wording and the registry button are in giftsMarkup
-  { q: 'A note on gifts', a: [], gifts: true }
+  ] }
 ];
 
 // Section 3: the chapters of the weekend. Each has a small chalk drawing.
@@ -369,34 +370,12 @@ function faqMarkup() {
           '<div class="rt-faq__panel" id="rt-faq-panel-' + i + '" role="region" aria-labelledby="rt-faq-btn-' + i + '" inert>' +
             '<div class="rt-faq__clip"><div class="rt-faq__body">' +
               item.a.map(function (p) { return '<p>' + p + '</p>'; }).join('') +
-              (item.gifts ? giftsMarkup() : '') +
             '</div></div>' +
           '</div>' +
         '</div>';
       }).join('') + '</div>' +
     '</div>' +
   '</section>';
-}
-
-// A note on gifts, its own question in the details. The registry button unfolds
-// the PayID with a copy button (behaviour in initGifts); the address itself is
-// filled in by script, so it isn't sitting in the page for scrapers.
-var PAYID = ['thomasbowers.au', 'gmail.com'].join('@');
-function giftsMarkup() {
-  return '<div class="rt-gifts">' +
-    '<p>Your presence really is present enough, especially as so many of you are making the journey to Malta to celebrate with us. If you would like to mark the occasion, a contribution towards our future together would be very warmly appreciated.</p>' +
-    '<p>There will be a wishing well on the day, or if you\u2019d prefer, you\u2019re welcome to contribute to our registry below.</p>' +
-    '<button type="button" class="button rt-gifts__btn" aria-expanded="false" aria-controls="rt-registry">Our registry</button>' +
-    '<div class="rt-gifts__panel" id="rt-registry" role="region" aria-label="Our registry" inert>' +
-      '<div class="rt-gifts__clip"><div class="rt-registry">' +
-        '<p class="rt-registry__label">PayID</p>' +
-        '<p class="rt-registry__id"><span class="rt-registry__value"></span></p>' +
-        '<button type="button" class="rt-registry__copy">Copy</button>' +
-        '<p class="rt-registry__note">Pay from your banking app using this PayID.</p>' +
-        '<p class="rt-sr" role="status" aria-live="polite"></p>' +
-      '</div></div>' +
-    '</div>' +
-  '</div>';
 }
 
 // The stamp set onto the RSVP card once a reply is sent: a perforated
@@ -499,6 +478,43 @@ function notesMarkup() {
   '</section>';
 }
 
+// The guide's long lists are split into several shorter paper cards, so each
+// card's texture shows whole (one tall card had to stretch or repeat it).
+// At most five places a card, or three on narrow screens where places stack,
+// shared out evenly: 14 places at five a card make 5 + 5 + 4.
+var GUIDE_NARROW = '(max-width: 700px)';   // keep in step with invite.css
+function guidePerCard() { return window.matchMedia && window.matchMedia(GUIDE_NARROW).matches ? 3 : 5; }
+function guideCardSizes(n, per) {
+  var cards = Math.max(1, Math.ceil(n / per)), base = Math.floor(n / cards), extra = n % cards, sizes = [];
+  for (var c = 0; c < cards; c++) sizes.push(base + (c < extra ? 1 : 0));
+  return sizes;
+}
+// Regroup the places when the screen crosses the narrow width (a phone turned
+// sideways), moving the existing elements so drawings keep their state
+function regroupGuideCards() {
+  var per = guidePerCard();
+  [].slice.call(document.querySelectorAll('.rt-tabs__panel')).forEach(function (panel) {
+    var items = [].slice.call(panel.querySelectorAll('.rt-guide__place'));
+    if (!items.length) return;
+    var sizes = guideCardSizes(items.length, per);
+    var cards = [].slice.call(panel.querySelectorAll('.rt-guide__card'));
+    if (cards.length === sizes.length) return;
+    var art = panel.querySelector('.rt-guide__art');
+    var k = 0;
+    sizes.forEach(function (size, c) {
+      var card = document.createElement('div');
+      card.className = 'rt-guide__card';
+      if (c === 0 && art) card.appendChild(art);
+      var ul = document.createElement('ul');
+      ul.className = 'rt-guide__list';
+      for (var x = 0; x < size; x++) ul.appendChild(items[k++]);
+      card.appendChild(ul);
+      panel.appendChild(card);
+    });
+    cards.forEach(function (old) { old.parentNode.removeChild(old); });
+  });
+}
+
 // Section 6: a tabbed guide (behaviour in initGuide). Content from GUIDE.
 function guideMarkup() {
   function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
@@ -509,8 +525,13 @@ function guideMarkup() {
   }).join('');
   var panels = GUIDE.tabs.map(function (t, i) {
     var body = '';
+    var art = (t.art || []).map(function (a) {
+      return '<div class="rt-guide__art-item" style="--w:' + a.w + ';--h:' + a.h + '">' +
+        chalkDiv(a.name, a.w + '/' + a.h, { extra: ' data-chalk-mode="manual"' }) + '</div>';
+    }).join('');
+    art = art ? '<div class="rt-guide__art" aria-hidden="true">' + art + '</div>' : '';
     if (t.places) {
-      body = '<ul class="rt-guide__list">' + t.places.map(function (pl, k) {
+      var items = t.places.map(function (pl, k) {
         return '<li class="rt-guide__place" style="--i:' + k + '">' +
           '<div class="rt-guide__place-head">' +
             '<h3 class="rt-guide__place-name">' + esc(pl.name) + '</h3>' +
@@ -521,19 +542,21 @@ function guideMarkup() {
             (pl.map ? '<a class="rt-guide__map" href="https://www.google.com/maps/search/?api=1&amp;query=' + encodeURIComponent(pl.map) + '" target="_blank" rel="noopener">View on Google Maps<span class="rt-sr">: ' + esc(pl.name) + ' (opens in a new tab)</span></a>' : '') +
           '</div>' +
         '</li>';
-      }).join('') + '</ul>';
+      });
+      // Split into several shorter cards (see guideCardSizes)
+      var k = 0;
+      body = guideCardSizes(items.length, guidePerCard()).map(function (size, c) {
+        var chunk = items.slice(k, k + size); k += size;
+        return '<div class="rt-guide__card">' + (c === 0 ? art : '') + '<ul class="rt-guide__list">' + chunk.join('') + '</ul></div>';
+      }).join('');
     } else {
       var m = /open\.spotify\.com\/(playlist|album)\/([A-Za-z0-9]+)/.exec(t.spotify || '');
       body = m
         ? '<iframe class="rt-guide__spotify-frame" title="Our playlist on Spotify" loading="lazy" src="https://open.spotify.com/embed/' + m[1] + '/' + m[2] + '" allow="clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>'
         : '<p class="rt-guide__placeholder">[Placeholder] Our Spotify playlist is coming soon.</p>';
+      body = '<div class="rt-guide__card">' + art + body + '</div>';
     }
-    var art = (t.art || []).map(function (a) {
-      return '<div class="rt-guide__art-item" style="--w:' + a.w + ';--h:' + a.h + '">' +
-        chalkDiv(a.name, a.w + '/' + a.h, { extra: ' data-chalk-mode="manual"' }) + '</div>';
-    }).join('');
     return '<div class="rt-tabs__panel" role="tabpanel" id="rt-tabpanel-' + t.id + '" aria-labelledby="rt-tab-' + t.id + '" tabindex="0"' + (i === 0 ? '' : ' hidden') + '>' +
-      (art ? '<div class="rt-guide__art" aria-hidden="true">' + art + '</div>' : '') +
       body +
     '</div>';
   }).join('');
@@ -987,49 +1010,6 @@ function initEventsDrag(gsap, section, range) {
   section.addEventListener('click', function (e) { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
 }
 
-// The registry: the button unfolds the PayID; Copy puts it on the clipboard
-function initGifts() {
-  var btn = document.querySelector('.rt-gifts__btn');
-  var panel = document.getElementById('rt-registry');
-  if (!btn || !panel) return;
-  var value = panel.querySelector('.rt-registry__value');
-  var copy = panel.querySelector('.rt-registry__copy');
-  var status = panel.querySelector('[role="status"]');
-  // if it has to wrap on a narrow phone, it wraps after the @
-  var at = PAYID.indexOf('@');
-  value.append(PAYID.slice(0, at + 1), document.createElement('wbr'), PAYID.slice(at + 1));
-  btn.addEventListener('click', function () {
-    var open = btn.getAttribute('aria-expanded') !== 'true';
-    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    panel.classList.toggle('is-open', open);
-    if (open) panel.removeAttribute('inert'); else panel.setAttribute('inert', '');
-  });
-  panel.addEventListener('transitionend', function (e) {
-    if (e.target === panel && window.ScrollTrigger) window.ScrollTrigger.refresh();
-  });
-  var timer;
-  function done(ok) {
-    copy.textContent = ok ? 'Copied' : 'Select and copy';
-    status.textContent = ok ? 'PayID copied' : '';
-    if (!ok) { var r = document.createRange(); r.selectNodeContents(value); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); }
-    clearTimeout(timer);
-    timer = setTimeout(function () { copy.textContent = 'Copy'; status.textContent = ''; }, 2000);
-  }
-  copy.addEventListener('click', function () {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(PAYID).then(function () { done(true); }, fallback);
-    } else fallback();
-  });
-  function fallback() {
-    var t = document.createElement('textarea');
-    t.value = PAYID; t.setAttribute('readonly', ''); t.style.position = 'fixed'; t.style.opacity = '0';
-    document.body.appendChild(t); t.select();
-    var ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
-    document.body.removeChild(t);
-    done(ok);
-  }
-}
-
 // ─────────────────────────────────────────────────────────────────
 //  DETAILS: accordion. Plain buttons with aria-expanded; Enter and Space
 //  work natively. Several panels can be open at once. The unfold itself is
@@ -1129,6 +1109,11 @@ function initGuide() {
   watchDrawings(CHALK_READY, '#' + first.id + ' .rt-guide__art .chalk');
   moveInk(current());
   window.addEventListener('resize', function () { moveInk(current()); });
+  var narrow = window.matchMedia && window.matchMedia(GUIDE_NARROW);
+  if (narrow) {
+    var onNarrow = function () { regroupGuideCards(); moveInk(current()); };
+    if (narrow.addEventListener) narrow.addEventListener('change', onNarrow); else if (narrow.addListener) narrow.addListener(onNarrow);
+  }
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { moveInk(current()); });
 }
 
@@ -1295,6 +1280,23 @@ function onEnter(ScrollTrigger, trigger, start, play) {
     once: true,
     onEnter: function () { cardShown.then(play); }
   });
+}
+
+// Anything that changes height (a guide tab, the RSVP form opening, the notes
+// arriving) moves everything below it. Re-measure scroll positions once it
+// settles, or reveals further down wait for a spot the page has moved past
+// (the notes heading never appeared after switching to a shorter tab).
+function watchHeight(ScrollTrigger) {
+  var main = document.querySelector('.rt-main');
+  if (!main || !window.ResizeObserver) return;
+  var last = main.offsetHeight, timer;
+  new ResizeObserver(function () {
+    var h = main.offsetHeight;
+    if (Math.abs(h - last) < 2) return;
+    last = h;
+    clearTimeout(timer);
+    timer = setTimeout(function () { ScrollTrigger.refresh(); }, 250);
+  }).observe(main);
 }
 
 function initReveals(gsap, ScrollTrigger, SplitText) {
@@ -1869,7 +1871,6 @@ function boot() {
   watchDrawings(chalkReady, '.rt-border .chalk');
   initChurch(chalkReady);
   initFaq();
-  initGifts();
   initNav();
   initMusic();
   initGuide();
@@ -1905,6 +1906,7 @@ function boot() {
     initStage(gsap);
     initEvents(gsap, ScrollTrigger);
     initReveals(gsap, ScrollTrigger, window.SplitText);
+    watchHeight(ScrollTrigger);
     LOAD.motion = 1;
   }).catch(function (err) {
     LOAD.motion = 1;
