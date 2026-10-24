@@ -956,7 +956,7 @@ html.rt-lock body {
   .rt-stamp { width: 80px; height: 99px; top: -24px; right: -8px; }
 }
 
-/* ── Section 6: notes wall ── */
+/* ── Section 7: notes wall ── */
 .rt-notes {
   position: relative;
   padding: 96px 16px 120px;
@@ -1034,7 +1034,7 @@ html.rt-lock body {
   transition-delay: calc(var(--i, 0) * 70ms);
 }
 
-/* ── Section 7: a little guide to Malta ── */
+/* ── Section 6: a little guide to Malta ── */
 .rt-guide {
   position: relative;
   padding: 104px 16px 120px;
@@ -1518,7 +1518,7 @@ html.rt-lock body {
   .rt-nav, .rt-nav__panel, .rt-nav__list, .rt-nav__card, .rt-nav__icon i { transition: none !important; }
 }
 
-/* ── Section 7: guide tabs ── */
+/* ── Section 6: guide tabs ── */
 .rt-tabs {
   margin-top: 56px;
 }

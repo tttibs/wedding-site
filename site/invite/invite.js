@@ -145,7 +145,7 @@ var BORDER = {
     { name: 'corkscrew',   w: 236, h: 298, side: 'r', top: 69, peek: 28, f: 1.5, rot: 8,   phone: { peek: 52, top: 66 } }
   ],
   '#rt-guide': [
-    { name: 'candelabra',  w: 306, h: 432, side: 'r', top: 20, peek: 30, f: 1.4, rot: 6,   phone: { peek: 56, top: 8 } },
+    { name: 'candelabra',  w: 306, h: 432, side: 'r', top: 27, peek: 30, f: 1.4, rot: 6,   phone: { peek: 56, top: 8 } },
     { name: 'swirl-short', w: 200, h: 600, side: 'l', top: 46, peek: 50, f: 1.4, rot: 180, phone: { peek: 64, top: 46 } },
     { name: 'wine-glass',  w: 165, h: 397, side: 'r', top: 58, peek: 26, f: 1.5, rot: -6,  phone: { peek: 50, top: 74 } },
     { name: 'swirl-curl',  w: 280, h: 180, side: 'l', top: 92, peek: 40, f: 1.4, rot: 10,  phone: { peek: 50, top: 94 } }
@@ -426,7 +426,7 @@ function rsvpMarkup() {
   '</section>';
 }
 
-// Section 6. The comment form and the wall it feeds (read from the sheet).
+// Section 7. The comment form and the wall it feeds (read from the sheet).
 function notesMarkup() {
   return '<section class="rt-notes" id="rt-notes" aria-labelledby="rt-notes-title">' +
     borderMarkup('#rt-notes') +
@@ -447,7 +447,7 @@ function notesMarkup() {
   '</section>';
 }
 
-// Section 7: a tabbed guide (behaviour in initGuide). Content from GUIDE.
+// Section 6: a tabbed guide (behaviour in initGuide). Content from GUIDE.
 function guideMarkup() {
   function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
   var tabs = GUIDE.tabs.map(function (t, i) {
@@ -541,8 +541,8 @@ var NAV = [
   { href: '#rt-events', label: 'Order of events' },
   { href: '#rt-faq', label: 'The details' },
   { href: '#rt-rsvp', label: 'RSVP' },
-  { href: '#rt-notes', label: 'Notes' },
-  { href: '#rt-guide', label: 'A little guide to Malta' }
+  { href: '#rt-guide', label: 'A little guide to Malta' },
+  { href: '#rt-notes', label: 'Notes' }
 ];
 function navMarkup() {
   return '<nav class="rt-nav" aria-label="Sections">' +
@@ -584,8 +584,8 @@ function render(mount) {
       eventsMarkup() +
       faqMarkup() +
       rsvpMarkup() +
-      notesMarkup() +
       guideMarkup() +
+      notesMarkup() +
     '</main>' +
     footerMarkup() +
     navMarkup() +
