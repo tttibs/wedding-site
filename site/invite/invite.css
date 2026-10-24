@@ -419,7 +419,7 @@ html.rt-lock body {
 }
 .rt-events--h .rt-events__track {
   display: flex;
-  align-items: center;
+  align-items: stretch;   /* every card as tall as the tallest */
   gap: 48px;
   max-width: none;
   width: max-content;

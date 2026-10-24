@@ -153,11 +153,11 @@ var BORDER = {
 };
 
 // Add to calendar: the weekend's three events. Times are UTC (Malta is UTC+2
-// in July): welcome drinks 3-5pm, the wedding 3.30pm-2am, the debrief 12-4pm.
+// in July): welcome drinks 3-6pm, the wedding 3.30pm-2am, the debrief 12-4pm.
 var CAL_EVENTS = [
-  { id: 'prologue', title: 'Welcome drinks | Rebecca & Thomas', start: '20270708T130000Z', end: '20270708T150000Z',
+  { id: 'prologue', title: 'Welcome drinks | Rebecca & Thomas', start: '20270708T130000Z', end: '20270708T160000Z',
     location: 'Malta (venue details to follow)',
-    desc: 'Welcome drinks before the wedding of Rebecca Bonavia & Thomas Bowers, 3pm to 5pm. Venue details to follow.' },
+    desc: 'Welcome drinks before the wedding of Rebecca Bonavia & Thomas Bowers, 3pm to 6pm. Venue details to follow.' },
   { id: 'wedding', title: 'The wedding of Rebecca & Thomas', start: '20270710T133000Z', end: '20270711T000000Z',
     location: 'St. Paul\u2019s Cathedral, Mdina, Malta',
     desc: 'Guests to arrive from 3.30pm for the ceremony at 4pm at St. Paul\u2019s Cathedral, Mdina. Transport to the reception venue follows the ceremony; cocktail hour, dinner and dancing till 2am. Black tie. Adults only.' },
@@ -188,18 +188,18 @@ var FAQ = [
 
 // Section 3: the chapters of the weekend. Each has a small chalk drawing.
 var EVENTS = [
-  { part: 'Prologue', title: 'Welcome drinks', date: 'Thursday 8th July 2027', time: '3pm \u2013 5pm',
+  { part: 'Prologue', title: 'Welcome drinks', date: 'Thursday 8th July 2027', time: '3pm \u2013 6pm',
     art: { name: 'wine-glass', w: 165, h: 397 },
-    text: 'Before the big day, join us for a relaxed welcome drink as the sun sets over Malta. Whether you\u2019ve just landed or have been exploring for days, it\u2019s the perfect chance to catch up, meet the people you\u2019ll be dancing with on Saturday, and raise a glass to the weekend ahead. Venue details to follow.' },
+    text: 'Before the big day, join us for a relaxed drink in the afternoon sun. Whether you\u2019ve just landed or have been exploring for days, come and catch up, meet the people you\u2019ll be dancing with on Saturday and raise a glass to the weekend ahead. Venue details to follow.' },
   { part: 'Part I', title: 'The ceremony', date: 'Saturday 10th July 2027', time: '4pm \u2013 5pm',
     art: { name: 'candlestick', w: 216, h: 374 },
-    text: 'Guests to arrive from 3.30pm for the ceremony commencing promptly at 4pm. Following the ceremony guests will be transported to the reception venue. St. Paul\u2019s Cathedral sits at the heart of Mdina, Malta\u2019s walled Silent City, and an Uber or taxi is the easiest way to get there. As it\u2019s a church, we kindly ask that shoulders are covered.' },
+    text: 'Guests to arrive from 3.30pm for the ceremony commencing promptly at 4pm. Following the ceremony guests will be transported to the reception venue. St. Paul\u2019s Cathedral sits at the heart of Mdina, Malta\u2019s walled Silent City.' },
   { part: 'Part II', title: 'The party', date: 'Saturday 10th July 2027', time: 'Till 2am',
     art: { name: 'corkscrew', w: 236, h: 298 },
-    text: 'Cocktail hour, a sit down dinner and lots of dancing to follow. Drinks will be served partly on the grass as the evening light softens, so choose your shoes with care, before we sit down together for dinner. Then the dancing begins and carries on until 2am, with Ubers and taxis to take you home.' },
+    text: 'Cocktails as the sun goes down, a long dinner with the people we love most, and then the dance floor opens. Expect good wine, great music and plenty of reasons to stay up late, with the dancing carrying on until 2am.' },
   { part: 'Epilogue', title: 'The debrief', date: 'Sunday 11th July', time: '12pm \u2013 4pm',
     art: { name: 'lemon', w: 186, h: 277 },
-    text: 'Join us for a relaxing afternoon with aperols by our favourite beach shack in Malta. Come as you are, bring your swimmers if you fancy a dip, and stay as long as you like. The perfect way to slow down and share the stories from the night before. Venue details to follow.' }
+    text: 'Join us for a relaxed afternoon of aperols at our favourite beach shack. Come as you are, bring your swimmers if you fancy a dip, and stay as long as you like, swapping stories from the night before. Venue details to follow.' }
 ];
 
 // ─────────────────────────────────────────────────────────────────
@@ -289,7 +289,7 @@ function invitationMarkup() {
       '<p class="rt-inv__ask" data-reveal="lines">Invite you to celebrate their marriage</p>' +
       '<dl class="rt-details">' +
         '<div class="rt-detail"><dt>Date</dt><dd>Saturday, <span class="rt-nowrap">10th July 2027</span></dd></div>' +
-        '<div class="rt-detail"><dt>Time</dt><dd>From 4.00pm</dd></div>' +
+        '<div class="rt-detail"><dt>Time</dt><dd>From 3.30pm</dd></div>' +
         '<div class="rt-detail"><dt>Venue</dt><dd>St. Paul\u2019s Cathedral, Mdina, Malta</dd></div>' +
         '<div class="rt-detail"><dt>Attire</dt><dd>Black Tie</dd></div>' +
       '</dl>' +
