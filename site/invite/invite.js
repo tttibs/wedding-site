@@ -102,20 +102,8 @@ var LIBS = {
   splitText:     'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js'
 };
 
-// Hero scroll-scrub. Frames come from scripts/hero-frames.sh.
-// mode 'frames' scrubs the image sequence; 'still' shows the still with a slow zoom.
-// Landscape screens get the full film; portrait screens a tall centred crop,
-// both filling the screen.
-var HERO = {
-  mode: 'frames',
-  desktop: { dir: 'hero/d/', count: 145, still: 'hero/still.jpg' },
-  portrait: { dir: 'hero/m/', count: 73, still: 'hero/still-portrait.jpg' },
-  viewports: 3,   // pinned scroll distance
-  scrub: 0.6      // seconds of catch-up: gives the scrub a little weight
-};
 var PORTRAIT_MQ = '(orientation: portrait)';   // keep in step with invite.css
 var IS_PORTRAIT = !!(window.matchMedia && window.matchMedia(PORTRAIT_MQ).matches);
-var TOUCH = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
 
 // Chalk border: large illustrations and flourishes down both edges of the
 // page, partly off-screen. They scroll with the page; each draws itself once,
@@ -268,7 +256,6 @@ var showIntro = !REDUCED && !introSeen();
 // without waiting for a download.
 var MONOGRAM_SVG = "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"11.4 32.9 1066.1 1061.1\" width=\"1066.1\" height=\"1061.1\" data-chalk=\"1\" data-step=\"5\" data-minw=\"0\" data-wave=\"38,13,95,52,19,7\" data-taper=\"0.45,40,0.35,55\" data-alpha=\"0.5,0.55,0.75\" data-speed=\"1.6\" data-overlap=\"0.85\"><title>R &amp; T monogram</title><g fill=\"none\" stroke=\"#111\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path stroke-width=\"12\" d=\"M245 880 C200 830,170 760,160 690 C150 650,90 640,60 610 C35 580,50 520,80 480 C110 440,100 410,130 390 C170 360,250 330,330 300 C420 260,440 160,520 70 C580 60,640 120,700 140 C790 150,880 200,910 290 C930 350,910 410,940 440 C1010 450,1050 520,1040 590 C1030 650,970 680,990 730 C1010 790,960 850,880 875 C862 880,850 882,840 880\"/><path stroke-width=\"11\" d=\"M240 378 C320 350,410 320,440 250 C470 170,500 110,550 100 C590 95,598 150,568 160 C550 165,545 142,562 138\"/><path stroke-width=\"11\" d=\"M820 235 C880 270,910 330,895 375 C885 405,858 402,866 384\"/><path stroke-width=\"11\" d=\"M935 478 C990 490,1015 540,1005 590 C995 640,950 650,955 700 C960 760,920 810,860 830 C830 840,815 820,830 805 C840 797,852 805,848 815\"/><path stroke-width=\"11\" d=\"M185 400 C160 410,140 440,140 470 C140 500,100 510,105 560 C110 600,170 605,172 575 C173 560,155 558,152 570\"/><path stroke-width=\"11\" d=\"M208 682 C205 745,222 805,255 838 C282 862,318 835,312 800 C308 778,284 782,290 800\"/><path stroke-width=\"12\" d=\"M165 965 C160 935,210 930,235 955 C255 975,270 1010,290 1030 C310 1050,330 1055,360 1055 L770 1058 C800 1020,815 960,840 930 C860 915,890 920,888 945 C886 960,868 958,868 948\"/><path stroke-width=\"10\" d=\"M318 948 C330 940,342 960,340 990 C338 1000,345 1003,360 1003 L750 998 C770 960,780 920,800 910\"/><path stroke-width=\"11\" d=\"M465.5 484.7 C463.5 485.9,457.3 488.6,453.9 491.4 C450.5 494.2,447.7 497.9,444.9 501.4 C442.2 505,440 508.9,437.5 512.7 C435.1 516.4,432.8 520.3,430.4 524.1 C428.1 527.9,425.9 531.8,423.6 535.6 C421.3 539.5,419.1 543.4,416.7 547.3 C414.5 551.1,412.2 555,410.1 558.9 C407.9 562.8,406 566.9,403.8 570.8 C401.7 574.7,399.4 578.6,397.3 582.6 C395.2 586.5,393.5 590.7,391.5 594.7 C389.6 598.7,387.5 602.8,385.6 606.8 C383.7 610.9,381.7 614.8,379.8 618.8 C377.8 623,375.8 626.9,374 631 C372.1 635.1,370.2 639.2,368.5 643.3 C366.7 647.5,365 651.5,363.1 655.6 C361.4 659.8,359.6 663.9,358 668 C356.3 672.2,355 676.5,353.5 680.7 C352.1 685,350.6 689.2,349.3 693.5 C348.1 697.8,346.9 702.2,346.1 706.5 C345.3 711,344.7 716.3,344.6 719.9 C344.6 723.5,345.7 726.9,345.8 728.3\"/><path stroke-width=\"11\" d=\"M340.6 597.1 C341.2 595,342.2 587.7,344.9 584.5 C347.5 581.4,352.3 579.4,356.4 578.2 C360.5 577,365.5 576.4,369.7 577.3 C373.9 578.3,378.2 582.4,381.3 584 C384.4 585.5,387 586.2,388.1 586.5\"/><path stroke-width=\"11\" d=\"M294.4 485.2 C296.4 483.9,301.7 480,305.7 477.9 C309.6 475.7,313.8 473.9,317.9 472.3 C322.1 470.7,326.5 469.6,330.9 468.5 C335.2 467.3,339.5 466.3,343.8 465.2 C348.2 464.2,352.7 463.3,357 462.4 C361.4 461.5,365.8 460.6,370.2 459.8 C374.7 459.1,379.1 458.4,383.5 457.8 C387.9 457.2,392.4 456.9,396.9 456.4 C401.4 455.9,405.8 455.5,410.3 455.1 C414.7 454.8,419.2 454.4,423.7 454.3 C428.2 454.1,432.7 454,437.1 454 C441.6 454,446.1 454,450.6 454.1 C455.1 454.1,459.6 454.3,464 454.4 C468.5 454.6,472.9 454.9,477.5 455.2 C481.9 455.6,486.4 456,490.8 456.5 C495.3 456.9,499.8 457.4,504.2 458.1 C508.6 458.7,513.1 459.4,517.4 460.2 C521.8 461,526.4 461.8,530.7 462.9 C535 464,539.3 465.2,543.5 467 C547.5 468.8,551.7 470.8,555.3 473.3 C558.8 475.9,562.4 479,565 482.5 C567.7 486.1,569.7 490.3,571.1 494.4 C572.5 498.6,573.2 503.3,573.3 507.7 C573.4 512.1,572.8 516.7,571.7 521 C570.7 525.3,568.9 529.5,566.9 533.5 C564.9 537.5,562.5 541.3,559.8 544.9 C557 548.4,553.9 551.7,550.7 554.8 C547.5 557.9,544 560.8,540.5 563.5 C536.9 566.2,533.1 568.6,529.2 570.9 C525.4 573.2,521.5 575.3,517.4 577.3 C513.4 579.2,509.3 581.1,505.1 582.7 C501 584.4,496.8 586,492.5 587.4 C488.2 588.9,483.9 590.1,479.6 591.2 C475.3 592.3,470.8 593.2,466.4 593.9 C462 594.7,457.6 595.4,453.2 595.9 C448.6 596.3,444.2 596.7,439.7 596.9 C435.3 597,430.8 596.7,426.3 596.6 C421.8 596.5,416.6 595.3,412.8 596.4 C409.2 597.6,404.2 600.5,403.9 603.5 C403.6 606.5,408.6 611,411.4 614.5 C414.1 618,417.3 621.1,420.3 624.5 C423.4 627.8,426.4 631.1,429.3 634.5 C432.3 637.8,435.3 641.2,438.3 644.6 C441.2 647.9,444.1 651.3,447.1 654.8 C450 658.1,453 661.5,455.9 664.7 C458.9 668.1,462 671.5,465.1 674.7 C468 678,471.1 681.3,474.2 684.5 C477.3 687.8,480.3 691.1,483.5 694.3 C486.6 697.5,489.8 700.7,492.9 703.8 C496.2 707,499.5 710.1,502.7 713.1 C506 716.1,509.4 719.1,512.7 722.1 C516.1 725.1,519.5 727.9,523 730.7 C526.5 733.5,530 736.4,533.6 739.1 C537.1 741.8,540.8 744.4,544.5 747 C548.2 749.5,551.9 752,555.7 754.4 C559.5 756.8,563.4 759.1,567.2 761.3 C571.1 763.4,575.2 765.5,579.2 767.4 C583.2 769.4,587.4 771.2,591.5 772.9 C595.6 774.7,599.8 776.3,604 777.7 C608.2 779.3,612.4 780.7,616.8 782 C621.1 783.3,625.4 784.5,629.7 785.5 C634.2 786.5,638.5 787.4,642.9 788.1 C647.3 788.9,651.8 789.4,656.3 789.5 C660.8 789.8,665.3 789.8,669.8 789.7 C674.2 789.6,678.7 789.4,683.2 789.1 C687.7 788.6,692.1 788,696.5 787 C700.8 786.1,705.2 785,709.4 783.4 C713.6 781.9,717.8 780.1,721.6 777.7 C725.3 775.4,729.2 772.6,732 769.3 C734.7 765.9,737.1 761.7,738.4 757.6 C739.5 753.4,739.5 748.6,739.1 744.2 C738.6 739.9,737.3 735.3,735.5 731.3 C733.6 727.4,730.1 723.3,727.6 720.5 C725.1 717.6,721.7 715.4,720.5 714.3\"/><path stroke-width=\"10\" d=\"M609.6 616.9 C610.1 616.2,612 614.1,612.4 612.5 C612.8 610.8,612.7 608.7,612 607.2 C611.4 605.7,609.9 604.3,608.6 603.3 C607.3 602.2,605.4 601.5,603.8 600.9 C602.1 600.3,600.3 600,598.6 599.7 C596.8 599.4,595 599.3,593.2 599.2 C591.5 599.2,589.7 599.3,587.8 599.4 C586.1 599.5,584.3 599.7,582.6 600 C580.8 600.3,579 600.6,577.3 601 C575.6 601.5,573.9 601.9,572.2 602.4 C570.4 603,568.7 603.6,567.1 604.1 C565.5 604.8,563.8 605.5,562.2 606.3 C560.6 607.1,559.1 608,557.5 609 C556.1 610,554.7 611.1,553.3 612.4 C552.1 613.6,550.9 614.9,550.1 616.5 C549.2 618,548.4 619.8,548.3 621.5 C548.1 623.3,548.4 625.3,549.1 626.7 C549.9 628.2,551.2 629.7,552.8 630.5 C554.2 631.4,556.1 631.7,557.8 632 C559.5 632.3,562.4 631.7,563.2 632.3 C563.9 633,563.6 634.9,562.6 635.9 C561.6 636.8,559.3 637.2,557.6 638 C556 638.7,554.4 639.5,552.8 640.3 C551.2 641.1,549.7 642,548.2 642.9 C546.6 643.7,545.1 644.7,543.6 645.7 C542.1 646.7,540.6 647.7,539.3 648.8 C537.8 649.9,536.5 651.1,535.2 652.2 C533.8 653.5,532.6 654.7,531.3 656.1 C530.2 657.4,529 658.8,528.1 660.3 C527.1 661.7,526.2 663.3,525.4 664.9 C524.6 666.5,524 668.2,523.5 669.9 C523.1 671.6,522.9 673.5,522.9 675.2 C523 677,523.3 678.8,523.8 680.5 C524.3 682.2,525 683.9,526 685.3 C527 686.8,528.5 688,529.8 689 C531.2 690.1,533 690.9,534.6 691.5 C536.2 692.2,537.9 692.6,539.7 693 C541.5 693.3,543.3 693.4,545 693.6 C546.8 693.7,548.6 693.6,550.4 693.6 C552.2 693.6,554 693.5,555.7 693.4 C557.5 693.2,559.3 693,561.1 692.7 C562.8 692.4,564.5 692.1,566.3 691.7 C568.1 691.3,569.8 690.9,571.5 690.4 C573.2 689.9,574.9 689.3,576.6 688.8 C578.3 688.1,579.9 687.5,581.5 686.8 C583.3 686.1,584.9 685.3,586.4 684.6 C588 683.7,589.6 682.8,591.1 681.9 C592.6 680.9,594.1 680,595.5 678.8 C596.9 677.8,598.3 676.6,599.5 675.3 C600.7 674,601.8 672.6,602.8 671.1 C603.7 669.6,604.6 668,605.3 666.3 C605.8 664.7,606.3 662.8,606.5 661.1 C606.7 659.4,606.5 657.6,606.3 655.8 C606.1 654,606 652,605.3 650.5 C604.7 649,603.8 647.3,602.5 646.7 C601 646.2,598.9 647.2,597.1 647.5 C595.4 647.7,593.7 648.1,591.9 648.4 C590.1 648.8,588.4 649.1,586.6 649.5 C584.9 649.8,583.2 650.1,581.4 650.6 C579.7 651,577.9 651.5,576.3 652 C574.6 652.7,572.9 653.4,571.4 654.3 C570 655.3,568.4 656.4,567.4 657.8 C566.2 659.1,565.5 660.8,564.8 662.5 C564.1 664.1,563.8 666.1,563.7 667.6 C563.5 669.3,563.8 671.2,563.8 671.8\"/><path stroke-width=\"10\" d=\"M582.5 630 C581.6 630,579 630.4,577.2 630.8 C575.5 631.1,573.8 631.7,572.1 632.1 C570.3 632.4,568 632.9,566.8 633.1 C565.7 633.4,565.6 633.4,565.3 633.4\"/><path stroke-width=\"10\" d=\"M616.5 630.3 C617.1 631,619.5 632.9,619.8 634.4 C620.1 635.9,619.3 637.9,618.4 639.2 C617.4 640.6,615.6 641.5,614 642.4 C612.5 643.2,610.8 643.8,609.1 644.4 C607.5 645.1,604.9 645.9,604.1 646.2\"/><path stroke-width=\"11\" d=\"M680.3 485 C678.2 484.6,671.9 483.5,667.7 482.9 C663.5 482.2,659.1 481.6,654.9 481.3 C650.6 480.9,646.3 480.5,642 480.4 C637.8 480.2,633.5 480.3,629.1 480.5 C624.8 480.7,620.6 481.1,616.3 481.6 C612.1 482.1,607.9 482.8,603.6 483.7 C599.4 484.4,595.2 485.4,591.1 486.5 C586.9 487.7,582.7 488.9,578.7 490.4 C574.7 491.8,570.7 493.4,566.8 495.3 C563.1 497.3,559.3 499.4,555.8 502 C552.4 504.5,548.9 507.3,546.5 510.8 C544.1 514.2,541.6 518.5,541.4 522.5 C541.3 526.3,543.1 531.2,545.7 534.1 C548.3 537,553.1 538.4,557.1 539.6 C561.3 540.8,565.7 541,570 541.2 C574.2 541.5,578.5 541.3,582.8 541.1 C587.1 540.9,591.4 540.5,595.7 540 C599.9 539.5,604.2 539,608.4 538.2 C612.6 537.5,616.9 536.7,621.1 535.8 C625.3 534.9,629.4 534,633.6 532.9 C637.8 532,642 530.9,646.1 529.8 C650.3 528.7,654.4 527.6,658.6 526.4 C662.7 525.3,666.8 524.1,670.9 523 C675.2 521.8,679.3 520.7,683.4 519.5 C687.5 518.4,691.7 517.4,695.9 516.3 C700.1 515.3,704.2 514.3,708.4 513.3 C712.5 512.2,716.7 511.1,720.9 510 C725 508.9,729.1 507.7,733.3 506.7 C737.5 505.6,741.6 504.5,745.8 503.7 C750 502.8,754.2 502.2,758.5 501.5 C762.8 500.8,767 500.3,771.3 499.9 C775.6 499.5,779.8 499,784.1 498.7 C788.4 498.4,792.7 498.1,797 498.1 C801.3 498.1,805.6 498.2,809.8 498.6 C814.1 498.9,818.5 499.5,822.6 500.3 C826.8 501.1,831 502.2,835.1 503.5 C839.2 504.7,843.2 506.3,847.1 508.1 C851 509.9,854.8 512,858.3 514.4 C861.8 516.9,865.2 519.7,868 522.9 C870.8 526.1,873.3 529.8,874.9 533.7 C876.7 537.5,877.6 543.9,878.1 546.1 C878.7 548.4,878.2 546.9,878.2 547.1\"/><path stroke-width=\"11\" d=\"M755.9 484 C753.9 485.1,748 487.8,744.8 490.5 C741.7 493.2,739.9 497.6,736.9 500.6 C733.9 503.7,730.1 505.9,727 508.9 C724 511.9,721 515,718.8 518.6 C716.6 522.2,715.7 526.7,713.8 530.5 C711.9 534.4,709.5 537.9,707.3 541.6 C705.1 545.3,702.9 549,700.7 552.7 C698.5 556.4,696.5 560.1,694.4 564 C692.3 567.7,690.3 571.5,688.3 575.3 C686.3 579,684.2 582.9,682.2 586.6 C680.2 590.4,678.3 594.3,676.4 598.1 C674.5 601.9,672.7 605.9,670.7 609.7 C668.9 613.6,667.1 617.5,665.3 621.4 C663.6 625.3,661.7 629.2,660 633.2 C658.4 637.1,656.6 641.1,655.1 645.1 C653.5 649,651.9 653,650.4 657.1 C648.9 661.1,647.4 665.1,646.1 669.2 C644.8 673.3,643.5 677.4,642.4 681.5 C641.2 685.6,640.2 689.8,639.2 694 C638.2 698.2,637.5 702.4,636.8 706.6 C636.2 710.9,635.6 715.2,635.5 719.5 C635.5 723.8,635.4 728.3,636.4 732.3 C637.4 736.3,638.8 741.4,641.8 743.8 C644.7 746.1,649.8 746.8,653.8 746.3 C657.7 745.7,662.5 742.3,665.3 740.7 C668 738.9,669.4 736.9,670.3 736.2\"/></g></svg>";
 
-var CUE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="6 9 12 15 18 9"></polyline></svg>';
 
 function introMarkup() {
   if (!showIntro) return '';
@@ -280,23 +267,7 @@ function introMarkup() {
   '</div>';
 }
 
-function heroMarkup() {
-  return '<section class="rt-hero" aria-labelledby="rt-title">' +
-    '<h1 class="rt-sr" id="rt-title">Rebecca Bonavia &amp; Thomas Bowers. Saturday 10 July 2027, Mdina, Malta.</h1>' +
-    '<div class="rt-hero__media">' +
-      '<picture>' +
-        '<source media="' + PORTRAIT_MQ + '" srcset="' + v(BASE + HERO.portrait.still) + '">' +
-        '<img class="rt-hero__still" src="' + v(BASE + HERO.desktop.still) + '" alt="A candlelit dinner table from above. On a silver tray, a lace card reads Rebecca and Thomas, 10th July 2027, Malta." fetchpriority="high" decoding="async">' +
-      '</picture>' +
-      '<canvas class="rt-hero__canvas" aria-hidden="true"></canvas>' +
-    '</div>' +
-    '<div class="rt-cue" aria-hidden="true">' + CUE_SVG +
-      '<span class="rt-cue__label">' + (TOUCH ? 'Swipe' : 'Scroll') + '</span></div>' +
-  '</section>';
-}
-
-// Section 2. On portrait screens this sits directly under the square film and
-// is pinned with it, so the greeting shows beneath the film while it plays.
+// Section 2: the invitation card, the first thing on the page.
 function invitationMarkup() {
   return '<section class="rt-invitation" id="rt-invitation" aria-labelledby="rt-invitation-names">' +
     borderMarkup('#rt-invitation') +
@@ -582,7 +553,10 @@ function render(mount) {
   mount.innerHTML = introMarkup() +
 
     '<main class="rt-main">' +
-      '<div class="rt-opening">' + heroMarkup() + invitationMarkup() + '</div>' +
+      '<div class="rt-opening">' +
+        '<h1 class="rt-sr" id="rt-title">Rebecca Bonavia &amp; Thomas Bowers. Saturday 10 July 2027, Mdina, Malta.</h1>' +
+        invitationMarkup() +
+      '</div>' +
       eventsMarkup() +
       faqMarkup() +
       rsvpMarkup() +
@@ -596,21 +570,21 @@ function render(mount) {
 }
 
 // ─────────────────────────────────────────────────────────────────
-//  INTRO: monogram draws on paper, holds, fades to the hero (~4.5s)
+//  INTRO: the monogram draws as the site loads, then the paper lifts
 // ─────────────────────────────────────────────────────────────────
 
 var introDone = showIntro ? null : Promise.resolve();
 
 // Everything the opening needs before the paper lifts: page images and fonts,
-// every film frame, and scroll positions measured. Resolved in boot().
+// the animation library, and scroll positions measured. Resolved in boot().
 var resolveSiteReady, siteIsReady = false;
 var siteReady = new Promise(function (r) { resolveSiteReady = r; }).then(function () { siteIsReady = true; });
 
 // How much of that has arrived (each part 0 to 1), for the intro's drawing
-var LOAD = { frames: 0, motion: 0, page: 0, fonts: 0 };
+var LOAD = { motion: 0, page: 0, fonts: 0 };
 function loadProgress() {
   if (siteIsReady) return 1;
-  var p = LOAD.frames * 0.7 + LOAD.motion * 0.15 + LOAD.page * 0.1 + LOAD.fonts * 0.05;
+  var p = LOAD.motion * 0.5 + LOAD.page * 0.35 + LOAD.fonts * 0.15;
   return Math.min(0.95, p);   // the last stroke waits for everything
 }
 
@@ -638,8 +612,8 @@ function runIntro(chalkReady) {
   function skip() { finish(true); }
 
   // The monogram draws as the site loads (a loading indicator), and the paper
-  // lifts once it is complete AND the site is ready, so the first scroll out
-  // of the film is smooth rather than catching up.
+  // lifts once it is complete AND the site is ready, so the opening plays
+  // smoothly rather than catching up.
   var drawn = false, ready = false, hurry = false;
   function maybeFinish() { if (drawn && ready) finish(false); }
 
@@ -677,95 +651,12 @@ function runIntro(chalkReady) {
 }
 
 // ─────────────────────────────────────────────────────────────────
-//  HERO: scroll-scrubbed frame sequence on a canvas
-// ─────────────────────────────────────────────────────────────────
-
-function pad3(n) { return (n < 10 ? '00' : n < 100 ? '0' : '') + n; }
-
-function createHeroScrub(section) {
-  var canvas = section.querySelector('.rt-hero__canvas');
-  var ctx = canvas.getContext('2d');
-  var portrait = window.matchMedia(PORTRAIT_MQ).matches;
-  var set = portrait ? HERO.portrait : HERO.desktop;
-  var n = set.count;
-  var frames = new Array(n);
-  var cur = 0, drawn = null;
-
-  function size() {
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
-    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; drawn = null; }
-  }
-
-  function nearest(i) {
-    if (frames[i]) return frames[i];
-    for (var d = 1; d < n; d++) {
-      if (i - d >= 0 && frames[i - d]) return frames[i - d];
-      if (i + d < n && frames[i + d]) return frames[i + d];
-    }
-    return null;
-  }
-
-  function draw() {
-    var img = nearest(cur);
-    if (!img) return;
-    if (img === drawn) return;
-    var cw = canvas.width, ch = canvas.height;
-    var iw = img.naturalWidth, ih = img.naturalHeight;
-    var s = Math.max(cw / iw, ch / ih);
-    var dw = iw * s, dh = ih * s;
-    var x = (cw - dw) / 2;
-    var y = (ch - dh) / 2;
-    ctx.drawImage(img, x, y, dw, dh);
-    drawn = img;
-    if (!section.classList.contains('is-live')) section.classList.add('is-live');
-  }
-
-  // Every frame loads up front, while the intro is on screen (it waits for
-  // them). Coarse to fine: first and last, then every 16th, 8th, 4th, 2nd and
-  // the rest, so a guest who skips ahead still scrubs a rough film.
-  var queue = [0, n - 1], seen = {};
-  seen[0] = seen[n - 1] = true;
-  [16, 8, 4, 2, 1].forEach(function (step) {
-    for (var i = 0; i < n; i += step) if (!seen[i]) { seen[i] = true; queue.push(i); }
-  });
-  var settled = 0, resolveReady;
-  var ready = new Promise(function (r) { resolveReady = r; });
-  function done() { LOAD.frames = ++settled / n; if (settled === n) resolveReady(); }
-  var active = 0;
-  function pump() {
-    while (active < 6 && queue.length) {
-      (function (i) {
-        active++;
-        var img = new Image();
-        img.decoding = 'async';
-        img.onload = function () { frames[i] = img; active--; done(); if (Math.abs(i - cur) < 16 || !drawn) draw(); pump(); };
-        img.onerror = function () { active--; done(); pump(); };
-        img.src = v(BASE + set.dir + pad3(i + 1) + '.webp');
-      })(queue.shift());
-    }
-  }
-  size();
-  pump();
-
-  return {
-    ready: ready,
-    set: function (p) {
-      cur = Math.round(p * (n - 1));
-      draw();
-    },
-    resize: function () { size(); draw(); }
-  };
-}
-
-// ─────────────────────────────────────────────────────────────────
-//  STAGE: the film plays under the scroll, fades to paper, the chalk
-//  border draws itself, then the invitation card is set down
+//  STAGE: once the paper lifts, the chalk border draws itself and the
+//  invitation card is set down
 // ─────────────────────────────────────────────────────────────────
 
 var stageOpened = false, resolveStage, resolveCard;
-var heroReady = Promise.resolve();   // every film frame has arrived (initStage)
-var stageOpen = new Promise(function (r) { resolveStage = r; });   // the film has gone
+var stageOpen = new Promise(function (r) { resolveStage = r; });   // the opening has begun
 var cardShown = new Promise(function (r) { resolveCard = r; });    // the card is appearing
 
 // animateCard: show the card with motion (true) or as it already is (false)
@@ -774,108 +665,22 @@ function openStage(animateCard) {
   stageOpened = true;
   resolveStage();
   if (!animateCard) { resolveCard(); return; }
-  // Let the first drawings get going before the card arrives, unless the guest
-  // is already scrolling past it: then it comes straight away, more quickly.
+  // Let the first drawings get going before the card arrives
   var card = document.querySelector('.rt-card');
-  var late = card && card.getBoundingClientRect().top < window.innerHeight * 0.3;
   setTimeout(function () {
-    window.gsap.to(card, { opacity: 1, y: 0, duration: late ? 0.6 : 1.4, ease: 'power3.out' });
-    setTimeout(resolveCard, late ? 100 : 350);
-  }, late ? 0 : 1300);
+    window.gsap.to(card, { opacity: 1, y: 0, duration: 1.4, ease: 'power3.out' });
+    setTimeout(resolveCard, 350);
+  }, 900);
 }
 
-function initStage(gsap, ScrollTrigger) {
-  var hero = document.querySelector('.rt-hero');
-  var opening = document.querySelector('.rt-opening');
-  if (!hero || !opening || REDUCED) { openStage(false); return; }
-
-  // The film now lies over the top of the invitation; the card waits unseen.
-  html.classList.add('rt-stage');
+function initStage(gsap) {
+  if (REDUCED || !document.querySelector('.rt-card')) { openStage(false); return; }
+  // The card waits unseen until the intro has gone, then is set down
   gsap.set('.rt-card', { opacity: 0, y: 40 });
-
-  var scrub = HERO.mode === 'frames' ? createHeroScrub(hero) : null;
-  if (scrub) heroReady = scrub.ready;
-  else LOAD.frames = 1;
-  var state = { p: 0 };
-  var tl = gsap.timeline({
-    scrollTrigger: {
-      trigger: opening,
-      start: 'top top',
-      // the film, then one more screen for it to fade
-      end: function () { return '+=' + window.innerHeight * (HERO.viewports + 1); },
-      pin: true,
-      scrub: HERO.scrub,
-      invalidateOnRefresh: true,
-      onRefresh: function () { if (scrub) scrub.resize(); },
-      // Once the guest has scrolled on past the opening, it is done: the film
-      // shouldn't play back over the invitation when they scroll up again.
-      // (The scrub lags the scroll slightly, so the stage may not have opened yet.)
-      onLeave: function (self) { openStage(true); collapseWhenStill(self, tl, hero, ScrollTrigger); }
-    }
-  });
-  if (scrub) {
-    tl.to(state, { p: 1, duration: HERO.viewports, ease: 'none', onUpdate: function () { scrub.set(state.p); } });
-  } else {
-    // Stand-in for a frame sequence: a slow, scroll-driven drift over the still
-    tl.fromTo(hero.querySelector('.rt-hero__still'), { scale: 1.02 }, { scale: 1.1, duration: HERO.viewports, ease: 'none' });
-  }
-  stageControl = function () { openStage(true); collapseStage(tl.scrollTrigger, tl, hero, ScrollTrigger); };
-  tl.to(hero, { opacity: 0, duration: 0.6, ease: 'none' })
-    .call(function () { openStage(true); })
-    .to({}, { duration: 0.4 });
+  introDone.then(function () { openStage(true); });
 }
 
-// Removes the opening's pinned scroll distance and the film, keeping the page
-// exactly where it is on screen.
-var stageControl = null;   // set by initStage; lets navigation collapse it first
-var stageCollapsed = false;
-
-// The film is hidden at once, but the scroll distance is only taken away once
-// the page is at rest: mid-flick (iOS momentum, trackpad glide) the browser
-// ignores the corrective scrollTo, so the page would leap down by the whole
-// film's length, to the end of the order of events.
-var collapseWaiting = false;
-function collapseWhenStill(st, tl, hero, ScrollTrigger) {
-  if (collapseWaiting || stageCollapsed) return;
-  collapseWaiting = true;
-  hero.style.display = 'none';
-  var touching = 0, timer;
-  var opts = { passive: true };
-  function wait() {
-    clearTimeout(timer);
-    timer = setTimeout(function () {
-      if (touching) return;
-      ['scroll', 'wheel'].forEach(function (t) { window.removeEventListener(t, wait, opts); });
-      window.removeEventListener('touchstart', down, opts);
-      window.removeEventListener('touchend', up, opts);
-      window.removeEventListener('touchcancel', up, opts);
-      collapseStage(st, tl, hero, ScrollTrigger);
-    }, 200);
-  }
-  function down(e) { touching = e.touches.length; clearTimeout(timer); }
-  function up(e) { touching = e.touches.length; wait(); }
-  ['scroll', 'wheel'].forEach(function (t) { window.addEventListener(t, wait, opts); });
-  window.addEventListener('touchstart', down, opts);
-  window.addEventListener('touchend', up, opts);
-  window.addEventListener('touchcancel', up, opts);
-  wait();
-}
-
-function collapseStage(st, tl, hero, ScrollTrigger) {
-  if (stageCollapsed) return;
-  stageCollapsed = true;
-  stageControl = null;
-  var distance = st.end - st.start;
-  var y = window.pageYOffset;
-  st.kill();
-  tl.kill();
-  hero.style.display = 'none';
-  html.classList.add('rt-stage-done');
-  window.scrollTo(0, Math.max(0, y - distance));
-  ScrollTrigger.refresh();
-}
-
-// Border drawings wait until the film has gone, then each draws once it is
+// Border drawings wait until the opening has begun, then each draws once it is
 // entirely on screen (tall flourishes: once their top is near the top of the
 // screen). Several arriving together draw one after another.
 function watchDrawings(chalkReady, selector) {
@@ -1289,7 +1094,7 @@ function initMusic() {
     setState(true, false);
     play().catch(function () { setState(false, false); arm(); });
   }
-  // after the intro, so the music doesn't compete with the first frames loading
+  // after the intro, so the music doesn't compete with the page loading
   introDone.then(function () {
     if (document.readyState === 'complete') start();
     else window.addEventListener('load', start);
@@ -1307,7 +1112,7 @@ function initNav() {
   var panel = nav.querySelector('.rt-nav__panel');
   var links = [].slice.call(nav.querySelectorAll('.rt-nav__link'));
 
-  // The note belongs to the paper, so it arrives once the film has gone
+  // The note arrives with the opening
   stageOpen.then(function () { nav.classList.add('is-visible'); });
 
   function setOpen(open, focusBack) {
@@ -1335,8 +1140,6 @@ function initNav() {
       if (!target) return;
       e.preventDefault();
       setOpen(false);
-      // Jumping past the opening: retire the film first so positions are final
-      if (stageControl) stageControl();
       var y = target.getBoundingClientRect().top + window.pageYOffset - 8;
       window.scrollTo({ top: Math.max(0, y), behavior: REDUCED ? 'auto' : 'smooth' });
       // Move focus to the section (for keyboard and screen-reader users)
@@ -1371,7 +1174,6 @@ function onEnter(ScrollTrigger, trigger, start, play) {
     trigger: trigger,
     start: start,
     once: true,
-    pinnedContainer: trigger.closest('.rt-opening') ? '.rt-opening' : undefined,
     onEnter: function () { cardShown.then(play); }
   });
 }
@@ -1415,14 +1217,6 @@ function initReveals(gsap, ScrollTrigger, SplitText) {
     var tiles = gsap.from(details.children, { y: 18, opacity: 0, duration: 0.95, ease: 'power3.out', stagger: 0.15, paused: true });
     onEnter(ScrollTrigger, details, 'top 85%', function () { tiles.play(); });
   }
-}
-
-// The scroll cue fades in once the intro has gone and stays, bobbing, until
-// the film itself fades away (it lives in the film, so it goes with it).
-function initCue() {
-  var cue = document.querySelector('.rt-cue');
-  if (!cue) return;
-  introDone.then(function () { cue.classList.add('is-visible'); });
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -1925,7 +1719,6 @@ function boot() {
   var chalkReady = window.ChalkDraw ? Promise.resolve() : loadScript(v(BASE + 'chalk-draw.js'));
   chalkReady.catch(function (err) { console.error('[invite]', err); });
   runIntro(chalkReady);
-  initCue();
   CHALK_READY = chalkReady;
   watchDrawings(chalkReady, '.rt-border .chalk');
   initChurch(chalkReady);
@@ -1962,19 +1755,18 @@ function boot() {
     gsap.registerPlugin(ScrollTrigger, window.SplitText);
     ScrollTrigger.config({ ignoreMobileResize: true });
     html.classList.add('rt-motion');
-    initStage(gsap, ScrollTrigger);
+    initStage(gsap);
     initEvents(gsap, ScrollTrigger);
     initReveals(gsap, ScrollTrigger, window.SplitText);
     LOAD.motion = 1;
-    return heroReady;
   }).catch(function (err) {
-    LOAD.motion = LOAD.frames = 1;
+    LOAD.motion = 1;
     console.error('[invite] Motion disabled:', err);
     openStage(false);
     watchDrawings(chalkReady, '.rt-chapter__art .chalk');
   });
 
-  // The site is ready once images, fonts and the film have all arrived; then
+  // The site is ready once images, fonts and the animation library have arrived; then
   // measure every scroll position once, against the final layout.
   var pageLoaded = new Promise(function (r) {
     if (document.readyState === 'complete') r();

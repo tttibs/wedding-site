@@ -130,126 +130,15 @@ html.rt-lock body {
   transition-duration: 300ms;
 }
 
-/* ── Hero ── */
-/* Full-bleed film in both orientations (portrait uses its own tall frames) */
-.rt-hero {
-  position: relative;
-  height: 100vh;
-  /* the large viewport: the film still fills the screen once a phone's
-     browser bar slides away (while the bar shows, the foot sits behind it) */
-  height: 100lvh;
-  overflow: hidden;
-  background: var(--rt-ink);
-}
-.rt-hero__media {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-/* A soft fall-off of light at the foot of the film, so the cue reads on the cloth */
-.rt-hero__media::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 28%;
-  background: linear-gradient(to top, rgba(26, 10, 10, 0.38), rgba(26, 10, 10, 0));
-  pointer-events: none;
-}
-.rt-hero__media picture {
-  display: contents;
-}
-.rt-hero__still,
-.rt-hero__canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-.rt-hero__still {
-  object-fit: cover;
-  object-position: 50% 50%;
-  transform-origin: 50% 45%;
-}
-.rt-hero__canvas {
-  opacity: 0;
-}
-.rt-hero.is-live .rt-hero__canvas {
-  opacity: 1;
-}
-
-/* Scroll cue: the save-the-date chevron, fades in after the intro */
-.rt-cue {
-  position: absolute;
-  left: 50%;
-  bottom: max(24px, calc(env(safe-area-inset-bottom) + 14px));
-  z-index: 2;
-  color: rgba(247, 243, 233, 0.95);
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  pointer-events: none;
-}
-.rt-cue.is-visible {
-  opacity: 1;
-}
-.rt-cue:not(.is-visible) svg {
-  animation-play-state: paused;
-}
-.rt-cue svg {
-  display: block;
-  width: 56px;
-  height: 56px;
-  filter: drop-shadow(0 1px 4px rgba(26, 10, 10, 0.6));
-  animation: rtCueBob 2s ease-in-out infinite;
-}
-/* "Scroll" (desktop) or "Swipe" (touch), under the chevron */
-.rt-cue {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-/* Keep the cue above the browser bar: the film runs behind it */
-@supports (height: 1lvh) {
-  .rt-cue { bottom: calc(max(24px, calc(env(safe-area-inset-bottom) + 14px)) + (100lvh - 100svh)); }
-}
-.rt-cue__label {
-  margin-top: -6px;
-  font-family: var(--rt-sans);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.32em;
-  padding-left: 0.32em;   /* balance the tracking so the word sits centred */
-  text-transform: uppercase;
-  text-shadow: 0 1px 4px rgba(26, 10, 10, 0.6);
-}
-@keyframes rtCueBob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(6px); }
-}
-
 /* ── Section 2: the invitation ── */
 .rt-invitation {
   position: relative;
   padding: 88px 16px 112px;
 }
 
-/* The opening stage (motion on): the film lies over the top of the
-   invitation, fades away to the paper, and the card is set down beneath */
-html.rt-stage .rt-opening {
-  position: relative;
-}
-html.rt-stage .rt-hero {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 5;
-  pointer-events: none;
-}
 @media (orientation: portrait) {
   .rt-invitation {
-    padding: 28px 10vw 72px;
+    padding: max(52px, calc(env(safe-area-inset-top) + 32px)) 10vw 72px;
   }
   .rt-invitation .rt-card {
     padding-left: 18px;
@@ -1335,7 +1224,6 @@ html.rt-stage .rt-hero {
 
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
-  .rt-cue svg { animation: none; }
   .rt-intro { display: none; }
 }
 
