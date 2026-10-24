@@ -1297,6 +1297,23 @@ function onEnter(ScrollTrigger, trigger, start, play) {
   });
 }
 
+// Anything that changes height (a guide tab, the RSVP form opening, the notes
+// arriving) moves everything below it. Re-measure scroll positions once it
+// settles, or reveals further down wait for a spot the page has moved past
+// (the notes heading never appeared after switching to a shorter tab).
+function watchHeight(ScrollTrigger) {
+  var main = document.querySelector('.rt-main');
+  if (!main || !window.ResizeObserver) return;
+  var last = main.offsetHeight, timer;
+  new ResizeObserver(function () {
+    var h = main.offsetHeight;
+    if (Math.abs(h - last) < 2) return;
+    last = h;
+    clearTimeout(timer);
+    timer = setTimeout(function () { ScrollTrigger.refresh(); }, 250);
+  }).observe(main);
+}
+
 function initReveals(gsap, ScrollTrigger, SplitText) {
   if (REDUCED) return;
 
@@ -1905,6 +1922,7 @@ function boot() {
     initStage(gsap);
     initEvents(gsap, ScrollTrigger);
     initReveals(gsap, ScrollTrigger, window.SplitText);
+    watchHeight(ScrollTrigger);
     LOAD.motion = 1;
   }).catch(function (err) {
     LOAD.motion = 1;
