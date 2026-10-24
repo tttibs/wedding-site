@@ -68,5 +68,5 @@ rollback works at any time.
 
 Merge changes to `main`; GitHub Pages redeploys and the live site updates
 within about 10 minutes (hard-refresh). Bump `RT_VERSION` at the top of
-`site/invite/invite.js` whenever drawings or hero frames change, so
+`site/invite/invite.js` whenever drawings or other assets change, so
 browsers fetch the new files. No Webflow changes are needed.

@@ -74,8 +74,11 @@ function lookupRSVP(name) {
 
 
 function saveRSVP(data) {
+  // A guest who has replied before is confirming (or changing) their reply:
+  // check before this row is added, so it doesn't find itself
+  var confirmed = data.name && lookupRSVP(data.name).found ? 'Confirmed' : '';
   var sheet = getOrCreateSheet(RSVP_SHEET_NAME, [
-    'Timestamp', 'Name', 'Attending', 'Total Guests', 'Note to Host', 'Dietary Requirements'
+    'Timestamp', 'Name', 'Attending', 'Total Guests', 'Note to Host', 'Dietary Requirements', 'Phone', 'Confirmed'
   ]);
   sheet.appendRow([
     data.timestamp || new Date().toISOString(),
@@ -83,7 +86,9 @@ function saveRSVP(data) {
     data.attending || '',
     data.total     || '',
     data.note      || '',
-    data.dietary   || ''   // new last column, so existing columns don't move
+    data.dietary   || '',
+    data.phone     || '',
+    confirmed            // new columns go last, so existing columns don't move
   ]);
 }
 

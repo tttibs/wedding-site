@@ -130,126 +130,15 @@ html.rt-lock body {
   transition-duration: 300ms;
 }
 
-/* ── Hero ── */
-/* Full-bleed film in both orientations (portrait uses its own tall frames) */
-.rt-hero {
-  position: relative;
-  height: 100vh;
-  /* the large viewport: the film still fills the screen once a phone's
-     browser bar slides away (while the bar shows, the foot sits behind it) */
-  height: 100lvh;
-  overflow: hidden;
-  background: var(--rt-ink);
-}
-.rt-hero__media {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-}
-/* A soft fall-off of light at the foot of the film, so the cue reads on the cloth */
-.rt-hero__media::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 28%;
-  background: linear-gradient(to top, rgba(26, 10, 10, 0.38), rgba(26, 10, 10, 0));
-  pointer-events: none;
-}
-.rt-hero__media picture {
-  display: contents;
-}
-.rt-hero__still,
-.rt-hero__canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-.rt-hero__still {
-  object-fit: cover;
-  object-position: 50% 50%;
-  transform-origin: 50% 45%;
-}
-.rt-hero__canvas {
-  opacity: 0;
-}
-.rt-hero.is-live .rt-hero__canvas {
-  opacity: 1;
-}
-
-/* Scroll cue: the save-the-date chevron, fades in after the intro */
-.rt-cue {
-  position: absolute;
-  left: 50%;
-  bottom: max(24px, calc(env(safe-area-inset-bottom) + 14px));
-  z-index: 2;
-  color: rgba(247, 243, 233, 0.95);
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  pointer-events: none;
-}
-.rt-cue.is-visible {
-  opacity: 1;
-}
-.rt-cue:not(.is-visible) svg {
-  animation-play-state: paused;
-}
-.rt-cue svg {
-  display: block;
-  width: 56px;
-  height: 56px;
-  filter: drop-shadow(0 1px 4px rgba(26, 10, 10, 0.6));
-  animation: rtCueBob 2s ease-in-out infinite;
-}
-/* "Scroll" (desktop) or "Swipe" (touch), under the chevron */
-.rt-cue {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-/* Keep the cue above the browser bar: the film runs behind it */
-@supports (height: 1lvh) {
-  .rt-cue { bottom: calc(max(24px, calc(env(safe-area-inset-bottom) + 14px)) + (100lvh - 100svh)); }
-}
-.rt-cue__label {
-  margin-top: -6px;
-  font-family: var(--rt-sans);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.32em;
-  padding-left: 0.32em;   /* balance the tracking so the word sits centred */
-  text-transform: uppercase;
-  text-shadow: 0 1px 4px rgba(26, 10, 10, 0.6);
-}
-@keyframes rtCueBob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(6px); }
-}
-
 /* ── Section 2: the invitation ── */
 .rt-invitation {
   position: relative;
   padding: 88px 16px 112px;
 }
 
-/* The opening stage (motion on): the film lies over the top of the
-   invitation, fades away to the paper, and the card is set down beneath */
-html.rt-stage .rt-opening {
-  position: relative;
-}
-html.rt-stage .rt-hero {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 5;
-  pointer-events: none;
-}
 @media (orientation: portrait) {
   .rt-invitation {
-    padding: 28px 10vw 72px;
+    padding: max(52px, calc(env(safe-area-inset-top) + 32px)) 10vw 72px;
   }
   .rt-invitation .rt-card {
     padding-left: 18px;
@@ -530,7 +419,7 @@ html.rt-stage .rt-hero {
 }
 .rt-events--h .rt-events__track {
   display: flex;
-  align-items: center;
+  align-items: stretch;   /* every card as tall as the tallest */
   gap: 48px;
   max-width: none;
   width: max-content;
@@ -909,6 +798,23 @@ html.rt-stage .rt-hero {
 .rsvpForm .addTotal {
   margin-top: 28px;
 }
+/* "(invited guests only)" beneath "Total attending", in the same style */
+.rt-rsvp__sub {
+  display: block;
+  margin-top: 4px;
+}
+/* What's wrong with the phone number, just beneath it */
+.rt-rsvp__error {
+  max-width: 460px;
+  margin: -16px auto 24px;
+  font-family: var(--rt-serif);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.45;
+  text-align: center;
+}
+.rt-rsvp__card .rt-rsvp__error { color: var(--ink); }
+.rsvpForm input[aria-invalid="true"] { border-bottom-width: 2px; }
 .rsvpTotalBox h4 {
   margin: 0 0 8px;
   font-size: 12px;
@@ -934,6 +840,7 @@ html.rt-stage .rt-hero {
 }
 .rsvpForm select:focus-visible,
 .rsvpForm textarea:focus-visible,
+.rsvpForm input[type="tel"]:focus-visible,
 .commentForm textarea:focus-visible {
   outline: 2px solid var(--rt-focus);
   outline-offset: 3px;
@@ -949,6 +856,7 @@ html.rt-stage .rt-hero {
   color: var(--rt-ink-soft);
 }
 .rsvpForm textarea,
+.rsvpForm input[type="tel"],
 .commentForm textarea {
   display: block;
   width: 100%;
@@ -965,6 +873,7 @@ html.rt-stage .rt-hero {
   text-align: center;
   resize: vertical;
 }
+.rsvpForm input[type="tel"]::placeholder,
 .rsvpForm textarea::placeholder { color: rgba(26, 10, 10, 0.45); font-style: italic; }
 /* The confirmation reads as a line of the letter, not a button */
 #rt-invite .rsvpForm .button.success {
@@ -1021,25 +930,33 @@ html.rt-stage .rt-hero {
 }
 .calOption:focus-visible { outline: 2px solid var(--rt-focus); outline-offset: 2px; }
 
-/* The wax seal, pressed onto the card's corner on a successful reply */
-.rt-seal {
+/* The stamp, set onto the card's corner on a successful reply */
+.rt-stamp {
   position: absolute;
-  top: -26px;
-  right: -14px;
-  width: 104px;
-  height: 104px;
+  top: -30px;
+  right: -16px;
+  width: 100px;
+  height: 124px;
   opacity: 0;
   pointer-events: none;
-  filter: drop-shadow(0 4px 6px rgba(26, 10, 10, 0.35));
-  transform: rotate(-8deg);
+  filter: drop-shadow(0 5px 7px rgba(26, 10, 10, 0.45));
+  transform: rotate(7deg);
 }
-.rt-seal svg { display: block; width: 100%; height: 100%; }
-.rt-seal.is-on { opacity: 1; }
+.rt-stamp svg { display: block; width: 100%; height: 100%; }
+.rt-stamp.is-on { opacity: 1; }
+/* The R&T, drawn in chalk inside the stamp's frame */
+.rt-stamp__mark {
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  top: 30%;
+}
+.rt-stamp__mark > svg[data-chalk] { visibility: hidden; }
 @media (max-width: 480px) {
-  .rt-seal { width: 84px; height: 84px; top: -22px; right: -8px; }
+  .rt-stamp { width: 80px; height: 99px; top: -24px; right: -8px; }
 }
 
-/* ── Section 6: notes wall ── */
+/* ── Section 7: notes wall ── */
 .rt-notes {
   position: relative;
   padding: 96px 16px 120px;
@@ -1117,7 +1034,7 @@ html.rt-stage .rt-hero {
   transition-delay: calc(var(--i, 0) * 70ms);
 }
 
-/* ── Section 7: a little guide to Malta ── */
+/* ── Section 6: a little guide to Malta ── */
 .rt-guide {
   position: relative;
   padding: 104px 16px 120px;
@@ -1335,7 +1252,6 @@ html.rt-stage .rt-hero {
 
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
-  .rt-cue svg { animation: none; }
   .rt-intro { display: none; }
 }
 
@@ -1405,11 +1321,13 @@ html.rt-stage .rt-hero {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23f7f3e9' stroke-width='1.3' d='M3 6l5 5 5-5'/%3E%3C/svg%3E");
 }
 .rt-rsvp__card .rsvpForm select option { color: var(--rt-ink); }
+.rt-rsvp__card .rsvpForm input[type="tel"],
 .rt-rsvp__card .rsvpForm textarea {
   background: rgba(247, 243, 233, 0.08);
   border-bottom-color: var(--ink-soft);
   color: var(--ink);
 }
+.rt-rsvp__card .rsvpForm input[type="tel"]::placeholder,
 .rt-rsvp__card .rsvpForm textarea::placeholder { color: rgba(247, 243, 233, 0.6); }
 #rt-invite .rt-rsvp__card .rsvpForm .button.success {
   background: transparent;
@@ -1420,11 +1338,6 @@ html.rt-stage .rt-hero {
 .rt-rsvp__card .calOptions__or { border-color: var(--rule); color: var(--ink-soft); }
 .rt-rsvp__card .calGroup__title { color: var(--ink); }
 .rt-rsvp__card .calOption { color: var(--ink); }
-/* The seal is wax of the same red: a brighter rim and a deeper shadow
-   lift it off the card */
-.rt-rsvp__card .rt-seal {
-  filter: drop-shadow(0 6px 8px rgba(26, 10, 10, 0.55)) drop-shadow(0 0 1px rgba(247, 243, 233, 0.6));
-}
 
 /* ─────────────────────────────────────────────────────────────────
    Navigation: a folded note card in the left border (desktop) that
@@ -1605,7 +1518,7 @@ html.rt-stage .rt-hero {
   .rt-nav, .rt-nav__panel, .rt-nav__list, .rt-nav__card, .rt-nav__icon i { transition: none !important; }
 }
 
-/* ── Section 7: guide tabs ── */
+/* ── Section 6: guide tabs ── */
 .rt-tabs {
   margin-top: 56px;
 }
@@ -1719,7 +1632,7 @@ html.rt-stage .rt-hero {
 .rt-tabs__panel.is-entering .rt-guide__placeholder,
 .rt-tabs__panel.is-entering .rt-guide__spotify-frame {
   animation: rtSettle 420ms var(--rt-ease-out) both;
-  animation-delay: calc(var(--i, 0) * 45ms);
+  animation-delay: calc(min(var(--i, 0), 6) * 45ms);   /* long lists: only the first few stagger */
 }
 @keyframes rtSettle {
   from { opacity: 0; transform: translateY(10px); }
