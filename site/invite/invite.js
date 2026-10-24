@@ -367,7 +367,7 @@ function rsvpMarkup() {
     '<div class="rt-doily rt-doily--rsvp" aria-hidden="true"></div>' +
     '<div class="rt-rsvp__card">' +
       '<h2 class="rt-heading" id="rt-rsvp-title" data-reveal="lines">Please RSVP</h2>' +
-      '<p class="rt-rsvp__by">Kindly respond by 17th December 2026</p>' +
+      '<p class="rt-rsvp__by">Kindly respond by 4th January 2027</p>' +
       '<form class="rsvpForm" method="post" action="preview">' +
         '<div class="formGuts">' +
           '<input type="hidden" name="id" id="guestId" value="">' +
@@ -381,10 +381,15 @@ function rsvpMarkup() {
           '</fieldset>' +
           '<div class="addTotal">' +
             '<div class="rsvpTotalBox">' +
-              '<h4 class="errorMessage"><label for="rsvpTotal">Total attending</label></h4>' +
+              '<h4 class="errorMessage"><label for="rsvpTotal">Total attending<span class="rt-rsvp__sub">(invited guests only)</span></label></h4>' +
               '<select name="rsvp_total" class="rsvpTotal" id="rsvpTotal">' +
                 '<option value="1">1</option><option value="2" selected="">2</option><option value="3">3</option>' +
               '</select>' +
+            '</div>' +
+            '<div class="rt-rsvp__phone">' +
+              '<label class="rt-rsvp__note-label" for="rsvpPhone">Phone number (including country code)</label>' +
+              '<input type="tel" name="phone" id="rsvpPhone" autocomplete="tel" inputmode="tel" placeholder="+61 400 000 000" aria-describedby="rsvpPhoneError">' +
+              '<p class="rt-rsvp__error" id="rsvpPhoneError" role="alert" hidden></p>' +
             '</div>' +
             '<div class="rt-rsvp__dietary">' +
               '<label class="rt-rsvp__note-label" for="rsvpDietary">Dietary requirements (optional)</label>' +
@@ -1398,13 +1403,22 @@ function initForms() {
   $('.rsvpForm .attend').on('change', function() {
     // Not attending: no guest count or dietary requirements to ask about
     if ($(this).hasClass('no')) {
-      $('.rsvpForm .rsvpTotalBox, .rsvpForm .rt-rsvp__dietary').slideUp(400);
+      $('.rsvpForm .rsvpTotalBox, .rsvpForm .rt-rsvp__phone, .rsvpForm .rt-rsvp__dietary').slideUp(400);
+      phoneError('');
     } else {
-      $('.rsvpForm .rsvpTotalBox, .rsvpForm .rt-rsvp__dietary').slideDown(400);
+      $('.rsvpForm .rsvpTotalBox, .rsvpForm .rt-rsvp__phone, .rsvpForm .rt-rsvp__dietary').slideDown(400);
     }
     $('.rsvpForm .addTotal').slideDown(400);
     $('.rsvpForm .button[type="submit"]').slideDown(400);
   });
+
+  // Phone number: say what's wrong beneath the field, and clear it as they type
+  function phoneError(msg) {
+    var $err = $('#rsvpPhoneError'), $in = $('#rsvpPhone');
+    $err.text(msg).prop('hidden', !msg);
+    if (msg) $in.attr('aria-invalid', 'true'); else $in.removeAttr('aria-invalid');
+  }
+  $('#rsvpPhone').on('input', function () { if ($(this).attr('aria-invalid')) phoneError(''); });
 
   // ── RSVP form: submit to Google Sheets ──
   $('.rsvpForm').submit(function(e) {
@@ -1418,6 +1432,15 @@ function initForms() {
       alert('Please select Will Attend or Will Not Attend.');
       return;
     }
+    // Guests who are coming must leave a phone number, with its country code
+    var phone = $.trim($form.find('#rsvpPhone').val() || '');
+    if (attending === '1') {
+      var digits = phone.replace(/\D/g, '');
+      var problem = !phone ? 'Please add a phone number so we can reach you.'
+        : (!/^(\+|00)/.test(phone) || digits.length < 8 || digits.length > 16)
+          ? 'Please include your country code, starting with +, e.g. +61 for Australia or +44 for the UK.' : '';
+      if (problem) { phoneError(problem); $form.find('#rsvpPhone').trigger('focus'); return; }
+    }
 
     $btn.addClass('disabled').text('Submitting…');
 
@@ -1428,6 +1451,7 @@ function initForms() {
       total:      $form.find('select[name="rsvp_total"]').val() || '1',
       note:       $form.find('textarea[name="note_to_host"]').val() || '',
       dietary:    attending === '1' ? ($form.find('textarea[name="dietary"]').val() || '') : '',
+      phone:      attending === '1' ? phone : '',
       timestamp:  new Date().toISOString()
     };
 
