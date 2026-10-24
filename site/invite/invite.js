@@ -347,18 +347,35 @@ function faqMarkup() {
   '</section>';
 }
 
-// The wax seal pressed onto the RSVP card once a reply is sent. Drawn in SVG:
-// an uneven pool of wax, a pressed ring and the couple's initials.
-var SEAL_SVG = '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">' +
-  '<defs>' +
-    '<radialGradient id="rtWax" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#9a2a26"/><stop offset="0.55" stop-color="#761d1d"/><stop offset="1" stop-color="#4f1111"/></radialGradient>' +
-    '<filter id="rtEmboss" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="1" stdDeviation="0.4" flood-color="#c45a52" flood-opacity="0.7"/></filter>' +
-  '</defs>' +
-  '<path fill="url(#rtWax)" d="M61 4c9 1 13 7 21 9s15 2 20 9 2 14 5 21 9 11 8 19-8 11-10 19-1 15-8 20-14 2-21 5-10 9-18 9-11-6-19-8-15-1-20-8-2-14-5-21-9-11-8-19 8-11 10-19 1-15 8-20 14-2 21-5 9-11 16-11z"/>' +
-  '<circle cx="60" cy="60" r="38" fill="none" stroke="#4f1111" stroke-width="2" opacity="0.55"/>' +
-  '<circle cx="60" cy="60" r="35" fill="none" stroke="#a63a33" stroke-width="0.8" opacity="0.6"/>' +
-  '<text x="60" y="70" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-style="italic" font-size="30" fill="#5a1414" filter="url(#rtEmboss)">R&amp;T</text>' +
-'</svg>';
+// The stamp set onto the RSVP card once a reply is sent: a perforated
+// postage stamp in Luzzu blue, with the R&T from the monogram drawn onto it
+// in chalk as it lands.
+var STAMP_SVG = (function () {
+  var W = 100, H = 124, r = 2.6, holes = '';
+  for (var x = 4; x <= W - 4; x += 8) holes += '<circle cx="' + x + '" cy="0" r="' + r + '"/><circle cx="' + x + '" cy="' + H + '" r="' + r + '"/>';
+  for (var y = 4; y <= H - 4; y += 8) holes += '<circle cx="0" cy="' + y + '" r="' + r + '"/><circle cx="' + W + '" cy="' + y + '" r="' + r + '"/>';
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">' +
+    '<defs>' +
+      '<mask id="rtPerf"><rect width="' + W + '" height="' + H + '" fill="#fff"/><g fill="#000">' + holes + '</g></mask>' +
+      '<linearGradient id="rtStampLight" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.14"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
+    '</defs>' +
+    '<g mask="url(#rtPerf)"><rect width="' + W + '" height="' + H + '" fill="#5b7d96"/><rect width="' + W + '" height="' + H + '" fill="url(#rtStampLight)"/></g>' +
+    '<rect x="8" y="8" width="' + (W - 16) + '" height="' + (H - 16) + '" fill="none" stroke="#f7f3e9" stroke-width="0.8" opacity="0.55"/>' +
+    '<text x="50" y="108" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-size="5.6" letter-spacing="1.3" fill="#f7f3e9" opacity="0.85">MALTA · MMXXVII</text>' +
+  '</svg>';
+})();
+
+// The R&T alone, lifted from the monogram: its last eight strokes, inside the
+// frame. Strokes are thickened so they still read at stamp size.
+var LETTERS_SVG = (function () {
+  var root = MONOGRAM_SVG.match(/^<svg[^>]*>/)[0]
+    .replace(/viewBox="[^"]*"/, 'viewBox="280 440 615 365"')
+    .replace(/width="[^"]*"/, 'width="615"').replace(/height="[^"]*"/, 'height="365"');
+  var paths = (MONOGRAM_SVG.match(/<path[^>]*\/>/g) || []).slice(8).map(function (pth) {
+    return pth.replace(/stroke-width="([\d.]+)"/, function (m, w) { return 'stroke-width="' + Math.round(w * 1.8) + '"'; });
+  });
+  return root + '<g fill="none" stroke="#111" stroke-linecap="round" stroke-linejoin="round">' + paths.join('') + '</g></svg>';
+})();
 
 // Section 5. Same form, field names and behaviour as the save-the-date.
 function rsvpMarkup() {
@@ -401,7 +418,9 @@ function rsvpMarkup() {
         '</div>' +
         '<button type="submit" class="button fill">Submit</button>' +
       '</form>' +
-      '<div class="rt-seal" aria-hidden="true">' + SEAL_SVG + '</div>' +
+      '<div class="rt-stamp" aria-hidden="true">' + STAMP_SVG +
+        '<div class="chalk rt-stamp__mark" data-chalk-inline data-chalk-mode="manual" data-chalk-color="#f7f3e9" style="aspect-ratio:615/365">' + LETTERS_SVG + '</div>' +
+      '</div>' +
       '<p class="rt-sr" role="status" id="rsvpStatus"></p>' +
     '</div>' +
   '</section>';
@@ -1368,32 +1387,40 @@ function loadPriorRSVP(name) {
 //  second row); jQuery's slide animations are off with reduced motion.
 // ─────────────────────────────────────────────────────────────────
 
-// Presses the seal onto the RSVP card, then calls done. The confirmation
-// never depends on this: done also runs on a timer if animation fails.
-function playSeal(done) {
-  var seal = document.querySelector('.rt-seal');
+// Sets the stamp onto the RSVP card and draws the R&T onto it, then calls
+// done. The confirmation never depends on this: done also runs on a timer if
+// animation fails.
+function playStamp(done) {
+  var stamp = document.querySelector('.rt-stamp');
   var card = document.querySelector('.rt-rsvp__card');
   var called = false;
   function finish() { if (!called) { called = true; done(); } }
   setTimeout(finish, 700);
-  if (!seal) return;
-  seal.classList.add('is-on');
-  if (!seal.animate) return;
+  if (!stamp) return;
+  var mark = stamp.querySelector('.rt-stamp__mark');
+  stamp.classList.add('is-on');
+  function draw(delay) {
+    if (!mark) return;
+    setTimeout(function () { CHALK_READY.then(function () { window.ChalkDraw.play(mark, 1500); }); }, delay);
+  }
+  if (!stamp.animate) { draw(0); return; }
   try {
     if (REDUCED) {
-      seal.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, fill: 'both' });
+      stamp.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, fill: 'both' });
+      draw(0);
     } else {
       // Pressed down from above: lands with a little weight, the card gives slightly
-      seal.animate([
-        { opacity: 0, transform: 'scale(1.35) rotate(-14deg)' },
-        { opacity: 1, transform: 'scale(1) rotate(-8deg)' }
+      stamp.animate([
+        { opacity: 0, transform: 'scale(1.35) rotate(14deg)' },
+        { opacity: 1, transform: 'scale(1) rotate(7deg)' }
       ], { duration: 380, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', fill: 'both' });
       if (card) card.animate([
         { transform: 'translateY(0)' }, { transform: 'translateY(0)', offset: 0.6 },
         { transform: 'translateY(3px)', offset: 0.75 }, { transform: 'translateY(0)' }
       ], { duration: 520, easing: 'ease-out' });
+      draw(420);
     }
-  } catch (e) { /* the confirmation still runs */ }
+  } catch (e) { draw(0); /* the confirmation still runs */ }
 }
 
 function initForms() {
@@ -1464,7 +1491,7 @@ function initForms() {
       headers:  { 'Content-Type': 'application/x-www-form-urlencoded' },
       body:     'data=' + encodeURIComponent(JSON.stringify(payload))
     }).then(function() {
-      playSeal(function() {
+      playStamp(function() {
         $btn.removeClass('disabled').addClass('success').text('Thanks for letting us know!');
         $('#rsvpStatus').text('Thank you, your RSVP has been sent.');
         $form.find('.formGuts').slideUp(300);

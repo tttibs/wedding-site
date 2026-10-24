@@ -930,22 +930,30 @@ html.rt-lock body {
 }
 .calOption:focus-visible { outline: 2px solid var(--rt-focus); outline-offset: 2px; }
 
-/* The wax seal, pressed onto the card's corner on a successful reply */
-.rt-seal {
+/* The stamp, set onto the card's corner on a successful reply */
+.rt-stamp {
   position: absolute;
-  top: -26px;
-  right: -14px;
-  width: 104px;
-  height: 104px;
+  top: -30px;
+  right: -16px;
+  width: 100px;
+  height: 124px;
   opacity: 0;
   pointer-events: none;
-  filter: drop-shadow(0 4px 6px rgba(26, 10, 10, 0.35));
-  transform: rotate(-8deg);
+  filter: drop-shadow(0 5px 7px rgba(26, 10, 10, 0.45));
+  transform: rotate(7deg);
 }
-.rt-seal svg { display: block; width: 100%; height: 100%; }
-.rt-seal.is-on { opacity: 1; }
+.rt-stamp svg { display: block; width: 100%; height: 100%; }
+.rt-stamp.is-on { opacity: 1; }
+/* The R&T, drawn in chalk inside the stamp's frame */
+.rt-stamp__mark {
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  top: 30%;
+}
+.rt-stamp__mark > svg[data-chalk] { visibility: hidden; }
 @media (max-width: 480px) {
-  .rt-seal { width: 84px; height: 84px; top: -22px; right: -8px; }
+  .rt-stamp { width: 80px; height: 99px; top: -24px; right: -8px; }
 }
 
 /* ── Section 6: notes wall ── */
@@ -1330,11 +1338,6 @@ html.rt-lock body {
 .rt-rsvp__card .calOptions__or { border-color: var(--rule); color: var(--ink-soft); }
 .rt-rsvp__card .calGroup__title { color: var(--ink); }
 .rt-rsvp__card .calOption { color: var(--ink); }
-/* The seal is wax of the same red: a brighter rim and a deeper shadow
-   lift it off the card */
-.rt-rsvp__card .rt-seal {
-  filter: drop-shadow(0 6px 8px rgba(26, 10, 10, 0.55)) drop-shadow(0 0 1px rgba(247, 243, 233, 0.6));
-}
 
 /* ─────────────────────────────────────────────────────────────────
    Navigation: a folded note card in the left border (desktop) that
