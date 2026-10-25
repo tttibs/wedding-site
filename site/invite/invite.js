@@ -435,7 +435,7 @@ function rsvpMarkup() {
             '<div class="rsvpTotalBox">' +
               '<h4 class="errorMessage"><label for="rsvpTotal">Total attending<span class="rt-rsvp__sub">(invited guests only)</span></label></h4>' +
               '<select name="rsvp_total" class="rsvpTotal" id="rsvpTotal">' +
-                '<option value="1">1</option><option value="2" selected="">2</option><option value="3">3</option>' +
+                '<option value="1">1</option><option value="2" selected="">2</option><option value="3">3</option><option value="4">4</option>' +
               '</select>' +
             '</div>' +
             '<div class="rt-rsvp__phone">' +
@@ -1417,29 +1417,63 @@ function escapeHtml(str) {
   return $('<div>').text(str).html();
 }
 
+// The guest's allowance caps the guest-count dropdown. Until it arrives (or if
+// the sheet can't be reached) the dropdown offers 1-4, the largest party. The
+// published sheet sometimes fails or is slow on a single request, so it is
+// retried, and a guest's allowance is remembered for the rest of their visit.
+var ALLOWANCE_KEY = 'rtAllowance:';
 function loadGuestAllowance(name) {
   if (!name || name === 'Guest') return;
-  fetch(GUEST_NUMBERS_CSV_URL)
-    .then(function(r) { return r.text(); })
-    .then(function(csv) {
-      var rows = csv.trim().split('\n');
-      var allowance = null;
-      var nameLower = name.trim().toLowerCase();
-      for (var i = 0; i < rows.length; i++) {
-        var cols = rows[i].split(',');
-        if (cols.length >= 2) {
-          var sheetName = cols[0].replace(/^"+|"+$/g, '').trim().toLowerCase();
-          if (sheetName === nameLower) {
-            allowance = parseInt(cols[1].replace(/[^0-9]/g, ''), 10);
-            break;
-          }
+  var nameLower = name.trim().toLowerCase();
+  try {
+    var saved = parseInt(sessionStorage.getItem(ALLOWANCE_KEY + nameLower), 10);
+    if (saved > 0) applyGuestAllowance(saved);
+  } catch (e) {}
+  var delays = [0, 1200, 3000];
+  function attempt(n) {
+    var url = GUEST_NUMBERS_CSV_URL + '&t=' + Date.now();   // never a stale cached copy
+    fetch(url, { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+      .then(function (csv) {
+        if (/^\s*</.test(csv)) throw new Error('not CSV');   // an error page, not the sheet
+        var allowance = findAllowance(csv, nameLower);
+        if (allowance > 0) {
+          applyGuestAllowance(allowance);
+          try { sessionStorage.setItem(ALLOWANCE_KEY + nameLower, String(allowance)); } catch (e) {}
         }
-      }
-      if (allowance && allowance > 0) {
-        applyGuestAllowance(allowance);
-      }
-    })
-    .catch(function(err) { console.log('[GuestAllowance] Error:', err); });
+      })
+      .catch(function (err) {
+        if (n + 1 < delays.length) setTimeout(function () { attempt(n + 1); }, delays[n + 1]);
+        else console.log('[GuestAllowance] Unavailable:', err && err.message);
+      });
+  }
+  attempt(0);
+}
+
+// Reads the sheet's CSV properly: names in quotes may contain commas, and
+// Google ends lines with \r\n. Name in the first column, allowance in the second.
+function findAllowance(csv, nameLower) {
+  var rows = [], row = [], field = '', q = false;
+  for (var i = 0; i < csv.length; i++) {
+    var ch = csv[i];
+    if (q) {
+      if (ch === '"' && csv[i + 1] === '"') { field += '"'; i++; }
+      else if (ch === '"') q = false;
+      else field += ch;
+    } else if (ch === '"') q = true;
+    else if (ch === ',') { row.push(field); field = ''; }
+    else if (ch === '\n' || ch === '\r') {
+      if (ch === '\r' && csv[i + 1] === '\n') i++;
+      row.push(field); rows.push(row); row = []; field = '';
+    } else field += ch;
+  }
+  row.push(field); rows.push(row);
+  for (var r = 0; r < rows.length; r++) {
+    if (rows[r].length >= 2 && rows[r][0].trim().toLowerCase() === nameLower) {
+      return parseInt(String(rows[r][1]).replace(/[^0-9]/g, ''), 10) || 0;
+    }
+  }
+  return 0;
 }
 
 function applyGuestAllowance(max) {
@@ -1455,9 +1489,12 @@ function applyGuestAllowance(max) {
     if (i === pick) opt.selected = true;
     selectEl.appendChild(opt);
   }
-  if (max === 1) {
-    var box = selectEl.closest('.rsvpTotalBox');
-    if (box) box.style.display = 'none';
+  // A party of one has nothing to choose: the count stays hidden (initForms
+  // checks this flag before showing it again)
+  var box = selectEl.closest('.rsvpTotalBox');
+  if (box) {
+    box.classList.toggle('is-single', max === 1);
+    if (max === 1) box.style.display = 'none';
   }
 }
 
@@ -1549,7 +1586,7 @@ function initForms() {
       $('.rsvpForm .rsvpTotalBox, .rsvpForm .rt-rsvp__phone, .rsvpForm .rt-rsvp__dietary').slideUp(400);
       phoneError('');
     } else {
-      $('.rsvpForm .rsvpTotalBox, .rsvpForm .rt-rsvp__phone, .rsvpForm .rt-rsvp__dietary').slideDown(400);
+      $('.rsvpForm .rsvpTotalBox:not(.is-single), .rsvpForm .rt-rsvp__phone, .rsvpForm .rt-rsvp__dietary').slideDown(400);
     }
     $('.rsvpForm .addTotal').slideDown(400);
     $('.rsvpForm .button[type="submit"]').slideDown(400);
