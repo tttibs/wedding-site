@@ -25,8 +25,9 @@ var $ = window.jQuery;
 // ─────────────────────────────────────────────────────────────────
 //  A LITTLE GUIDE TO MALTA: edit the places here.
 //  Each tab: id, label, an optional row of chalk drawings, and places.
-//  Each place: name, area (optional), text, and map: either a Google Maps
-//  link (https://maps.app.goo.gl/...), used as it is, or what to search for
+//  Each place: name, area (optional), text, and map: either a full Google
+//  Maps link (https://www.google.com/maps/place/..., not a maps.app.goo.gl
+//  short link, which fails in in-app browsers), used as it is, or what to search for
 //  on Google Maps; '' hides the link. Descriptions are in the couple's voice.
 //  spotify: paste the playlist's share link, e.g.
 //  'https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M' ('' shows a placeholder).
@@ -43,13 +44,13 @@ var GUIDE = {
         text: 'Arched gardens high above the Grand Harbour, with the best view in Valletta. Be there for 12pm, when the cannons of the Saluting Battery below are fired.' },
       { name: 'MICAS', area: 'Floriana, by Valletta', map: 'MICAS, Floriana, Malta',
         text: 'Malta\u2019s contemporary art space, set in the old fortifications just outside Valletta\u2019s city gate. A change of pace from all the baroque.' },
-      { name: 'Birgu and the Three Cities', area: 'Across the Grand Harbour', map: 'https://maps.app.goo.gl/UexXqVeLqWDHXxWr7',
+      { name: 'Birgu and the Three Cities', area: 'Across the Grand Harbour', map: 'https://www.google.com/maps/place/Birgu,+Malta/@35.8866332,14.5239421,2527m/data=!3m2!1e3!4b1!4m6!3m5!1s0x130e44d4bc8f4e55:0xdf8a6eb9d211b88b!8m2!3d35.8880695!4d14.5220972!16zL20vMDI3cDUz',
         text: 'Take a traditional dg\u0127ajsa boat across the harbour from Valletta, wander the quiet lanes and finish at Fort St Angelo.' },
       { name: 'Mdina, the Silent City', area: 'Mdina', map: 'Mdina, Malta',
         text: 'Malta\u2019s old walled capital and home to St. Paul\u2019s Cathedral. Wander its quiet golden lanes, ideally early in the day or towards sunset when it\u2019s at its most peaceful.' },
       { name: 'Marsaxlokk', area: 'South-east Malta', map: 'Marsaxlokk, Malta',
         text: 'A fishing village of brightly painted luzzu boats. Come on a Sunday morning to wander the market along the harbour.' },
-      { name: '\u010aittadella', area: 'Victoria, Gozo', map: 'https://maps.app.goo.gl/14fc9qyg9mDWV1Ze8',
+      { name: '\u010aittadella', area: 'Victoria, Gozo', map: 'https://www.google.com/maps/place/%C4%8Aittadella/@36.0465194,14.2372009,1261m/data=!3m1!1e3!4m6!3m5!1s0x130fb4f807fe9e79:0xe55c2993080d9100!8m2!3d36.0465869!4d14.2394269!16s%2Fg%2F11c6dkzm4j',
         text: 'Take the ferry over to Gozo and explore the \u010aittadella, the island\u2019s fortified hilltop town, with views right across Gozo from its walls.' },
       { name: 'Ba\u017cilika tal-Madonna Ta\u2019 Pinu', area: 'G\u0127arb, Gozo', map: 'Basilica of Ta\' Pinu, Gharb, Gozo, Malta',
         text: 'A striking basilica standing on its own in the Gozitan countryside, and one of the most loved churches in the islands.' }
@@ -61,15 +62,17 @@ var GUIDE = {
         text: 'Just round the headland from Riviera: a quieter sandy bay with clear water and old boathouses cut into the rock.' },
       { name: 'Riviera Beach', area: 'G\u0127ajn Tuffie\u0127a, north-west Malta', map: 'Riviera Beach, Ghajn Tuffieha, Malta',
         text: 'A long flight of steps keeps the crowds away from this sandy bay beneath the cliffs. Our favourite for a swim.' },
-      { name: 'St Peter\u2019s Pool', area: 'Delimara', map: 'https://maps.app.goo.gl/VG6DBKTeqiXEivdL7',
+      { name: 'St Peter\u2019s Pool', area: 'Delimara', map: 'https://www.google.com/maps/place/St.Peter\'s+Pool,+Marsaxlokk,+Malta/@35.8335715,14.5596433,1264m/data=!3m2!1e3!4b1!4m6!3m5!1s0x130e5b8f2afff80b:0x4fa3a9f18dbab736!8m2!3d35.8335715!4d14.5596433!16s%2Fg%2F1q62k3wv8',
         text: 'Flat rock shelves and deep, clear water for jumping in. Go on a Sunday morning and stop at the Marsaxlokk fish market on the way.' },
+      { name: 'Il-Kalanka', area: 'Delimara', map: 'https://www.google.com/maps/place/Il-Kalanka/@35.8249607,14.5551438,4244m/data=!3m1!1e3!4m6!3m5!1s0x130e5bf498060977:0xeaa1adc535fc6607!8m2!3d35.8237443!4d14.560247!16s%2Fg%2F1hhvp0m2g',
+        text: 'Right next to St Peter\u2019s Pool, and always a little quieter.' },
       { name: 'G\u0127ar Lapsi', area: 'South of Malta', map: 'Ghar Lapsi, Malta',
         text: 'An amazing little cove in the south of Malta with shallow, sheltered water, so it\u2019s lovely for families with children.' },
       { name: 'Blue Lagoon', area: 'Comino', map: 'Blue Lagoon, Comino, Malta',
         text: 'The famous turquoise water between Comino and its islet. You now need a free booked pass to land, so plan ahead and go early.' },
       { name: 'Xwejni Bay', area: 'Gozo', map: 'Xwejni Bay, Gozo, Malta',
         text: 'A rocky stretch of coast beside the old salt pans near Marsalforn, and a very special spot for us: it\u2019s where Rebecca and Thomas got engaged in 2025.' },
-      { name: 'Wied il-G\u0127asri', area: 'Gozo', map: 'https://maps.app.goo.gl/42vELKpzBYUuD32Q8',
+      { name: 'Wied il-G\u0127asri', area: 'Gozo', map: 'https://www.google.com/maps/place/Wied+il-G%C4%A7asri/@36.0787465,14.2258321,1260m/data=!3m2!1e3!4b1!4m6!3m5!1s0x130fb5987277db21:0x89342e723619320c!8m2!3d36.0787422!4d14.228407!16s%2Fg%2F12lnh3l1g',
         text: 'A narrow sea inlet between tall cliffs, reached by steps down the gorge, with calm, clear water for a swim.' }
     ] },
     { id: 'food', label: 'Food, wine & music',
@@ -117,7 +120,7 @@ var GUIDE = {
 var MUSIC = { src: 'music/piano.mp3', volume: 0.3, autoplay: true };
 
 // Bump on every deploy: cache-busts every asset this file loads.
-var RT_VERSION = '20261025c';
+var RT_VERSION = '20261025d';
 
 // Where this file lives, so the same code works on preview.html and Webflow.
 var SCRIPT_SRC = (document.currentScript && document.currentScript.src) || '';
@@ -1011,6 +1014,21 @@ function initEventsDrag(gsap, section, range) {
   section.addEventListener('click', function (e) { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
 }
 
+// Links that open in a new tab (maps, calendars). Some in-app browsers, like
+// the Gmail app's on iPhone and iPad, quietly refuse new tabs, so a tap did
+// nothing: when a new tab can't be opened, the link opens here instead.
+function initNewTabLinks() {
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('#rt-invite a[target="_blank"]');
+    if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    var w = null;
+    try { w = window.open(a.href, '_blank'); } catch (err) {}
+    if (w) { try { w.opener = null; } catch (err) {} }
+    else window.location.href = a.href;
+  });
+}
+
 // ─────────────────────────────────────────────────────────────────
 //  DETAILS: accordion. Plain buttons with aria-expanded; Enter and Space
 //  work natively. Several panels can be open at once. The unfold itself is
@@ -1872,6 +1890,7 @@ function boot() {
   watchDrawings(chalkReady, '.rt-border .chalk');
   initChurch(chalkReady);
   initFaq();
+  initNewTabLinks();
   initNav();
   initMusic();
   initGuide();
