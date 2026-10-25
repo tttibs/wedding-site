@@ -1688,8 +1688,8 @@ function initForms() {
       headers:  { 'Content-Type': 'application/x-www-form-urlencoded' },
       body:     'data=' + encodeURIComponent(JSON.stringify(payload))
     }).then(function() {
-        // Show the comment immediately on the page
-        appendComment({ comment: comment, name: guestName, timestamp: payload.timestamp });
+        // Show the comment immediately, at the top of the wall with the newest
+        appendComment({ comment: comment, name: guestName, timestamp: payload.timestamp }, true);
         $('.commentsWrapper .comments').slideDown(400);
 
         $btn.removeClass('disabled').text('Comment Submitted ✓');
@@ -1750,7 +1750,11 @@ function parseCSVComments(csv) {
       });
     }
   }
-  return comments.reverse();
+  // Newest first: by timestamp where both have one, otherwise newest row first
+  comments.reverse();
+  return comments.map(function (c, i) { return { c: c, i: i, t: Date.parse(c.timestamp) }; })
+    .sort(function (a, b) { return (!isNaN(a.t) && !isNaN(b.t) && a.t !== b.t) ? b.t - a.t : a.i - b.i; })
+    .map(function (x) { return x.c; });
 }
 
 function parseCSVLine(line) {
@@ -1781,7 +1785,8 @@ function seeded(str, salt) {
 }
 
 var noteObserver = null;
-function appendComment(c) {
+// atTop: a note just posted goes first (the wall reads newest first)
+function appendComment(c, atTop) {
   // No dates on the wall: guests shouldn't think their invitation came late
   var nameStr = (c.name && c.name !== 'Guest') ? $('<div>').text(c.name).html() : '';
 
@@ -1796,7 +1801,8 @@ function appendComment(c) {
     '--i': $('.commentsWrapper .comments .list').children().length % 3
   });
 
-  $('.commentsWrapper .comments .list').append($card);
+  if (atTop) $('.commentsWrapper .comments .list').prepend($card);
+  else $('.commentsWrapper .comments .list').append($card);
 
   // Settle in like a card dropped on the table, as each comes into view
   if (noteObserver) {
